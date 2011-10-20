@@ -27,6 +27,7 @@ class LEDDriver : public Driver {
 		LEDDriver();
 		virtual ~LEDDriver();
 		
+		virtual void init();
 		virtual void write(byte value[]);
 		virtual byte* read(byte position[]);
 };

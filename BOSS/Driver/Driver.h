@@ -8,6 +8,7 @@ public:
 	Driver();
 	virtual ~Driver();
 	
+	virtual void init() = 0;
 	virtual void write(byte value[]) = 0;
 	virtual byte* read(byte position[]) = 0;
 	
