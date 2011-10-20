@@ -1,7 +1,7 @@
 #ifndef HALLEDDRIVER_H_
 #define HALLEDDRIVER_H_
 
-#include "LED.h"
+#include "LEDClass.h"
 
 enum LED {
 	LED1 = 0,
