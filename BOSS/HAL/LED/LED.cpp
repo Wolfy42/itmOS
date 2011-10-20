@@ -17,6 +17,6 @@ void LEDClass::switchOff() {
 void LEDClass::switchOn() {
 	GPIO_OE_GPIO5 &= ~(1 << m_bitNumber);
 }
-bool LEDClass::isOn() {
-	return ~(GPIO_OE_GPIO5 & (1 << m_bitNumber));
+bool LEDClass::isOff() {
+	return (GPIO_OE_GPIO5 & (1 << m_bitNumber));
 }

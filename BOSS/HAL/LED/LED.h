@@ -12,7 +12,7 @@ class LEDClass {
 		void toggle();
 		void switchOn();
 		void switchOff();
-		bool isOn();
+		bool isOff();
 };
 
 #endif /*LED_H_*/
