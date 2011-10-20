@@ -1,1 +1,0 @@
-"./Driver/Driver.obj" "./Driver/LED/LEDDriver.obj" "./HAL/LED/LED.obj" "./HAL/LED/HalLedDriver.obj" "./Kernel/TaskManagement/Scheduler/Scheduler.obj" "./Kernel/TaskManagement/Task/TaskControlBlock.obj" "./Kernel/TaskManagement/Task/Task.obj" "./Kernel/TaskManagement/TaskManager.obj" -l"libc.a" "../beagle.cmd" 
