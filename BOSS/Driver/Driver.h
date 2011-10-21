@@ -4,12 +4,13 @@
 #include "../API/dataTypes.h"
 
 class Driver {
-public:
-	Driver();
-	virtual ~Driver();
-	
-	virtual void write(byte value[]) = 0;
-	virtual byte* read(byte position[]) = 0;
+	public:
+		Driver();
+		virtual ~Driver();
+		
+		virtual void init() = 0;
+		virtual void write(byte value[]) = 0;
+		virtual byte* read(byte position[]) = 0;
 	
 };
 

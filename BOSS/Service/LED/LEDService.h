@@ -19,7 +19,6 @@ class LEDService : public Service {
 		void switchLEDOn(LED led);
 		void switchLEDOff(LED led);
 		void toggleLED(LED led);
-		byte* readInput();
 		LEDState getLEDState(LED led);
 	protected:
 		virtual void start();	

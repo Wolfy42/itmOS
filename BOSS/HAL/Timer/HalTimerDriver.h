@@ -8,7 +8,8 @@
 #define GPTIMER_TCLR_CE address 0x01000000	// 1 = Compare enabled, 0 = Compare disabled
 
 enum Timer {
-	GPTIMER1 = 0
+	GPTIMER1 = 0,
+	GPTIMER2 = 1
 };
 
 class HalTimerDriver {
