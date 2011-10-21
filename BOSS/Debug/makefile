@@ -11,13 +11,20 @@ ORDERED_OBJS += \
 $(GEN_CMDS_QUOTED) \
 "./Driver/Driver.obj" \
 "./Driver/LED/LEDDriver.obj" \
-"./HAL/LED/LED.obj" \
+"./HAL/LED/LEDClass.obj" \
 "./HAL/LED/HalLedDriver.obj" \
+"./HAL/Timer/TimerClass.obj" \
+"./HAL/Timer/InterruptClass.obj" \
+"./HAL/Timer/HalTimerDriver.obj" \
+"./HAL/Timer/HalInterruptDriver.obj" \
 "./Kernel/TaskManagement/Scheduler/Scheduler.obj" \
 "./Kernel/TaskManagement/Task/TaskControlBlock.obj" \
 "./Kernel/TaskManagement/Task/Task.obj" \
 "./Kernel/TaskManagement/TaskManager.obj" \
 "./Kernel/TestDriver.obj" \
+"./Service/LED/LEDService.obj" \
+"./Service/Service.obj" \
+"./main.obj" \
 -l"libc.a" \
 "../beagle.cmd" \
 
@@ -29,10 +36,13 @@ RMDIR := RMDIR /S/Q
 # All of the sources participating in the build are defined here
 -include sources.mk
 -include subdir.mk
+-include Service/subdir.mk
+-include Service/LED/subdir.mk
 -include Kernel/subdir.mk
 -include Kernel/TaskManagement/subdir.mk
 -include Kernel/TaskManagement/Task/subdir.mk
 -include Kernel/TaskManagement/Scheduler/subdir.mk
+-include HAL/Timer/subdir.mk
 -include HAL/LED/subdir.mk
 -include Driver/LED/subdir.mk
 -include Driver/subdir.mk
@@ -131,8 +141,8 @@ BOSS.out: $(OBJS) $(CMD_SRCS) $(GEN_CMDS)
 # Other Targets
 clean:
 	-$(RM) $(TMS470_EXECUTABLE_OUTPUTS__QTD) "BOSS.out"
-	-$(RM) ".\Kernel\TestDriver.obj" ".\Kernel\TaskManagement\TaskManager.obj" ".\Kernel\TaskManagement\Task\Task.obj" ".\Kernel\TaskManagement\Task\TaskControlBlock.obj" ".\Kernel\TaskManagement\Scheduler\Scheduler.obj" ".\HAL\LED\HalLedDriver.obj" ".\HAL\LED\LED.obj" ".\Driver\LED\LEDDriver.obj" ".\Driver\Driver.obj" 
-	-$(RM) ".\Kernel\TestDriver.pp" ".\Kernel\TaskManagement\TaskManager.pp" ".\Kernel\TaskManagement\Task\Task.pp" ".\Kernel\TaskManagement\Task\TaskControlBlock.pp" ".\Kernel\TaskManagement\Scheduler\Scheduler.pp" ".\HAL\LED\HalLedDriver.pp" ".\HAL\LED\LED.pp" ".\Driver\LED\LEDDriver.pp" ".\Driver\Driver.pp" 
+	-$(RM) ".\main.obj" ".\Service\Service.obj" ".\Service\LED\LEDService.obj" ".\Kernel\TestDriver.obj" ".\Kernel\TaskManagement\TaskManager.obj" ".\Kernel\TaskManagement\Task\Task.obj" ".\Kernel\TaskManagement\Task\TaskControlBlock.obj" ".\Kernel\TaskManagement\Scheduler\Scheduler.obj" ".\HAL\Timer\HalInterruptDriver.obj" ".\HAL\Timer\HalTimerDriver.obj" ".\HAL\Timer\InterruptClass.obj" ".\HAL\Timer\TimerClass.obj" ".\HAL\LED\HalLedDriver.obj" ".\HAL\LED\LEDClass.obj" ".\Driver\LED\LEDDriver.obj" ".\Driver\Driver.obj" 
+	-$(RM) ".\main.pp" ".\Service\Service.pp" ".\Service\LED\LEDService.pp" ".\Kernel\TestDriver.pp" ".\Kernel\TaskManagement\TaskManager.pp" ".\Kernel\TaskManagement\Task\Task.pp" ".\Kernel\TaskManagement\Task\TaskControlBlock.pp" ".\Kernel\TaskManagement\Scheduler\Scheduler.pp" ".\HAL\Timer\HalInterruptDriver.pp" ".\HAL\Timer\HalTimerDriver.pp" ".\HAL\Timer\InterruptClass.pp" ".\HAL\Timer\TimerClass.pp" ".\HAL\LED\HalLedDriver.pp" ".\HAL\LED\LEDClass.pp" ".\Driver\LED\LEDDriver.pp" ".\Driver\Driver.pp" 
 	-@echo ' '
 
 .PHONY: all clean dependents

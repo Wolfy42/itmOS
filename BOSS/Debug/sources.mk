@@ -89,10 +89,13 @@ TMS470_EXECUTABLE_OUTPUTS__QTD :=
 # Every subdirectory with source files must be described here
 SUBDIRS := \
 . \
+Service \
+Service/LED \
 Kernel \
 Kernel/TaskManagement \
 Kernel/TaskManagement/Task \
 Kernel/TaskManagement/Scheduler \
+HAL/Timer \
 HAL/LED \
 Driver/LED \
 Driver \
