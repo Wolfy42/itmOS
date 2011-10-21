@@ -27,6 +27,9 @@ private:
 	
 	// Scheduler for deciding, which task is the CHOSEN ONE
 	Scheduler* scheduler;
+	
+	// this is the active Task - we need to save for later reuse
+	Task* activeTask;
 };
 
 #endif /*TASKMANAGER_H_*/

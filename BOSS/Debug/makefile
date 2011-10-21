@@ -17,6 +17,7 @@ $(GEN_CMDS_QUOTED) \
 "./Kernel/TaskManagement/Task/TaskControlBlock.obj" \
 "./Kernel/TaskManagement/Task/Task.obj" \
 "./Kernel/TaskManagement/TaskManager.obj" \
+"./Kernel/TestDriver.obj" \
 -l"libc.a" \
 "../beagle.cmd" \
 
@@ -28,6 +29,7 @@ RMDIR := RMDIR /S/Q
 # All of the sources participating in the build are defined here
 -include sources.mk
 -include subdir.mk
+-include Kernel/subdir.mk
 -include Kernel/TaskManagement/subdir.mk
 -include Kernel/TaskManagement/Task/subdir.mk
 -include Kernel/TaskManagement/Scheduler/subdir.mk
@@ -129,8 +131,8 @@ BOSS.out: $(OBJS) $(CMD_SRCS) $(GEN_CMDS)
 # Other Targets
 clean:
 	-$(RM) $(TMS470_EXECUTABLE_OUTPUTS__QTD) "BOSS.out"
-	-$(RM) ".\Kernel\TaskManagement\TaskManager.obj" ".\Kernel\TaskManagement\Task\Task.obj" ".\Kernel\TaskManagement\Task\TaskControlBlock.obj" ".\Kernel\TaskManagement\Scheduler\Scheduler.obj" ".\HAL\LED\HalLedDriver.obj" ".\HAL\LED\LED.obj" ".\Driver\LED\LEDDriver.obj" ".\Driver\Driver.obj" 
-	-$(RM) ".\Kernel\TaskManagement\TaskManager.pp" ".\Kernel\TaskManagement\Task\Task.pp" ".\Kernel\TaskManagement\Task\TaskControlBlock.pp" ".\Kernel\TaskManagement\Scheduler\Scheduler.pp" ".\HAL\LED\HalLedDriver.pp" ".\HAL\LED\LED.pp" ".\Driver\LED\LEDDriver.pp" ".\Driver\Driver.pp" 
+	-$(RM) ".\Kernel\TestDriver.obj" ".\Kernel\TaskManagement\TaskManager.obj" ".\Kernel\TaskManagement\Task\Task.obj" ".\Kernel\TaskManagement\Task\TaskControlBlock.obj" ".\Kernel\TaskManagement\Scheduler\Scheduler.obj" ".\HAL\LED\HalLedDriver.obj" ".\HAL\LED\LED.obj" ".\Driver\LED\LEDDriver.obj" ".\Driver\Driver.obj" 
+	-$(RM) ".\Kernel\TestDriver.pp" ".\Kernel\TaskManagement\TaskManager.pp" ".\Kernel\TaskManagement\Task\Task.pp" ".\Kernel\TaskManagement\Task\TaskControlBlock.pp" ".\Kernel\TaskManagement\Scheduler\Scheduler.pp" ".\HAL\LED\HalLedDriver.pp" ".\HAL\LED\LED.pp" ".\Driver\LED\LEDDriver.pp" ".\Driver\Driver.pp" 
 	-@echo ' '
 
 .PHONY: all clean dependents

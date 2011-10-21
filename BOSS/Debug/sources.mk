@@ -89,6 +89,7 @@ TMS470_EXECUTABLE_OUTPUTS__QTD :=
 # Every subdirectory with source files must be described here
 SUBDIRS := \
 . \
+Kernel \
 Kernel/TaskManagement \
 Kernel/TaskManagement/Task \
 Kernel/TaskManagement/Scheduler \

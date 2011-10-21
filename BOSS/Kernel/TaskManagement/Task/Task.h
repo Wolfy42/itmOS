@@ -16,7 +16,8 @@ public:
 	Task();
 	virtual ~Task();
 	
-private:
+/* probably this should be private and use getter and setter */
+
 	// id of task
 	TID_t id;
 	// name of task
@@ -28,6 +29,10 @@ private:
 	
 	// a task always have a Task Control Block
 	TaskControlBlock* tcb;
+	
+	// do we need a code segment?
+	// if not here's at least a link to the start function
+	void(*execute)(void);
 };
 
 #endif /*TASK_H_*/
