@@ -2,7 +2,7 @@
 
 #include "LEDDriver.h"
 
-LEDDriver::LEDDriver() {
+LEDDriver::LEDDriver(): Driver() {
 }
 
 LEDDriver::~LEDDriver() {
