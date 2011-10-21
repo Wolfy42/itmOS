@@ -1,7 +1,7 @@
 #include "HalTimerDriver.h"
 #include "../gpt.h"
 
-HalTimerDriver::HalTimerDriver(): m_timer1(GPTIMER1_BASE) {
+HalTimerDriver::HalTimerDriver(): m_timer1(GPTIMER2_BASE) {
 }
 
 HalTimerDriver::~HalTimerDriver() {

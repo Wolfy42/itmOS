@@ -25,62 +25,10 @@ LEDState LEDService::getLEDState(LED led) {
 	return (LEDState)_driver.read(position)[0];
 }
 
-byte* LEDService::readInput() {
-	// Dummy wait for input
-	static int run = 0;
-	byte result[2];
-	for (int i = 0; i < 100000; i++);
-	switch (run) {
-		case 0:
-			result[0] = (byte)LED1;
-			result[1] = (byte)SERVICE_GET_LED_STATUS;
-			break;
-		case 1:
-			result[0] = (byte)LED1;
-			result[1] = (byte)SERVICE_TOGGLE_LED;
-			break;
-		case 2:
-			result[0] = (byte)LED1;
-			result[1] = (byte)SERVICE_GET_LED_STATUS;
-			break;
-		case 3:
-			result[0] = (byte)LED1;
-			result[1] = (byte)SERVICE_SWITCH_LED_OFF;
-			break;
-		case 4:
-			result[0] = (byte)LED1;
-			result[1] = (byte)SERVICE_GET_LED_STATUS;
-			break;
-		case 5:
-			result[0] = (byte)LED2;
-			result[1] = (byte)SERVICE_GET_LED_STATUS;
-			break;
-		case 6:
-			result[0] = (byte)LED2;
-			result[1] = (byte)SERVICE_SWITCH_LED_ON;
-			break;
-		case 7:
-			result[0] = (byte)LED2;
-			result[1] = (byte)SERVICE_GET_LED_STATUS;
-			break;
-		case 8:
-			result[0] = (byte)LED2;
-			result[1] = (byte)SERVICE_SWITCH_LED_OFF;
-			break;
-		default:
-			result[0] = (byte)LED2;
-			result[1] = (byte)SERVICE_GET_LED_STATUS;
-			run = -1;
-			break;
-	}
-	run++;
-	byte* pointer = result;
-	return pointer;
-}
 void LEDService::start() {
 	_running = true;
 	while (_running) {
-		byte* cmd = readInput();
+		byte* cmd = readCommand();
 		LED led = (LED)cmd[0];
 		LEDServiceCommand command = (LEDServiceCommand)cmd[1];
 		switch (command) {
@@ -98,8 +46,8 @@ void LEDService::start() {
 				break;
 			case SERVICE_GET_LED_STATUS:
 				LEDState state = getLEDState(led);
-				// TODO give state back
-				printf("State of LED%i: %i\n", led+1, state);
+				byte result[] = {led, state};
+				writeResponse(result);
 				break;
 		}
 	}

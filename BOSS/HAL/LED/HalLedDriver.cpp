@@ -22,6 +22,8 @@ LEDClass HalLedDriver::ledClassForEnum(LED ledEnum) {
 	}
 }
 
+void HalLedDriver::init() {
+}
 void HalLedDriver::ledOn(LED led) {
 	ledClassForEnum(led).switchOn();
 }

@@ -8,6 +8,9 @@ LEDDriver::LEDDriver(): Driver() {
 LEDDriver::~LEDDriver() {
 }
 
+void LEDDriver::init() {
+	
+}
 void LEDDriver::write(byte value[]) {
 	LED led = (LED)value[0];
 	LEDCommand cmd = (LEDCommand)value[1];

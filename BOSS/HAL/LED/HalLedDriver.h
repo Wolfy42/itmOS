@@ -18,6 +18,7 @@ class HalLedDriver {
 		HalLedDriver();
 		virtual ~HalLedDriver();
 		
+		void init();
 		void ledOn(LED led);
 		void ledOff(LED led);
 		void toggle(LED led);
