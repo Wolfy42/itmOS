@@ -2,12 +2,12 @@
 #define TASKMANAGER_H_
 
 #include <list>
-
 #include "Task/Task.h"
 #include "Scheduler/Scheduler.h"
 
-class TaskManager
-{
+using namespace std;
+
+class TaskManager {
 public:
 	TaskManager();
 	virtual ~TaskManager();
@@ -21,15 +21,24 @@ public:
 	// schedules the next task
 	int scheduleTask();
 	
+	// getter/setter
+	list<Task*> getTasks() const { return _tasks; }
+	
+	Scheduler* getScheduler() const { return _scheduler; }
+	void setScheduler(Scheduler* scheduler) { _scheduler = scheduler; }
+	
+	Task* getActiveTask() const { return _activeTask; }
+	void setActiveTask(Task* activeTask) { _activeTask = activeTask; }
+	
 private:
 	// list of all tasks waiting to be executed
-	std::list<Task*> tasks;
+	list<Task*> _tasks;
 	
 	// Scheduler for deciding, which task is the CHOSEN ONE
-	Scheduler* scheduler;
+	Scheduler* _scheduler;
 	
 	// this is the active Task - we need to save for later reuse
-	Task* activeTask;
+	Task* _activeTask;
 };
 
 #endif /*TASKMANAGER_H_*/

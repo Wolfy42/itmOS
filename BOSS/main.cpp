@@ -8,7 +8,7 @@ void handler(int id) {
 	led.ledOff(LED2);	
 }
 
-int main()
+int main_t()
 {
 	printf("Hello main!");
 	
