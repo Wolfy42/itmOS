@@ -23,14 +23,23 @@ int main_t()
 {
 	printf("Hello main!");
 	
+    //switch off led1 for testing
 	HalLedDriver led;
 	led.ledOff(LED1);
+
+    //register SWI-Handler
+    *(unsigned int volatile *)0x4020FFE8= (unsigned int)&swiHandler;
+
+    //try to make an SWI
+    asm("  SWI 12 ");
+
 
 	// Try to register interrupt handler
 	//*(void**) 0x4020FFF8 = &handler;
 	//*(unsigned int volatile *)0x4020FFF8 = (unsigned int)&handler;
 
-	*(unsigned int volatile *)0x00000008 = (unsigned int)&swiHandler;
+	//*(unsigned int volatile *)0x00000008 = (unsigned int)&swiHandler;
+
 
 	//asm(
 	//	"  SWI 12 ;"
