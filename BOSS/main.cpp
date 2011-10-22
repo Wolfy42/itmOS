@@ -6,75 +6,64 @@
 void handler(int id) {
 	printf("bla %i", id);
 	HalLedDriver led;
-	led.ledOff(LED2);	
+	led.ledOff(LED2);
 }
+
+void swiHandler()  {
+	printf("swi occured");
+}
+
+//void __irq IRQ_Handler(void) {
+//	short vectNum;
+//	vectNum = NIVECSR >> 16;// determine highest pending normal interrupt
+//	vect_IRQ[vectNum](); // find the pointer to correct ISR in the look up table
+//}
 
 int main()
 {
 	printf("Hello main!");
 	
-	// 1. Program the MPU_INTC.INTCPS_SYSCONFIG register: If necessary, enable the interface clock
-	//    autogating by setting the AUTOIDLE bit.
+	HalLedDriver led;
+	led.ledOff(LED1);
 
-	//2. Program the MPU_INTC.INTCPS_IDLE register: If necessary, disable functional clock autogating or
-	//   enable synchronizer autogating by setting the FUNCIDLE bit or TURBO bit accordingly.
+	// Try to register interrupt handler
+	//*(void**) 0x4020FFF8 = &handler;
+	//*(unsigned int volatile *)0x4020FFF8 = (unsigned int)&handler;
 
-	//3. Program the MPU_INTC.INTCPS_ILRm register for each interrupt line: Assign a priority level and set
-	//   the FIQNFIQ bit for an FIQ interrupt (by default, interrupts are mapped to IRQ and priority is 0x0
-	//   [highest]).
+	*(unsigned int volatile *)0x00000008 = (unsigned int)&swiHandler;
 
-	//4. Program the MPU_INTC.INTCPS_MIRn register: Enable interrupts (by default, all interrupt lines are
-	//   masked).
+	//asm(
+	//	"  SWI 12 ;"
+	//);
 
-	//address mirn = (address)0x48200000;
+	//Start the timer
+	//HalTimerDriver dr;
 
-	address psqr = (address)0x600001D0;
-
-	printf("before: %x\n", *psqr);
-	//*psqr |= 0x1F;
-	//printf("after: %x\n", *psqr);
-
-
-
-	//printf("binary: %x\n",0b10000);
-
-	//*(volatile unsigned int*)0x48200000 = 0xFFFFFFFF;
-	//address prio = (address)0x4820004C;
-	//printf("prio: %x\n", *prio);
-
-//	printf("reset: %x\n", *mirn);
-
-	//*mirn |= 1;
-	//*mirn |= (1 << 2);
-
-	//printf("test: %x\n", *mirn);
-
-	//*mirn &= (0 << 7);
-	//int i = 0;
-	//while (i< 32)  {
-	//	*mirn &= ~(1 << i);
-	//	i++;
-	//}
-
-	//printf("register: %x\n", *mirn);
-
-
-	//address targe2t = (address)0x4820004C;
-	//printf("test: %x\n", *targe2t);
+	//Enable the interrupt for the timer
+	//address res = (address)0x482000C8;
+	//*res |= (1 << 6);
 	
-	//address target = (address)0x4831801C;//m_baseAddress + GPTIMER_TIER_OFFSET;
-	//*(target) &= 1;
-	
-	//i = 1;
-	
-	/*HalLedDriver led;
-	led.ledOff(LED1);	
-	
-	*(void**) 0x4020FFF8 = &handler;
-	HalTimerDriver dr;
-	
-	int i = 0;
-	while (i < 10000000);*/
+	//loop to wait for interrupt
+	int i=10;
+	while (1){}
+
+	while (i<1) {
+		i = 0;
+	}
 	
 	return 0;
 }
+
+
+// 1. Program the MPU_INTC.INTCPS_SYSCONFIG register: If necessary, enable the interface clock
+//    autogating by setting the AUTOIDLE bit.
+
+//2. Program the MPU_INTC.INTCPS_IDLE register: If necessary, disable functional clock autogating or
+//   enable synchronizer autogating by setting the FUNCIDLE bit or TURBO bit accordingly.
+
+//3. Program the MPU_INTC.INTCPS_ILRm register for each interrupt line: Assign a priority level and set
+//   the FIQNFIQ bit for an FIQ interrupt (by default, interrupts are mapped to IRQ and priority is 0x0
+//   [highest]).
+
+//4. Program the MPU_INTC.INTCPS_MIRn register: Enable interrupts (by default, all interrupt lines are
+//   masked).
