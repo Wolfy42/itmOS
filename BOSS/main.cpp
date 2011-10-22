@@ -19,7 +19,7 @@ void swiHandler()  {
 //	vect_IRQ[vectNum](); // find the pointer to correct ISR in the look up table
 //}
 
-int main()
+int main_t()
 {
 	printf("Hello main!");
 	
