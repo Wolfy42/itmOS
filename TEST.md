@@ -1,8 +1,8 @@
-UPDATE
+ UPDATE
 ======
 
 test
 ----
 
-*a
-*b
+* a
+* b
