@@ -31,9 +31,8 @@ int main_t()
     *(unsigned int volatile *)0x4020FFE8= (unsigned int)&swiHandler;
 
     //try to make an SWI
-    asm("  SWI 12 ");
-
-
+    //asm("  SWI 12 ");
+    
 	// Try to register interrupt handler
 	//*(void**) 0x4020FFF8 = &handler;
 	//*(unsigned int volatile *)0x4020FFF8 = (unsigned int)&handler;

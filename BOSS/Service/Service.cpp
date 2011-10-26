@@ -21,7 +21,7 @@ bool Service::restart() {
 	return run();
 }
 
-byte* Service::readCommand() {
+byte* Service::readCommand(int commandId) {
 	// Dummy wait for input
 	static int run = 0;
 	byte result[2];
