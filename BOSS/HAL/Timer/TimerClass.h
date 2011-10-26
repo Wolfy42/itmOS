@@ -7,8 +7,10 @@ class TimerClass {
 	private:
 		address m_baseAddress;
 		
+		void stopTimer();
+		void disableInterrupt();
 		void enableInterrupt();
-		void setOptionalFeatures();
+		void startTimerWithOptionalFeatures();
 		void setInternalCounter();
 		void setTimerLoadValues();
 		void setCompareValue();

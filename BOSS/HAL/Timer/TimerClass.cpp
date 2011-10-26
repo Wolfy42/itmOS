@@ -11,37 +11,47 @@ TimerClass::~TimerClass()
 }
 
 void TimerClass::init() {
-	enableInterrupt();
-	setOptionalFeatures();
+	disableInterrupt();
+	stopTimer();
 	setInternalCounter();
 	setTimerLoadValues();
 	setCompareValue();
+	enableInterrupt();
+	startTimerWithOptionalFeatures();
 }
 
-void TimerClass::enableInterrupt() {
-	address target = (address)0x4831801C;//m_baseAddress + GPTIMER_TIER_OFFSET;
-	*(target) |= 1; 
-	int i = 1;
+void TimerClass::disableInterrupt() {
+	address target = (address)0x4903201C;//m_baseAddress + GPTIMER_TIER_OFFSET;
+	*(target) &= 0; // set 0
 }
 
-void TimerClass::setOptionalFeatures() {
-	address target = (address)0x48318024;//m_baseAddress + GPTIMER_TIER_OFFSET;
-	*(target) |= 0x43;
-	int i = 1;
+void TimerClass::stopTimer() {
+	address target = (address)0x49032024;//m_baseAddress + GPTIMER_TCLR_OFFSET;
+	*(target) &= 0; 	// set 0
 }
 
 void TimerClass::setInternalCounter() {
-	address target = (address)0x48318028;//m_baseAddress + GPTIMER_TCRR_OFFSET;
-	*(target) &= 0;
-	int i = 1;
+	address target = (address)0x49032028;//m_baseAddress + GPTIMER_TCRR_OFFSET;
+	*(target) &= 0; // set 0
 }
 
 void TimerClass::setTimerLoadValues() {
-	address target = (address)0x4831802C;//m_baseAddress + GPTIMER_TLDR_OFFSET;
-	*(target) &= 0;
+	address target = (address)0x4903202C;//m_baseAddress + GPTIMER_TLDR_OFFSET;
+	*(target) &= 0; // set 0
 }
 
 void TimerClass::setCompareValue() {
-	address target = (address)0x48318038;//m_baseAddress + GPTIMER_TMAR_OFFSET;
-	*(target) |= 1;
+	address target = (address)0x49032038;//m_baseAddress + GPTIMER_TMAR_OFFSET;
+	*(target) &= 0; // set 0
+	*(target) |= 500; // set 500
+}
+
+void TimerClass::enableInterrupt() {
+	address target = (address)0x4903201C;//m_baseAddress + GPTIMER_TIER_OFFSET;
+	*(target) |= 1; // set 1
+}
+
+void TimerClass::startTimerWithOptionalFeatures() {
+	address target = (address)0x49032024;//m_baseAddress + GPTIMER_TCLR_OFFSET;
+	*(target) |= 0x43; 	// set 0100 0011
 }

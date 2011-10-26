@@ -5,8 +5,7 @@
 
 #include "../Task/Task.h"
 
-class Scheduler
-{
+class Scheduler {
 public:
 	Scheduler();
 	virtual ~Scheduler();

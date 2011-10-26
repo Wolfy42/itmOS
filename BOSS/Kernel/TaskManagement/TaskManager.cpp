@@ -2,8 +2,7 @@
 
 TaskManager::TaskManager()
 {
-	
-	scheduler = new Scheduler();
+	_scheduler = new Scheduler();
 }
 
 /**
@@ -17,14 +16,14 @@ TID_t TaskManager::createTask(void(*function)(void)) {
 	// TODO: missing TCB properties :)
 	
 	// create new Task
-	Task* newTask = new Task();
-	newTask->id = tasks.size();
-	newTask->status = Ready;
-	newTask->priority = 100;
-	newTask->execute = function;
+	Task* task = new Task();
+	task->setId(_tasks.size());
+	task->setStatus(Ready);
+	task->setPriority(100);
+	task->execute = function;
 
 	// add Task to list
-	tasks.push_back(newTask);
+	_tasks.push_back(task);
 
 	return -1;
 }
@@ -46,43 +45,44 @@ TID_t TaskManager::createTask(void(*function)(void)) {
 int TaskManager::scheduleTask() {
  	
  	// get index of next task
- 	Task* newTask = scheduler->getNextTask(tasks);
+ 	Task* nextTask = _scheduler->getNextTask(_tasks);
  	
  	// if there is no Task (loading)
- 	if (activeTask == NULL) {
+ 	if (_activeTask == NULL) {
  		
  		// execute next thread
- 		activeTask = newTask;
- 		activeTask->status = Running;
- 		activeTask->execute();	
+ 		_activeTask = nextTask;
+ 		_activeTask->setStatus(Running);
+ 		_activeTask->execute();	
  		
  	// check if this task is not already running
-	} else if (activeTask->id != newTask->id) {
+	} else if (_activeTask->getId() != nextTask->getId()) {
  		
  		// TODO: disable HW-Interrupts
  		
  		
  		// set active Task to ready
- 		activeTask->status = Ready;
+ 		_activeTask->setStatus(Ready);
  		
  		// TODO: save current execution state
  		
  		
  		// execute next thread
- 		activeTask = newTask;
- 		activeTask->status = Running;
- 		activeTask->execute();	
+ 		_activeTask = nextTask;
+ 		_activeTask->setStatus(Running);
+ 		_activeTask->execute();	
  		
  		// TODO: enable HW-Interrupts
  	
  	// continue the active Task
  	} else {
  		// TODO: execute is not enough
- 		activeTask->execute();	
+ 		_activeTask->execute();	
  	}
  	
 	// if a task is finished goto the next one
-	// TODO: delete finished Task
+	// TODO: delete finished Task by TID
+	_tasks.pop_front();
 	scheduleTask();
 
  	return 0;
