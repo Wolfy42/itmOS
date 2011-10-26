@@ -54,7 +54,7 @@ void LEDService::start() {
 }
 bool LEDService::stop() {
 	_running = false;
-	// TODO interrupt wait for input
+	// TODO interrupt reading
 	return true;
 }
 

@@ -75,5 +75,6 @@ byte* Service::readCommand() {
 }
 
 void Service::writeResponse(byte command[]) {
+	// Dummy output
 	printf("State of LED%i: %i\n", command[0]+1, command[1]);
 }
