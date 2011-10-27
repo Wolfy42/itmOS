@@ -49,6 +49,7 @@ int main()
 	// *(unsigned int volatile *)0x00000018 = (unsigned int)&irqHandler;
 
 
+    
 	// Try to register interrupt handler
 	//*(void**) 0x4020FFF8 = &handler;
 	//*(unsigned int volatile *)0x4020FFF8 = (unsigned int)&handler;

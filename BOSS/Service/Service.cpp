@@ -21,7 +21,7 @@ bool Service::restart() {
 	return run();
 }
 
-byte* Service::readCommand() {
+byte* Service::readCommand(int commandId) {
 	// Dummy wait for input
 	static int run = 0;
 	byte result[2];
@@ -75,5 +75,6 @@ byte* Service::readCommand() {
 }
 
 void Service::writeResponse(byte command[]) {
+	// Dummy output
 	printf("State of LED%i: %i\n", command[0]+1, command[1]);
 }

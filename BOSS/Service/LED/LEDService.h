@@ -3,6 +3,8 @@
 
 #include "../../Driver/LED/LEDDriver.h"
 #include "../Service.h"
+#include "../../API/serviceCalls.h"
+
 
 enum LEDServiceCommand {
 	SERVICE_TOGGLE_LED,

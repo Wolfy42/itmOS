@@ -28,7 +28,7 @@ LEDState LEDService::getLEDState(LED led) {
 void LEDService::start() {
 	_running = true;
 	while (_running) {
-		byte* cmd = readCommand();
+		byte* cmd = readCommand(LED_SERVICE_CALL);
 		LED led = (LED)cmd[0];
 		LEDServiceCommand command = (LEDServiceCommand)cmd[1];
 		switch (command) {
@@ -54,7 +54,7 @@ void LEDService::start() {
 }
 bool LEDService::stop() {
 	_running = false;
-	// TODO interrupt wait for input
+	// TODO interrupt reading
 	return true;
 }
 
