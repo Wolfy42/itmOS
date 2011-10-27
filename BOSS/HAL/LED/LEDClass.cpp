@@ -1,7 +1,7 @@
 #include "LEDClass.h"
 #include "../gpio.h"
 
-LEDClass::LEDClass(int regNumber): m_bitNumber(regNumber) {
+LEDClass::LEDClass(int bitNumber): m_bitNumber(bitNumber) {
 }
 
 LEDClass::~LEDClass()

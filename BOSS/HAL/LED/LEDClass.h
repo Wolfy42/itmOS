@@ -6,7 +6,7 @@ class LEDClass {
 		int m_bitNumber;
 	
 	public:
-		LEDClass(int regNumber);
+		LEDClass(int bitNumber);
 		virtual ~LEDClass();
 		
 		void toggle();
