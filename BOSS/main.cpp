@@ -9,6 +9,13 @@ void handler(int id) {
 	led.ledOff(LED2);
 }
 
+void  irqHandler()  {
+	printf("irq occured");
+	HalLedDriver led;
+	led.ledOff(LED2);
+}
+
+
 void swiHandler()  {
 	printf("swi occured");
 }
@@ -19,7 +26,7 @@ void swiHandler()  {
 //	vect_IRQ[vectNum](); // find the pointer to correct ISR in the look up table
 //}
 
-int main_t()
+int main()
 {
 	printf("Hello main!");
 	
@@ -28,10 +35,18 @@ int main_t()
 	led.ledOff(LED1);
 
     //register SWI-Handler
-    *(unsigned int volatile *)0x4020FFE8= (unsigned int)&swiHandler;
+   // *(unsigned int volatile *)0x4020FFE8= (unsigned int)&swiHandler;
 
     //try to make an SWI
-    asm("  SWI 12 ");
+    //asm("  SWI 12 ");
+
+	printf("%x", *(unsigned int volatile *)0x00000000);
+
+	// *(unsigned int volatile *)0x4020FFF8= (unsigned int)&irqHandler;
+	// *(unsigned int volatile *)0xFFFF0018 = (unsigned int)&irqHandler;
+	// *(unsigned int volatile *)0x4020FFDC = (unsigned int)&irqHandler;
+
+	// *(unsigned int volatile *)0x00000018 = (unsigned int)&irqHandler;
 
 
 	// Try to register interrupt handler
@@ -46,19 +61,19 @@ int main_t()
 	//);
 
 	//Start the timer
-	//HalTimerDriver dr;
+	HalTimerDriver dr;
 
 	//Enable the interrupt for the timer
 	//address res = (address)0x482000C8;
 	//*res |= (1 << 6);
 	
 	//loop to wait for interrupt
-	int i=10;
-	while (1){}
+	//int i=10;
+	//while (1){}
 
-	while (i<1) {
-		i = 0;
-	}
+	//while (i<1) {
+	//	i = 0;
+	//}
 	
 	return 0;
 }
