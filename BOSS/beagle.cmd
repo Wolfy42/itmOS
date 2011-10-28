@@ -16,7 +16,8 @@ MEMORY
 SECTIONS
 {
 
-
+	.intswi   > 0x4020ffc8 /*SWI*/
+	
    .const      > ext_ddr
    .bss        > ext_ddr
    .far        > ext_ddr
