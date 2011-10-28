@@ -25,6 +25,8 @@ int main()
 	
 	swi();
 
+	printf("swi finished!");
+
 
 	//_enable_interrupts( ) ;
 	//_disable_interrupts( ) ;
