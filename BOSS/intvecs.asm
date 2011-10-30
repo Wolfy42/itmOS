@@ -11,10 +11,6 @@
 	.global C_INTIRQ
 
 	.sect ".intswi"
-
 	B C_INTSWI ; software interrupt
-
 	.sect ".intirq"
-
 	B C_INTIRQ ; IRQ
-
