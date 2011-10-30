@@ -200,23 +200,18 @@ _c_int00: .asmfunc
 	.endif
 
         ;*------------------------------------------------------
-	;* SET TO USER MODE
+	;* SET TO Super-User MODE with IRQ and FIQ disabled
         ;*------------------------------------------------------
-;        MRS     r0, cpsr
-;        BIC     r0, r0, #0x1F  ; CLEAR MODES
-;        ORR     r0, r0, #0x10  ; SET USER MODE
-;        MSR     cpsr_cf, r0
-
-;*------------------------------------------------------
-;* SET TO SuperUser MODE
-;*------------------------------------------------------
-   MSR CPSR_c, #0x1F ; go to System mode, IRQ & FIQ enabled
+        MRS     r0, cpsr
+        BIC     r0, r0, #0x1F  ; CLEAR MODES
+        ORR     r0, r0, #0x1F  ; SET USER MODE
+        MSR     cpsr_cf, r0
 
         ;*------------------------------------------------------
         ;* INITIALIZE THE USER MODE STACK                      
         ;*------------------------------------------------------
 	LDR     sp, c_stack
-        LDR     r0, c_STACK_SIZE
+    LDR     r0, c_STACK_SIZE
 	ADD	sp, sp, r0
 
 	;*-----------------------------------------------------
@@ -292,6 +287,6 @@ _stkchk_called:
 	.global ARGS_MAIN_RTN
 	.global MAIN_FUNC_SP
 	.global	EXIT_RTN
-        .global __TI_auto_init
+    .global __TI_auto_init
 
 	.end
