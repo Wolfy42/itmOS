@@ -3,7 +3,6 @@
 #include "HAL/LED/HalLedDriver.h"
 #include "API/dataTypes.h"
 
-
 #pragma INTERRUPT (SWI) ;
 extern "C" void c_intSWI()  {
 	_disable_interrupts( ) ;
@@ -16,11 +15,13 @@ extern "C" void c_intSWI()  {
 
 #pragma INTERRUPT (IRQ) ;
 extern "C"  void c_intIRQ()  {
-	_disable_interrupts( ) ;
+	//_disable_interrupts( ) ;
 
-	printf("irq\n");
+	//printf("irq\n");
+	//HalLedDriver dr;
+	//dr.ledOff(LED1);
 
-	_enable_interrupts( ) ;
+	//_enable_interrupts( ) ;
 }
 
 #pragma SWI_ALIAS(48);
@@ -29,23 +30,26 @@ int swi ();
 int main()
 {
 	_disable_interrupts( ) ;
-	//swi();
+	swi();
 
 	//clear 0 -> 2
+	// --> Enable Interrupt from GPTIMER2
 	address clear1 = (address)0x482000A8;
 	*(clear1) |= (1 << 6);
 
+	_enable_interrupts( ) ;
 	HalTimerDriver dr;
 	// --> (*0x482000B8) --> man sieht dass bit auf 1 springt und somit sollte der Interrupt ausgelöst werden
 
-	printf("started looping\n");
-	_enable_interrupts( ) ;
 	int i = 0;
 	while (i<100000){
 		i++;
+		if (i%10000==0)  {
+			printf("%i\n",i);
+		}
 	}
 	_disable_interrupts();
-	printf("ended\n");
+	printf("end\n");
 	
 	return 0;
 }
