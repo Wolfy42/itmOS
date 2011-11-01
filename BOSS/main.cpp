@@ -3,34 +3,47 @@
 #include "HAL/LED/HalLedDriver.h"
 #include "API/dataTypes.h"
 
+#pragma SWI_ALIAS(48);
+int swi ();
+
 #pragma INTERRUPT (SWI) ;
 extern "C" void c_intSWI()  {
-	_disable_interrupts( ) ;
+	//_disable_interrupts( ) ;
 
-	printf("swi\n");
+	//printf("swi\n");
 
-	_enable_interrupts( ) ;
+	//address target = (address)0x4903201C;//m_baseAddress + GPTIMER_TIER_OFFSET;
+	//*(target) &= 0; // set 0 to disable interrupts
+
+	//_enable_interrupts( ) ;
+
+	//asm("	MOVS PC, R14 ;");
 }
 
 
 #pragma INTERRUPT (IRQ) ;
 extern "C"  void c_intIRQ()  {
-	//_disable_interrupts( ) ;
 
-	//printf("irq\n");
-	//HalLedDriver dr;
-	//dr.ledOff(LED1);
+	// Set Super-User Mode
+	asm("	MRS     r0, cpsr ;");
+	asm("	ORR     r0, r0, #0x1F  ;");
+	asm("	MSR     cpsr_cf, r0 ;");
 
-	//_enable_interrupts( ) ;
+	HalLedDriver dr;
+	dr.toggle(LED1);
+
+	address irqNrAddr = (address)0x48200040;
+	int irqNr = *(irqNrAddr);
+	printf("irq: %i\n",irqNr);
+
+	address target = (address)0x49032018;// GPTIMER2 -> PendingIRQs
+	*(target) |= 0x7; // reset GPTimer2 - IRQs
 }
-
-#pragma SWI_ALIAS(48);
-int swi ();
 
 int main()
 {
-	_disable_interrupts( ) ;
-	swi();
+	//_disable_interrupts( ) ;
+	//swi();
 
 	//clear 0 -> 2
 	// --> Enable Interrupt from GPTIMER2
@@ -44,9 +57,6 @@ int main()
 	int i = 0;
 	while (i<100000){
 		i++;
-		if (i%10000==0)  {
-			printf("%i\n",i);
-		}
 	}
 	_disable_interrupts();
 	printf("end\n");
