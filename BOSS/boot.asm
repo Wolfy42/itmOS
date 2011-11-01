@@ -204,7 +204,7 @@ _c_int00: .asmfunc
         ;*------------------------------------------------------
         MRS     r0, cpsr
         BIC     r0, r0, #0x1F  ; CLEAR MODES
-        ORR     r0, r0, #0x1F  ; SET USER MODE
+        ORR     r0, r0, #0x1F  ; SET Super-User MODE
         MSR     cpsr_cf, r0
 
         ;*------------------------------------------------------
