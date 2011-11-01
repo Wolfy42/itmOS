@@ -3,66 +3,92 @@
 #include "HAL/LED/HalLedDriver.h"
 #include "API/dataTypes.h"
 
-void handler(int id) {
-	printf("bla %i", id);
-	HalLedDriver led;
-	led.ledOff(LED2);
+#pragma SWI_ALIAS(48);
+int swi ();
+
+#pragma INTERRUPT (SWI) ;
+extern "C" void c_intSWI()  {
+	//_disable_interrupts( ) ;
+
+	//printf("swi\n");
+
+	//address target = (address)0x4903201C;//m_baseAddress + GPTIMER_TIER_OFFSET;
+	//*(target) &= 0; // set 0 to disable interrupts
+
+	//_enable_interrupts( ) ;
+
+	//asm("	MOVS PC, R14 ;");
 }
 
-void swiHandler()  {
-	printf("swi occured");
+
+#pragma INTERRUPT (IRQ) ;
+extern "C"  void c_intIRQ()  {
+
+	// Set Super-User Mode
+	asm("	MRS     r0, cpsr ;");
+	asm("	ORR     r0, r0, #0x1F  ;");
+	asm("	MSR     cpsr_cf, r0 ;");
+
+	HalLedDriver dr;
+	dr.toggle(LED1);
+
+	address irqNrAddr = (address)0x48200040;
+	int irqNr = *(irqNrAddr);
+	printf("irq: %i\n",irqNr);
+
+	address target = (address)0x49032018;// GPTIMER2 -> PendingIRQs
+	*(target) |= 0x7; // reset GPTimer2 - IRQs
 }
 
-//void __irq IRQ_Handler(void) {
-//	short vectNum;
-//	vectNum = NIVECSR >> 16;// determine highest pending normal interrupt
-//	vect_IRQ[vectNum](); // find the pointer to correct ISR in the look up table
-//}
-
-int main_t()
+int main()
 {
-	printf("Hello main!");
-	
-    //switch off led1 for testing
-	HalLedDriver led;
-	led.ledOff(LED1);
+	//_disable_interrupts( ) ;
+	//swi();
 
-    //register SWI-Handler
-    *(unsigned int volatile *)0x4020FFE8= (unsigned int)&swiHandler;
+	//clear 0 -> 2
+	// --> Enable Interrupt from GPTIMER2
+	address clear1 = (address)0x482000A8;
+	*(clear1) |= (1 << 6);
 
-    //try to make an SWI
-    //asm("  SWI 12 ");
-    
-	// Try to register interrupt handler
-	//*(void**) 0x4020FFF8 = &handler;
-	//*(unsigned int volatile *)0x4020FFF8 = (unsigned int)&handler;
+	_enable_interrupts( ) ;
+	HalTimerDriver dr;
+	// --> (*0x482000B8) --> man sieht dass bit auf 1 springt und somit sollte der Interrupt ausgelöst werden
 
-	//*(unsigned int volatile *)0x00000008 = (unsigned int)&swiHandler;
-
-
-	//asm(
-	//	"  SWI 12 ;"
-	//);
-
-	//Start the timer
-	//HalTimerDriver dr;
-
-	//Enable the interrupt for the timer
-	//address res = (address)0x482000C8;
-	//*res |= (1 << 6);
-	
-	//loop to wait for interrupt
-	int i=10;
-	while (1){}
-
-	while (i<1) {
-		i = 0;
+	int i = 0;
+	while (i<100000){
+		i++;
 	}
+	_disable_interrupts();
+	printf("end\n");
 	
 	return 0;
 }
 
+//----------------------------Timer step by step--------------------------------
+/*address target = (address)0x4903201C;//m_baseAddress + GPTIMER_TIER_OFFSET;
+*(target) &= 0; // set 0 to disable interrupts
+address target2 = (address)0x49032024;//m_baseAddress + GPTIMER_TCLR_OFFSET;
+*(target2) &= 0; 	// set 0 to stop timer
+address target3 = (address)0x49032028;//m_baseAddress + GPTIMER_TCRR_OFFSET;
+*(target3) &= 0; // set 0 to set internal counter
+address target4 = (address)0x4903202C;//m_baseAddress + GPTIMER_TLDR_OFFSET;
+*(target4) &= 0; // set 0 to set timer load values
+address target5 = (address)0x49032038;//m_baseAddress + GPTIMER_TMAR_OFFSET;
+*(target5) &= 0; // set 0
+*(target5) |= 100; // set 500 to set compare values
+address target6 = (address)0x4903201C;//m_baseAddress + GPTIMER_TIER_OFFSET;
+*(target6) |= 0x1; // set 1 to enable interrupt
+address target7 = (address)0x49032024;//m_baseAddress + GPTIMER_TCLR_OFFSET;
+*(target7) |= 0x43; 	// set 0100 0011 to start timer with opt features //2B ist default?*/
 
+//--------------------Test ob Moduel Power on hat (ist on)-------------------------
+// PM_PWSTST_PER   0x4830 70E4   POWERSTATEST
+// -> GPTIMER 2 hängt an PER
+// -> 0x1: PER domain logic is ON
+// -> 0x3: Power domain is ON
+// ---> Modul hat Power ON
+
+//---------------------HowTo Interrupts-----------------------------------------------------------
 // 1. Program the MPU_INTC.INTCPS_SYSCONFIG register: If necessary, enable the interface clock
 //    autogating by setting the AUTOIDLE bit.
 
