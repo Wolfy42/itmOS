@@ -5,15 +5,15 @@
 
 #define USER_BUTTON_PIN 7
 
-class HALButtonDriver {
+class HalButtonDriver {
     private:
         ButtonClass m_userButton;
         
     public:
-    	HALButtonDriver();
-    	virtual ~HALButtonDriver();
+    	HalButtonDriver();
+    	virtual ~HalButtonDriver();
         
-        unsigned int isPressed();
+        bool isPressed();
 };
 
 #endif /*HALBUTTONDRIVER_H_*/

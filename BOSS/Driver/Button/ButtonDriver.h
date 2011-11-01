@@ -1,9 +1,12 @@
 #ifndef BUTTONDRIVER_H_
 #define BUTTONDRIVER_H_
 
+#include "../../HAL/Button/HalButtonDriver.h"
 #include "../Driver.h"
 
 class ButtonDriver : public Driver {
+    private:
+        HalButtonDriver m_halDriver;
     public:
     	ButtonDriver();
     	virtual ~ButtonDriver();

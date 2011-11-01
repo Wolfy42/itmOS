@@ -38,6 +38,4 @@
 #define GPIO_DATAIN_GPIO5 (address) 0x49056038
 #define GPIO_DATAIN_GPIO6 (address) 0x49058038
 
-#define GPIO_IRQENABLE1_GPIO1 (address) 0x4831001C
-
 #endif /*GPIO_H_*/
