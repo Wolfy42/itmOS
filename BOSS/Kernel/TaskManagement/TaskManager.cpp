@@ -6,15 +6,13 @@
 #pragma INTERRUPT (SWI) ;
 extern "C" void c_intSWI()  {
 
-	save(registers);
+//	save(registers);
 }
 
 
-// save stackpointer
-asm("\t .bss _stackPointer, 64");
-asm("\t .global _stackPointer");
-
-
+/**
+ * Constructor
+ */
 TaskManager::TaskManager() {
 	_scheduler = new Scheduler();
 	_activeTask = NULL;
@@ -64,7 +62,7 @@ Task* TaskManager::createTask(void(*function)(void)) {
 int TaskManager::deleteTask(Task* task) {
 
 	// remove it from the list and from the tids array
-	for (list<Task*>::const_iterator iterator = _tasks.begin(); iterator != _tasks.end(); ++iterator) {
+	for (std::list<Task*>::const_iterator iterator = _tasks.begin(); iterator != _tasks.end(); ++iterator) {
 		if ( (*iterator)->id == task->id ) {
 			_tasks.remove(task);
 			_tids[(*iterator)->id - 1] = 0;
@@ -105,8 +103,7 @@ void TaskManager::schedule() {
   *
   *
   */
-asm("\t .bss _registers, 64");
-asm("\t .global _registers");
+
 void save(int* regs) {
 	
 	asm("\t STR r0, [sp, #0]");
