@@ -3,7 +3,7 @@
 
 #define REG_LENGTH 16
 
-#include "../../../API/datatypes.h"
+#include "../../../API/dataTypes.h"
 #include <string>
 
 typedef int TID_t;
