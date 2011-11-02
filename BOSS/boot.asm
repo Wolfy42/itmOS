@@ -200,6 +200,17 @@ _c_int00: .asmfunc
 	.endif
 
         ;*------------------------------------------------------
+		;* SET TO IRQ MODE with IRQ and FIQ disabled
+        ;*------------------------------------------------------
+        MRS     r0, cpsr
+        BIC     r0, r0, #0x1F  ; CLEAR MODES
+        ORR     r0, r0, #0x12  ; SET IRQ MODE
+        MSR     cpsr_cf, r0
+
+		;/* set sp for IRQ
+		LDR     sp, c_r13_irq
+
+        ;*------------------------------------------------------
 	;* SET TO Super-User MODE with IRQ and FIQ disabled
         ;*------------------------------------------------------
         MRS     r0, cpsr
@@ -260,6 +271,7 @@ L1:     B	L1
 c_stack		.long    __stack
 c_STACK_SIZE  	.long    __STACK_SIZE
 c_mf_sp	        .long    MAIN_FUNC_SP
+c_r13_irq		.long    0x8200C100
 
 	.if __TI_EABI_ASSEMBLER
         .data
