@@ -1,5 +1,6 @@
 #include "TaskManager.h"
 
+
 TaskManager::TaskManager()
 {
 	_scheduler = new Scheduler();
@@ -11,21 +12,17 @@ TaskManager::TaskManager()
  */
 TID_t TaskManager::createTask(void(*function)(void)) {
 	
-	// create a Task Control Block, which is needed by the Task
-	TaskControlBlock* newTCB = new TaskControlBlock();
-	// TODO: missing TCB properties :)
-	
 	// create new Task
 	Task* task = new Task();
-	task->setId(_tasks.size());
-	task->setStatus(Ready);
-	task->setPriority(100);
-	task->execute = function;
+	task->id = _tasks.size();
+	task->status = Ready;
+	task->priority = 100;
+	task->initAddr = function;
 
 	// add Task to list
 	_tasks.push_back(task);
 
-	return -1;
+	return task->id;
 }
 
 /**
@@ -37,7 +34,7 @@ TID_t TaskManager::createTask(void(*function)(void)) {
  	// TODO: implement delete Task
  	return 0;
  }
- 
+
  /**
   * scheduleTask
   * starts the task which is next in row
@@ -52,39 +49,74 @@ int TaskManager::scheduleTask() {
  		
  		// execute next thread
  		_activeTask = nextTask;
- 		_activeTask->setStatus(Running);
- 		_activeTask->execute();	
+ 		_activeTask->status = Running;
+ 		_activeTask->initAddr();	
  		
  	// check if this task is not already running
-	} else if (_activeTask->getId() != nextTask->getId()) {
+	} else if (_activeTask->id != nextTask->id) {
  		
  		// TODO: disable HW-Interrupts
  		
  		
  		// set active Task to ready
- 		_activeTask->setStatus(Ready);
+ 		_activeTask->status = Ready;
  		
+ 	//	saveContext(_activeTask->registers);
  		// TODO: save current execution state
+// 		asm(  
+//	 		"    mov r0, #(5 << 5)                        \n"    \
+//	        "    msr basepri, r0                            \n" \
+//	        ::"i"(i):"r0" 
+//        );
+		//int value = 0;
+		// int gvar;	long long i[32] = {0};
+	//	asm("\t load R13, R1");
+	//	asm("\t STR R3, [#00x82000000, 0]");
+		//asm ("\t mov %0, r0" : "=r"(i));
+		//extern int var;
+		
+//		asm("\t .bss _var,4,4" \
+//				"\t .global _var" \
+//				"\t mov _var, r0");
+// 		
+
+	SAVEREG
+	
+	LOADREG
+	
+
+
+
+// 		save_reg();
  		
- 		
+	//	int j = 0;
+		printf("gvar0: %i\n", reg_state[0]);
+		printf("gvar1: %i\n", reg_state[1]);
+
  		// execute next thread
  		_activeTask = nextTask;
- 		_activeTask->setStatus(Running);
- 		_activeTask->execute();	
+ 		_activeTask->status = Running;
+ 		_activeTask->initAddr();	
  		
  		// TODO: enable HW-Interrupts
  	
  	// continue the active Task
  	} else {
- 		// TODO: execute is not enough
- 		_activeTask->execute();	
+ 		
+		/* Return from the interrupt. If a context 
+		switch has occurred this will return to a 
+		different task. */ 
+		//asm ( " RET " ); 
+ 		
+ 		// do nothing it will go automatically back to the running function
+ 		return 0;
  	}
- 	
+
 	// if a task is finished goto the next one
 	// TODO: delete finished Task by TID
 	_tasks.pop_front();
+//	_activeTask = NULL;
 	scheduleTask();
-
  	return 0;
  }
 

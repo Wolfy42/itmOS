@@ -80,4 +80,11 @@
 		<nature>org.eclipse.cdt.core.ccnature</nature>
 		<nature>org.eclipse.cdt.managedbuilder.core.ScannerConfigNature</nature>
 	</natures>
+	<linkedResources>
+		<link>
+			<name>Simulator.ccxml</name>
+			<type>1</type>
+			<location>C:/Users/root/user/CCSTargetConfigurations/Simulator.ccxml</location>
+		</link>
+	</linkedResources>
 </projectDescription>

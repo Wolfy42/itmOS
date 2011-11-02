@@ -17,8 +17,6 @@ extern "C" void c_intSWI()  {
 
 	//_enable_interrupts( ) ;
 
-	//asm("	MOVS PC, R14 ;");
-}
 
 
 #pragma INTERRUPT (IRQ) ;
@@ -29,8 +27,8 @@ extern "C"  void c_intIRQ()  {
 	asm("	ORR     r0, r0, #0x1F  ;");
 	asm("	MSR     cpsr_cf, r0 ;");
 
-	HalLedDriver dr;
-	dr.toggle(LED1);
+	//HalLedDriver dr;
+	//dr.toggle(LED1);
 
 	address irqNrAddr = (address)0x48200040;
 	int irqNr = *(irqNrAddr);
@@ -38,6 +36,19 @@ extern "C"  void c_intIRQ()  {
 
 	address target = (address)0x49032018;// GPTIMER2 -> PendingIRQs
 	*(target) |= 0x7; // reset GPTimer2 - IRQs
+
+	//reset irq
+	address intcps_control = (address)0x48200048;
+	*(intcps_control ) |= 0x1;
+
+	// Set back to IRQ Mode
+	asm("	MRS     r0, cpsr ;");
+	asm("	ORR     r0, r0, #0x12  ;");
+	asm("	MSR     cpsr_cf, r0 ;");
+
+	//TODO: Jump back to main
+
+
 }
 
 int main()
