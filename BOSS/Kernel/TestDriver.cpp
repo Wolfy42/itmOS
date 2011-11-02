@@ -10,7 +10,7 @@ void task1() {
 	for (int i = 0; i < 5; i++) {
 		
 		printf("task1\n");	
-		swift();
+		swi();
 	}	
 }
 
@@ -19,11 +19,11 @@ void task2() {
 	for (int i = 0; i < 5; i++) {
 		
 		printf("task2\n");	
-		swift();
+		swi();
 	}	
 }
 
-int main_() {
+int main() {
 	// create some tasks
 	TaskManager* manager = new TaskManager();
 	manager->createTask(task1);

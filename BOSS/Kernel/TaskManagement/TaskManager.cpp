@@ -3,9 +3,16 @@ TaskManager* tmanager;
 
 //#pragma INTERRUPT (SWI) ;
 
-void swift()  {
-	tmanager->scheduleTask();
+#pragma INTERRUPT (SWI) ;
+extern "C" void c_intSWI()  {
+
+	save(registers);
 }
+
+
+// save stackpointer
+asm("\t .bss _stackPointer, 64");
+asm("\t .global _stackPointer");
 
 
 TaskManager::TaskManager()
@@ -13,6 +20,8 @@ TaskManager::TaskManager()
 	_scheduler = new Scheduler();
 	_activeTask = NULL;
 	tmanager = this;
+	
+	asm("\t STR r0, [sp, #0]");
 }
 
 /**
@@ -27,6 +36,7 @@ TID_t TaskManager::createTask(void(*function)(void)) {
 	task->status = Ready;
 	task->priority = 100;
 	task->initAddr = function;
+	//task->stackPointer = 0x82000000;
 
 	// add Task to list
 	_tasks.push_back(task);

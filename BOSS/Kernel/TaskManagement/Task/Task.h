@@ -3,9 +3,8 @@
 
 #define REG_LENGTH 16
 
+#include "../../../API/datatypes.h"
 #include <string>
-
-using namespace std;
 
 typedef int TID_t;
 
@@ -25,11 +24,14 @@ public:
 	// id of task
 	TID_t id;
 	// name of task
-	string name;
+	std::string name;
 	// status of task
 	Status status;
 	// priority of task (from 0 to 20 -> higher = more important)
 	int priority;
+	
+	// stackpointer
+	int stackPointer;
 		
 	// registers
 	int registers[REG_LENGTH];

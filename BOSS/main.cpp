@@ -3,14 +3,14 @@
 #include "HAL/LED/HalLedDriver.h"
 #include "API/dataTypes.h"
 
-#pragma SWI_ALIAS(48);
-int swi ();
-
-#pragma INTERRUPT (SWI) ;
-extern "C" void c_intSWI()  {
-
-
-}
+//#pragma SWI_ALIAS(48);
+//int swi ();
+//
+//#pragma INTERRUPT (SWI) ;
+//extern "C" void c_intSWI()  {
+//
+//
+//}
 
 #pragma INTERRUPT (IRQ) ;
 extern "C"  void c_intIRQ()  {
@@ -47,7 +47,7 @@ extern "C"  void c_intIRQ()  {
 int main____________()
 {
 	//_disable_interrupts( ) ;
-	swi();
+	//swi();
 
 	//clear 0 -> 2
 	// --> Enable Interrupt from GPTIMER2

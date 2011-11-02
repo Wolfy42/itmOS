@@ -10,18 +10,15 @@
 
 using namespace std;
 
-
-
-extern "C" {
-	
-	//#pragma SWI_ALIAS(48);
-	void swift ();
-	
-}
 extern int registers[16];
-extern int return_register;
-extern int stack_pointer;
 
+#pragma SWI_ALIAS(48);
+int swi ();
+
+void save(int* regs);
+
+
+extern int stackPointer;
 
 
 class TaskManager {
