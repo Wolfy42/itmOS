@@ -16,7 +16,6 @@ extern "C" void c_intSWI()  {
 	//*(target) &= 0; // set 0 to disable interrupts
 
 	//_enable_interrupts( ) ;
-
 }
 
 #pragma INTERRUPT (IRQ) ;

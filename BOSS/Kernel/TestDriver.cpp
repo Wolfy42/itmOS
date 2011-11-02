@@ -22,7 +22,6 @@ void task2() {
 }
 
 int main_() {
-
 	// create some tasks
 	TaskManager* manager = new TaskManager();
 	manager->createTask(task1);
