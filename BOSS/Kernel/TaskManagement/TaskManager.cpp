@@ -50,8 +50,15 @@ TID_t TaskManager::createTask(void(*function)(void)) {
  */
  int TaskManager::deleteTask(TID_t id) {
  	
- 	// TODO: implement delete Task
- 	return 0;
+	 for (list<Task*>::iterator it = _tasks.begin(); it != _tasks.end(); ++it) {
+		 if ((*it)->id == id ) {
+			 _tasks.remove(*it);
+			 return 0;
+		 }
+	 }
+
+	 // task not found
+	 return -1;
  }
 
  /**

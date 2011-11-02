@@ -17,16 +17,10 @@ int swi ();
 
 void save(int* regs);
 
-
 extern int stackPointer;
-
 
 class TaskManager {
 public:
-
-
-
-
 	TaskManager();
 	virtual ~TaskManager();
 	

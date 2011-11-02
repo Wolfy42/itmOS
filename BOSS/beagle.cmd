@@ -1,5 +1,5 @@
 ////////////////////////////////////////////////////////
-// Linker command file for BeagleBoard)
+// Linker command file for BeagleBoard
 // 
 // Basic configuration using only external memory
 //
