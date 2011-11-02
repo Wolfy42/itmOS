@@ -1,7 +1,7 @@
 #ifndef BUTTONDRIVER_H_
 #define BUTTONDRIVER_H_
 
-#include "../../HAL/Button/HalButtonDriver.h"
+#include "../../HAL/Button/HALButtonDriver.h"
 #include "../Driver.h"
 
 class ButtonDriver : public Driver {
@@ -10,7 +10,7 @@ class ButtonDriver : public Driver {
     public:
     	ButtonDriver();
     	virtual ~ButtonDriver();
-        
+
         virtual void init();
         virtual void write(byte value[]);
         virtual byte* read(byte position[]);
