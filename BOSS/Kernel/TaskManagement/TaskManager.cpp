@@ -1,66 +1,112 @@
 #include "TaskManager.h"
-TaskManager* tmanager;
 
-//#pragma INTERRUPT (SWI) ;
+// global variables
+asm("\t .bss _stack_pointer, 4");
+asm("\t .bss _func_pointer, 4");
+asm("\t .global _stack_pointer");
+asm("\t .global _func_pointer");
+
 
 #pragma INTERRUPT (SWI) ;
 extern "C" void c_intSWI()  {
 
-	save(registers);
+//	save(registers);
 }
 
 
-// save stackpointer
-asm("\t .bss _stackPointer, 64");
-asm("\t .global _stackPointer");
-
-
-TaskManager::TaskManager()
-{
+/**
+ * Constructor
+ */
+TaskManager::TaskManager() {
 	_scheduler = new Scheduler();
 	_activeTask = NULL;
-	tmanager = this;
-	
-	asm("\t STR r0, [sp, #0]");
+
+	// initialize task ids
+	for (int i = 0; i < MAX_TASKS; i++) {
+		_tids[i] = 0;
+	}
 }
 
 /**
  * createTask
  * creates a new Task and sets it status to READY
  */
-TID_t TaskManager::createTask(void(*function)(void)) {
+Task* TaskManager::createTask(void(*function)(void)) {
 	
-	// create new Task
-	Task* task = new Task();
-	task->id = _tasks.size();
-	task->status = Ready;
-	task->priority = 100;
-	task->initAddr = function;
-	//task->stackPointer = 0x82000000;
+	Task* task = NULL;
+	TID_t tid = getNextTaskID();
 
-	// add Task to list
-	_tasks.push_back(task);
+	// check if there is a free task id -> lol should never happen!
+	if (tid > 0) {
+		// create new Task
+		task = new Task(tid);
+		task->status = Ready;
+		task->priority = 100;
+		task->initAddr = function;
+		//task->stackPointer = 0x82000000;
+	
+		// add Task to list
+		_tasks.push_back(task);
+		
+		// if there is no task - run it right now
+		if (_activeTask == NULL) {
 
-	return task->id;
+			_activeTask = task;
+		}
+	}
+
+	return task;
 }
 
 /**
  * deleteTask
  * removes a existings Task from the ProcessList
  */
- int TaskManager::deleteTask(TID_t id) {
+int TaskManager::deleteTask(Task* task) {
+
+	// remove it from the list and from the tids array
+	for (std::list<Task*>::const_iterator iterator = _tasks.begin(); iterator != _tasks.end(); ++iterator) {
+		if ( (*iterator)->id == task->id ) {
+			_tasks.remove(task);
+			_tids[(*iterator)->id - 1] = 0;
+			return 0;
+		}
+	}
  	
- 	// TODO: implement delete Task
- 	return 0;
- }
+	return -1;
+}
+ 
+/*
+ * schedule
+ * this routine should be called by the IRQ?
+ * 
+ */
+void TaskManager::schedule() {
+	
+	// SAVEREG
+		// this -> save register in active stack
+		
+	// change stack to main stack
+	
+	// check if its different task
+		// do this with scheduler
+	
+	// if it is different load
+	
+		// change stack to new active stack
+		// LOADREG
+	
+	// else if its the same:
+		// RETURN to return-address	
+
+}
 
  /**
   * HILFE HILFE C-Funktion 
   *
   *
   */
-asm("\t .bss _registers, 64");
-asm("\t .global _registers");
+
 void save(int* regs) {
 	
 	asm("\t STR r0, [sp, #0]");
@@ -105,62 +151,68 @@ void load(int* regs) {
 }
 
  /**
-  * scheduleTask
-  * starts the task which is next in row
+  * run
+  * run over and over again and try to get new tasks
+  * -> lol at this "over and over" comment!
   */
-int TaskManager::scheduleTask() {
+void TaskManager::run() {
  	
- 	// get index of next task
- 	Task* nextTask = _scheduler->getNextTask(_tasks);
- 	
- 	// if there is no Task (loading)
- 	if (_activeTask == NULL) {
- 		
- 		// execute next thread
- 		_activeTask = nextTask;
- 		_activeTask->status = Running;
- 		_activeTask->initAddr();	
- 		
- 	// check if this task is not already running
- 	
- 	// HACK == =>>> back to !=
-	} else if (_activeTask->id == nextTask->id) {
- 		
- 		// TODO: disable HW-Interrupts
- 		
- 		// set active Task to ready
- 		_activeTask->status = Ready;
- 		save(registers);
- 		
- 		// execute next thread
- 		_activeTask = nextTask;
- 		
- 		_activeTask->status = Running;
- 		//_activeTask->initAddr();
- 		load(registers);	
- 		
- 		// TODO: enable HW-Interrupts
- 	
- 	// continue the active Task
- 	} else {
- 		
-		/* Return from the interrupt. If a context 
-		switch has occurred this will return to a 
-		different task. */ 
-		//asm ( " RET " ); 
- 		
- 		// do nothing it will go automatically back to the running function
- 		return 0;
+ 	while (true) {
+		if (_activeTask == NULL) {
+			
+			// TODO: SYSTEM ERROR
+			// or just wait :)
+		} else {
+		
+			_activeTask = _scheduler->getNextTask(_tasks);
+			
+			// first time we start this task
+			if (_activeTask->hasBeenStarted == false) {
+				
+				// run it from the beginning
+				_activeTask->initAddr();
+			
+			// otherwise return from last point
+			} else {
+			
+				// save my stack pointer
+				
+				// set the stack pointer of nextTask to active
+					// LOAD the register (pop sp)
+					
+				// run from program counter
+			}
+		}
+		
+		// there are two reasons why we are here:
+			// 1. no Task running at all
+			// 2. the Task has finished and is ready to die
+		if (_activeTask != NULL) {
+		
+			deleteTask(_activeTask);
+			_activeTask = _scheduler->getNextTask(_tasks);	
+		}
  	}
+}
 
-	// if a task is finished goto the next one
-	// TODO: delete finished Task by TID
-	_tasks.pop_front();
-//	_activeTask = NULL;
-	scheduleTask();
- 	return 0;
- }
+/*
+ * returns the next task ID or -1 if there is no free TID available (lol :=)
+ */
+TID_t TaskManager::getNextTaskID() {
 
-TaskManager::~TaskManager()
-{
+	for (int i = 0; i < MAX_TASKS; i++) {
+		if (_tids[i] == 0) {
+			_tids[i] = 1;
+			return i + 1;
+		}
+	}
+
+	// too many tasks are already inserted
+	return -1;
+}
+
+TaskManager::~TaskManager(){
+
+	delete _scheduler;
+	delete [] _tids;
 }

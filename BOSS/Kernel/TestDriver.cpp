@@ -3,9 +3,7 @@
 
 #include "TaskManagement/TaskManager.h"
 
-
-
-void task1() {
+void task1function() {
 
 	for (int i = 0; i < 5; i++) {
 		
@@ -14,7 +12,7 @@ void task1() {
 	}	
 }
 
-void task2() {
+void task2function() {
 
 	for (int i = 0; i < 5; i++) {
 		
@@ -23,14 +21,37 @@ void task2() {
 	}	
 }
 
+void task3function() {
+
+	for (int i = 0; i < 5; i++) {
+
+		printf("task3\n");
+		swi();
+	}
+}
+
+void task4function() {
+
+	for (int i = 0; i < 5; i++) {
+
+		printf("task4\n");
+		swi();
+	}
+}
+
 int main() {
+
 	// create some tasks
 	TaskManager* manager = new TaskManager();
-	manager->createTask(task1);
-	manager->createTask(task2);
+	Task* task1 = manager->createTask(task1function);
+	Task* task2 = manager->createTask(task2function);
+	Task* task3 = manager->createTask(task3function);
+	Task* task4 = manager->createTask(task4function);
+
+	manager->deleteTask(task3);
 	
-	manager->scheduleTask();
-	
+	manager->run();
+
 	return 0;
 }
 
