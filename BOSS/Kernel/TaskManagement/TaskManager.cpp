@@ -1,7 +1,7 @@
 #include "TaskManager.h"
-TaskManager* taskManager;
 
-//#pragma INTERRUPT (SWI) ;
+
+
 
 #pragma INTERRUPT (SWI) ;
 extern "C" void c_intSWI()  {
@@ -18,7 +18,6 @@ asm("\t .global _stackPointer");
 TaskManager::TaskManager() {
 	_scheduler = new Scheduler();
 	_activeTask = NULL;
-	taskManager = this;
 
 	// initialize task ids
 	for (int i = 0; i < MAX_TASKS; i++) {
@@ -77,7 +76,8 @@ int TaskManager::deleteTask(Task* task) {
 }
  
 /*
- * 
+ * schedule
+ * this routine should be called by the IRQ?
  * 
  */
 void TaskManager::schedule() {
@@ -189,7 +189,7 @@ void TaskManager::run() {
 		if (_activeTask != NULL) {
 		
 			deleteTask(_activeTask);
-			_activeTask = NULL;	
+			_activeTask = _scheduler->getNextTask(_tasks);	
 		}
  	}
 }
@@ -213,6 +213,5 @@ TID_t TaskManager::getNextTaskID() {
 TaskManager::~TaskManager(){
 
 	delete _scheduler;
-	delete taskManager;
 	delete [] _tids;
 }
