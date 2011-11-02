@@ -1,8 +1,5 @@
 #include "TaskManager.h"
 
-
-
-
 #pragma INTERRUPT (SWI) ;
 extern "C" void c_intSWI()  {
 
