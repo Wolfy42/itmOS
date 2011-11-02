@@ -1,5 +1,12 @@
 #include "TaskManager.h"
 
+// global variables
+asm("\t .bss _stack_pointer, 4");
+asm("\t .bss _func_pointer, 4");
+asm("\t .global _stack_pointer");
+asm("\t .global _func_pointer");
+
+
 #pragma INTERRUPT (SWI) ;
 extern "C" void c_intSWI()  {
 
@@ -32,8 +39,7 @@ Task* TaskManager::createTask(void(*function)(void)) {
 	// check if there is a free task id -> lol should never happen!
 	if (tid > 0) {
 		// create new Task
-		task = new Task();
-		task->id = tid;
+		task = new Task(tid);
 		task->status = Ready;
 		task->priority = 100;
 		task->initAddr = function;
@@ -161,7 +167,7 @@ void TaskManager::run() {
 			_activeTask = _scheduler->getNextTask(_tasks);
 			
 			// first time we start this task
-			if (_activeTask->stackPointer == 0) {
+			if (_activeTask->hasBeenStarted == false) {
 				
 				// run it from the beginning
 				_activeTask->initAddr();

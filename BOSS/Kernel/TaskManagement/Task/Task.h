@@ -13,7 +13,7 @@ enum Status { Ready, Blocked, Running };
 class Task {
 public:
 	// empty Constructors
-	Task();
+	Task(TID_t id);
 	virtual ~Task();
 
 	
@@ -35,6 +35,9 @@ public:
 		
 	// registers
 	int registers[REG_LENGTH];
+	
+	// already started
+	bool hasBeenStarted;
 };
 
 #endif /*TASK_H_*/
