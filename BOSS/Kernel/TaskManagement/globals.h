@@ -10,8 +10,6 @@
 
 // save stackPointer of a task
 extern int stackPointer;
-asm("\t .bss _stackPointer, 4");
-asm("\t .global _stackPointer");
-asm("stackPointer_a .field 32");
+
 
 #endif /*GLOBALS_H_*/

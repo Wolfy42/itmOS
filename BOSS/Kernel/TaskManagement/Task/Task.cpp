@@ -1,8 +1,10 @@
 #include "Task.h"
 
-Task::Task()
+Task::Task(TID_t id)
 {
-	stackPointer = 0;
+	id = id;
+	stackPointer = id * 64 + 12;
+	hasBeenStarted = false;
 }
 
 Task::~Task()
