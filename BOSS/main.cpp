@@ -19,7 +19,7 @@ extern "C"  void c_intIRQ()  {
 int swi ();
 
 
-int main()
+int main_t()
 {
 	printf("Hello main!");
 	
