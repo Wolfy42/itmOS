@@ -8,14 +8,8 @@ int swi ();
 
 #pragma INTERRUPT (SWI) ;
 extern "C" void c_intSWI()  {
-	//_disable_interrupts( ) ;
 
-	//printf("swi\n");
 
-	//address target = (address)0x4903201C;//m_baseAddress + GPTIMER_TIER_OFFSET;
-	//*(target) &= 0; // set 0 to disable interrupts
-
-	//_enable_interrupts( ) ;
 }
 
 
@@ -51,10 +45,10 @@ extern "C"  void c_intIRQ()  {
 
 }
 
-int main()
+int main____________()
 {
 	//_disable_interrupts( ) ;
-	//swi();
+	swi();
 
 	//clear 0 -> 2
 	// --> Enable Interrupt from GPTIMER2

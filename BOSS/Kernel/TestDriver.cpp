@@ -10,6 +10,7 @@ void task1() {
 	for (int i = 0; i < 5; i++) {
 		
 		printf("task1\n");	
+		swift();
 	}	
 }
 
@@ -18,6 +19,7 @@ void task2() {
 	for (int i = 0; i < 5; i++) {
 		
 		printf("task2\n");	
+		swift();
 	}	
 }
 

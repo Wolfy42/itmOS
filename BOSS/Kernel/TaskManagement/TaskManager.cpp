@@ -1,9 +1,18 @@
 #include "TaskManager.h"
+TaskManager* tmanager;
+
+//#pragma INTERRUPT (SWI) ;
+
+void swift()  {
+	tmanager->scheduleTask();
+}
 
 
 TaskManager::TaskManager()
 {
 	_scheduler = new Scheduler();
+	_activeTask = NULL;
+	tmanager = this;
 }
 
 /**
@@ -36,6 +45,56 @@ TID_t TaskManager::createTask(void(*function)(void)) {
  }
 
  /**
+  * HILFE HILFE C-Funktion 
+  *
+  *
+  */
+asm("\t .bss _registers, 64");
+asm("\t .global _registers");
+void save(int* regs) {
+	
+	asm("\t STR r0, [sp, #0]");
+	asm("\t STR r1, [sp, #4]");
+	asm("\t STR r2, [sp, #8]");
+	asm("\t STR r3, [sp, #12]");
+	asm("\t STR r4, [sp, #16]");
+	asm("\t STR r5, [sp, #20]");
+	asm("\t STR r6, [sp, #24]");
+	asm("\t STR r7, [sp, #28]");
+	asm("\t STR r8, [sp, #32]");
+	asm("\t STR r9, [sp, #36]");
+	asm("\t STR r10, [sp, #40]");
+	asm("\t STR r11, [sp, #44]");
+	asm("\t STR r12, [sp, #48]");
+	asm("\t STR sp, [r0, #0]");
+	asm("\t ADD r0, r0, #8");
+	asm("\t STR r0, [sp, #52]");
+	asm("\t LDR r0, [sp, #0]");
+	asm("\t STR lr, [sp, #56]");
+	//asm("\t STR pc, [pc, #60]");
+}
+
+void load(int* regs) {
+	asm("\t LDR r0, [sp, #0]");
+	asm("\t LDR r1, [sp, #4]");
+	asm("\t LDR r2, [sp, #8]");
+	asm("\t LDR r3, [sp, #12]");
+	asm("\t LDR r4, [sp, #16]");
+	asm("\t LDR r5, [sp, #20]");
+	asm("\t LDR r6, [sp, #24]");
+	asm("\t LDR r7, [sp, #28]");
+	asm("\t LDR r8, [sp, #32]");
+	asm("\t LDR r9, [sp, #36]");
+	asm("\t LDR r10, [sp, #40]");
+	asm("\t LDR r11, [sp, #44]");
+	asm("\t LDR r12, [sp, #48]");
+	asm("\t LDR sp, [sp, #52]");
+	asm("\t LDR lr, [sp, #56]");
+
+	asm("\t MOV pc, lr");
+}
+
+ /**
   * scheduleTask
   * starts the task which is next in row
   */
@@ -53,50 +112,22 @@ int TaskManager::scheduleTask() {
  		_activeTask->initAddr();	
  		
  	// check if this task is not already running
-	} else if (_activeTask->id != nextTask->id) {
+ 	
+ 	// HACK == =>>> back to !=
+	} else if (_activeTask->id == nextTask->id) {
  		
  		// TODO: disable HW-Interrupts
  		
- 		
  		// set active Task to ready
  		_activeTask->status = Ready;
+ 		save(registers);
  		
- 	//	saveContext(_activeTask->registers);
- 		// TODO: save current execution state
-// 		asm(  
-//	 		"    mov r0, #(5 << 5)                        \n"    \
-//	        "    msr basepri, r0                            \n" \
-//	        ::"i"(i):"r0" 
-//        );
-		//int value = 0;
-		// int gvar;	long long i[32] = {0};
-	//	asm("\t load R13, R1");
-	//	asm("\t STR R3, [#00x82000000, 0]");
-		//asm ("\t mov %0, r0" : "=r"(i));
-		//extern int var;
-		
-//		asm("\t .bss _var,4,4" \
-//				"\t .global _var" \
-//				"\t mov _var, r0");
-// 		
-
-	SAVEREG
-	
-	LOADREG
-	
-
-
-
-// 		save_reg();
- 		
-	//	int j = 0;
-		printf("gvar0: %i\n", reg_state[0]);
-		printf("gvar1: %i\n", reg_state[1]);
-
  		// execute next thread
  		_activeTask = nextTask;
+ 		
  		_activeTask->status = Running;
- 		_activeTask->initAddr();	
+ 		//_activeTask->initAddr();
+ 		load(registers);	
  		
  		// TODO: enable HW-Interrupts
  	
