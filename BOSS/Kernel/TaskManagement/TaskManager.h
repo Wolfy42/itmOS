@@ -34,10 +34,13 @@ public:
 	TID_t createTask(void(*function)(void));
 	
 	// deletes an existing Task
-	int deleteTask(TID_t id);
+	int deleteTask(Task* task);
 	
-	// schedules the next task
-	int scheduleTask();
+	// schedules a task called by interrupt
+	void schedule();
+	
+	// run all the tasks (this should be the start routine)
+	void run();
 	
 	// getter/setter
 	list<Task*> getTasks() const { return _tasks; }

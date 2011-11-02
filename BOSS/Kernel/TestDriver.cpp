@@ -29,7 +29,7 @@ int main() {
 	manager->createTask(task1);
 	manager->createTask(task2);
 	
-	manager->scheduleTask();
+	manager->run();
 	
 	return 0;
 }
