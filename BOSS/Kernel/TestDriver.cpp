@@ -21,16 +21,11 @@ void task2() {
 	}	
 }
 
-
-
-int main() {
-
+int main_() {
 	// create some tasks
 	TaskManager* manager = new TaskManager();
 	manager->createTask(task1);
 	manager->createTask(task2);
-	
-	
 	
 	manager->scheduleTask();
 	
