@@ -7,6 +7,7 @@
 
 #define SAVEREG 	asm ("\t push {r0,r1,r3,r4,r5,r6,r7,r8,r9,r10,r11,r12,r13,r14,r15}");
 #define LOADREG		asm ("\t pop {r0,r1,r3,r4,r5,r6,r7,r8,r9,r10,r11,r12,r13,r14,r15}");
+#define MAX_TASKS 10
 
 using namespace std;
 
@@ -25,13 +26,16 @@ public:
 	virtual ~TaskManager();
 	
 	// create a new Task
-	TID_t createTask(void(*function)(void));
+	Task* createTask(void(*function)(void));
 	
 	// deletes an existing Task
-	int deleteTask(TID_t id);
+	int deleteTask(Task* task);
 	
-	// schedules the next task
-	int scheduleTask();
+	// schedules a task called by interrupt
+	void schedule();
+	
+	// run all the tasks (this should be the start routine)
+	void run();
 	
 	// getter/setter
 	list<Task*> getTasks() const { return _tasks; }
@@ -51,6 +55,12 @@ private:
 	
 	// this is the active Task - we need to save for later reuse
 	Task* _activeTask;
+
+	// returns the next free TaskID
+	TID_t getNextTaskID();
+
+	// array of all task ids
+	TID_t _tids[MAX_TASKS];
 };
 
 #endif /*TASKMANAGER_H_*/
