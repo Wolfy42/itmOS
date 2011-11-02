@@ -12,7 +12,6 @@ extern "C" void c_intSWI()  {
 
 }
 
-
 #pragma INTERRUPT (IRQ) ;
 extern "C"  void c_intIRQ()  {
 
