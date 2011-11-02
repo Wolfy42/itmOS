@@ -5,10 +5,23 @@
 #include "Task/Task.h"
 #include "Scheduler/Scheduler.h"
 
+#define SAVEREG 	asm ("\t push {r0,r1,r3,r4,r5,r6,r7,r8,r9,r10,r11,r12,r13,r14,r15}");
+#define LOADREG		asm ("\t pop {r0,r1,r3,r4,r5,r6,r7,r8,r9,r10,r11,r12,r13,r14,r15}");
+
 using namespace std;
+
+extern "C" {
+	extern int save_reg();
+	
+}
+extern int reg_state[100];
 
 class TaskManager {
 public:
+
+
+
+
 	TaskManager();
 	virtual ~TaskManager();
 	

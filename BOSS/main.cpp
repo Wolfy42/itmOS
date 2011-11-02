@@ -17,8 +17,6 @@ extern "C" void c_intSWI()  {
 
 	//_enable_interrupts( ) ;
 
-	//asm("	MOVS PC, R14 ;");
-}
 
 
 #pragma INTERRUPT (IRQ) ;
