@@ -3,18 +3,10 @@
 #include "HAL/LED/HalLedDriver.h"
 #include "API/dataTypes.h"
 
-//#pragma SWI_ALIAS(48);
-//int swi ();
-//
-//#pragma INTERRUPT (SWI) ;
-//extern "C" void c_intSWI()  {
-//
-//
-//}
-
 #pragma INTERRUPT (IRQ) ;
 extern "C"  void c_intIRQ()  {
 
+<<<<<<< HEAD
 	// Set Super-User Mode
 	asm("	MRS     r0, cpsr ;");
 	asm("	ORR     r0, r0, #0x1F  ;");
@@ -28,27 +20,28 @@ extern "C"  void c_intIRQ()  {
 	int irqNr = *(irqNrAddr);
 	printf("irq: %i\n",irqNr);
 
+=======
+	//reset timer-interrupts
+>>>>>>> dc1a0a5ed8599c5144a57ed02e061c450abc3f04
 	address target = (address)0x49032018;// GPTIMER2 -> PendingIRQs
 	*(target) |= 0x7; // reset GPTimer2 - IRQs
 
 	//reset irq
 	address intcps_control = (address)0x48200048;
-	*(intcps_control ) |= 0x1;
+	*(intcps_control) |= 0x1;
 
-	// Set back to IRQ Mode
-	asm("	MRS     r0, cpsr ;");
-	asm("	ORR     r0, r0, #0x12  ;");
-	asm("	MSR     cpsr_cf, r0 ;");
-
-	//TODO: Jump back to main
-
-
+	HalLedDriver dr;
+	if (dr.isOn(LED1))  {
+		dr.ledOn(LED2);
+		dr.ledOff(LED1);
+	}  else  {
+		dr.ledOff(LED2);
+		dr.ledOn(LED1);
+	}
+	printf("irq \n");
 }
 
-int main____________()
-{
-	//_disable_interrupts( ) ;
-	//swi();
+int main()  {
 
 	//clear 0 -> 2
 	// --> Enable Interrupt from GPTIMER2
@@ -60,8 +53,9 @@ int main____________()
 	// --> (*0x482000B8) --> man sieht dass bit auf 1 springt und somit sollte der Interrupt ausgelöst werden
 
 	int i = 0;
-	while (i<100000){
-		i++;
+	while (i<1){
+		address target3 = (address)0x49032028;//m_baseAddress + GPTIMER_TCRR_OFFSET;
+		*(target3) &= 0; // set 0 to set internal counter
 	}
 	_disable_interrupts();
 	printf("end\n");

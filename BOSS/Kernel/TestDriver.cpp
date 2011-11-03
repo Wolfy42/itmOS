@@ -47,13 +47,15 @@ int main() {
 
 	// create some tasks
 	TaskManager* manager = new TaskManager();
-	Task* task1 = manager->createTask(task1function);
-	Task* task2 = manager->createTask(task2function);
-	Task* task3 = manager->createTask(task3function);
-	Task* task4 = manager->createTask(task4function);
+	manager->createTask("task 1", task1function);
+	manager->createTask("task 2", task2function);
+	manager->createTask("task 3", task3function);
+	manager->createTask("task 4", task4function);
 
-	// TODO: LOL!!!LO!LO!L!O!LOLOOOOLOLOL es löscht alles?
-	//manager->deleteTask(task3);
+	manager->showTasks();
+
+	// TODO: LOL!!!LO!LO!L!O!LOLOOOOLOLOL es lï¿½scht alles?
+//	manager->deleteTask(3);
 	
 	manager->run();
 
