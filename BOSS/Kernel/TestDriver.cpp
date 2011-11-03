@@ -48,8 +48,8 @@ int main() {
 	Task* task3 = manager->createTask(task3function);
 	Task* task4 = manager->createTask(task4function);
 
-	// TODO: LOL!!!LO!LO!L!O!LOLOOOOLOLOL es löscht alles?
-	//manager->deleteTask(task3);
+	// TODO: LOL!!!LO!LO!L!O!LOLOOOOLOLOL es lï¿½scht alles?
+	manager->deleteTask(task3);
 	
 	manager->run();
 
