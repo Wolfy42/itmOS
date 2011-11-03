@@ -28,8 +28,8 @@ class LEDService : public Service {
 		LEDService();
 		virtual ~LEDService();
 		
+        virtual void command(int params[]);
 		virtual bool stop();
 };
-
 
 #endif /*LEDSERVICE_H_*/

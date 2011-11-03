@@ -23,7 +23,7 @@ void task2() {
 
 
 
-int main() {
+int _main() {
 
 	// create some tasks
 	TaskManager* manager = new TaskManager();
