@@ -13,7 +13,7 @@ enum Status { Ready, Blocked, Running };
 class Task {
 public:
 	// empty Constructors
-	Task(TID_t id);
+	Task(TID_t id, std::string name);
 	virtual ~Task();
 
 	

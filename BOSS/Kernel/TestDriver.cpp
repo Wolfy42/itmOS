@@ -5,10 +5,12 @@
 
 void task1function() {
 
-	for (int i = 0; i < 5; i++) {
+	int j = 0;
+	int k = 7;
+	for (int i = 0; i < 2; i++) {
 		
 		printf("task1\n");	
-		swi();
+		//swi();
 	}	
 }
 
@@ -43,12 +45,15 @@ int main() {
 
 	// create some tasks
 	TaskManager* manager = new TaskManager();
-	Task* task1 = manager->createTask(task1function);
-	Task* task2 = manager->createTask(task2function);
-	Task* task3 = manager->createTask(task3function);
-	Task* task4 = manager->createTask(task4function);
+	manager->createTask("task 1", task1function);
+	manager->createTask("task 2", task2function);
+	manager->createTask("task 3", task3function);
+	manager->createTask("task 4", task4function);
 
-	manager->deleteTask(task3);
+	manager->showTasks();
+
+	// TODO: LOL!!!LO!LO!L!O!LOLOOOOLOLOL es l�scht alles?
+//	manager->deleteTask(3);
 	
 	manager->run();
 

@@ -1,11 +1,12 @@
 #include "TaskManager.h"
 
 // global variables
-asm("\t .bss _stack_pointer, 4");
-asm("\t .bss _func_pointer, 4");
-asm("\t .global _stack_pointer");
-asm("\t .global _func_pointer");
-
+asm("\t .bss _stackPointer, 4");
+asm("\t .global _stackPointer");
+asm("\t .bss _funcPointer, 4");
+asm("\t .global _funcPointer");
+asm("\t .bss _kernelStackPointer, 4");
+asm("\t .global _kernelStackPointer");
 
 #pragma INTERRUPT (SWI) ;
 extern "C" void c_intSWI()  {
@@ -25,13 +26,18 @@ TaskManager::TaskManager() {
 	for (int i = 0; i < MAX_TASKS; i++) {
 		_tids[i] = 0;
 	}
+	
+	// alloc some fields
+	asm("stackPointer_a .field _stackPointer, 32");
+  	asm("funcPointer_a .field _funcPointer, 32");
+  	asm("kernelStackPointer_a .field _kernelStackPointer, 32");
 }
 
 /**
  * createTask
  * creates a new Task and sets it status to READY
  */
-Task* TaskManager::createTask(void(*function)(void)) {
+Task* TaskManager::createTask(std::string name, void(*function)(void)) {
 	
 	Task* task = NULL;
 	TID_t tid = getNextTaskID();
@@ -39,7 +45,7 @@ Task* TaskManager::createTask(void(*function)(void)) {
 	// check if there is a free task id -> lol should never happen!
 	if (tid > 0) {
 		// create new Task
-		task = new Task(tid);
+		task = new Task(tid, name);
 		task->status = Ready;
 		task->priority = 100;
 		task->initAddr = function;
@@ -62,18 +68,30 @@ Task* TaskManager::createTask(void(*function)(void)) {
  * deleteTask
  * removes a existings Task from the ProcessList
  */
-int TaskManager::deleteTask(Task* task) {
+int TaskManager::deleteTask(TID_t tid) {
 
 	// remove it from the list and from the tids array
 	for (std::list<Task*>::const_iterator iterator = _tasks.begin(); iterator != _tasks.end(); ++iterator) {
-		if ( (*iterator)->id == task->id ) {
-			_tasks.remove(task);
+		if ( (*iterator)->id == tid ) {
+			_tasks.remove(*iterator);
 			_tids[(*iterator)->id - 1] = 0;
 			return 0;
 		}
 	}
  	
 	return -1;
+}
+
+/**
+ * showTasks
+ * shows all running tasks
+ */
+void TaskManager::showTasks() {
+
+	for (std::list<Task*>::const_iterator iterator = _tasks.begin(); iterator != _tasks.end(); ++iterator) {
+		printf("%d\t\t%s", (*iterator)->id, (*iterator)->name);
+	}
+
 }
  
 /*
@@ -99,57 +117,19 @@ void TaskManager::schedule() {
 	// else if its the same:
 		// RETURN to return-address	
 
-}
 
- /**
-  * HILFE HILFE C-Funktion 
-  *
-  *
-  */
-
-void save(int* regs) {
+	// save active register
+	if (_activeTask != NULL) {
+		
+		// save 
+	}
 	
-	asm("\t STR r0, [sp, #0]");
-	asm("\t STR r1, [sp, #4]");
-	asm("\t STR r2, [sp, #8]");
-	asm("\t STR r3, [sp, #12]");
-	asm("\t STR r4, [sp, #16]");
-	asm("\t STR r5, [sp, #20]");
-	asm("\t STR r6, [sp, #24]");
-	asm("\t STR r7, [sp, #28]");
-	asm("\t STR r8, [sp, #32]");
-	asm("\t STR r9, [sp, #36]");
-	asm("\t STR r10, [sp, #40]");
-	asm("\t STR r11, [sp, #44]");
-	asm("\t STR r12, [sp, #48]");
-	asm("\t STR sp, [r0, #0]");
-	asm("\t ADD r0, r0, #8");
-	asm("\t STR r0, [sp, #52]");
-	asm("\t LDR r0, [sp, #0]");
-	asm("\t STR lr, [sp, #56]");
-	//asm("\t STR pc, [pc, #60]");
+	// switch to kernel stack
+	
+	
 }
 
-void load(int* regs) {
-	asm("\t LDR r0, [sp, #0]");
-	asm("\t LDR r1, [sp, #4]");
-	asm("\t LDR r2, [sp, #8]");
-	asm("\t LDR r3, [sp, #12]");
-	asm("\t LDR r4, [sp, #16]");
-	asm("\t LDR r5, [sp, #20]");
-	asm("\t LDR r6, [sp, #24]");
-	asm("\t LDR r7, [sp, #28]");
-	asm("\t LDR r8, [sp, #32]");
-	asm("\t LDR r9, [sp, #36]");
-	asm("\t LDR r10, [sp, #40]");
-	asm("\t LDR r11, [sp, #44]");
-	asm("\t LDR r12, [sp, #48]");
-	asm("\t LDR sp, [sp, #52]");
-	asm("\t LDR lr, [sp, #56]");
-
-	asm("\t MOV pc, lr");
-}
-
+#include <stdio.h>
  /**
   * run
   * run over and over again and try to get new tasks
@@ -169,8 +149,30 @@ void TaskManager::run() {
 			// first time we start this task
 			if (_activeTask->hasBeenStarted == false) {
 				
-				// run it from the beginning
-				_activeTask->initAddr();
+				// save entry point for function
+				//funcPointer = (int)_activeTask->initAddr;
+				// load stack of task
+				//stackPointer = _activeTask->stackPointer;
+				
+				// first push all register on the stack
+				SAVEREG;
+				
+				// save function Pointer in register 2
+				asm("\t LDR r0, funcPointer_a");
+    			asm("\t LDR r2, [r0, #0]");
+				
+				// save kernel stack - load field in r0 - store sp in field 
+				asm("\t LDR r0, kernelStackPointer_a");
+				asm("\t STR sp, [r0, #0]");
+			
+				// set new stackpointer to task stackpointer
+				asm("\t LDR sp, stackPointer_a");
+				
+				// set return jump dingens before we fk off
+				asm("\t MOV lr, pc");
+				// move to r2 - loaded function - RUN
+				asm("\t MOV pc, r2");
+				
 			
 			// otherwise return from last point
 			} else {
@@ -184,12 +186,25 @@ void TaskManager::run() {
 			}
 		}
 		
+		
+		// change the stack back to the main stack here - because the task is over :)
+			// be careful - dont whine about the task stack - task is done anyway
+		// just change back to my super duper kernel stack
+		asm("\t LDR r0, kernelStackPointer_a");
+		// load the value of kernelstackpointer into r1 (otherwise its just address of kernelstackpointer)
+		asm("\t LDR r1, [r0, #0]");
+		// move the register to the stackpointer - never use LDR for this! y? i dont know.
+		asm("\t MOV sp, r1");
+		// now load all registers
+		LOADREG;
+		
+		
 		// there are two reasons why we are here:
 			// 1. no Task running at all
 			// 2. the Task has finished and is ready to die
 		if (_activeTask != NULL) {
 		
-			deleteTask(_activeTask);
+			deleteTask(_activeTask->id);
 			_activeTask = _scheduler->getNextTask(_tasks);	
 		}
  	}
