@@ -17,11 +17,14 @@ public:
 	virtual ~TaskManager();
 	
 	// create a new Task
-	Task* createTask(void(*function)(void));
+	Task* createTask(std::string name, void(*function)(void));
 	
 	// deletes an existing Task
-	int deleteTask(Task* task);
+	int deleteTask(TID_t tid);
 	
+	// shows all runnig tasks
+	void showTasks();
+
 	// schedules a task called by interrupt
 	void schedule();
 	

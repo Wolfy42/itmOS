@@ -37,7 +37,7 @@ TaskManager::TaskManager() {
  * createTask
  * creates a new Task and sets it status to READY
  */
-Task* TaskManager::createTask(void(*function)(void)) {
+Task* TaskManager::createTask(std::string name, void(*function)(void)) {
 	
 	Task* task = NULL;
 	TID_t tid = getNextTaskID();
@@ -45,7 +45,7 @@ Task* TaskManager::createTask(void(*function)(void)) {
 	// check if there is a free task id -> lol should never happen!
 	if (tid > 0) {
 		// create new Task
-		task = new Task(tid);
+		task = new Task(tid, name);
 		task->status = Ready;
 		task->priority = 100;
 		task->initAddr = function;
@@ -68,18 +68,30 @@ Task* TaskManager::createTask(void(*function)(void)) {
  * deleteTask
  * removes a existings Task from the ProcessList
  */
-int TaskManager::deleteTask(Task* task) {
+int TaskManager::deleteTask(TID_t tid) {
 
 	// remove it from the list and from the tids array
 	for (std::list<Task*>::const_iterator iterator = _tasks.begin(); iterator != _tasks.end(); ++iterator) {
-		if ( (*iterator)->id == task->id ) {
-			_tasks.remove(task);
+		if ( (*iterator)->id == tid ) {
+			_tasks.remove(*iterator);
 			_tids[(*iterator)->id - 1] = 0;
 			return 0;
 		}
 	}
  	
 	return -1;
+}
+
+/**
+ * showTasks
+ * shows all running tasks
+ */
+void TaskManager::showTasks() {
+
+	for (std::list<Task*>::const_iterator iterator = _tasks.begin(); iterator != _tasks.end(); ++iterator) {
+		printf("%d\t\t%s", (*iterator)->id, (*iterator)->name);
+	}
+
 }
  
 /*
@@ -138,9 +150,9 @@ void TaskManager::run() {
 			if (_activeTask->hasBeenStarted == false) {
 				
 				// save entry point for function
-				funcPointer = (int)_activeTask->initAddr;
+				//funcPointer = (int)_activeTask->initAddr;
 				// load stack of task
-				stackPointer = _activeTask->stackPointer;
+				//stackPointer = _activeTask->stackPointer;
 				
 				// first push all register on the stack
 				SAVEREG;
@@ -192,7 +204,7 @@ void TaskManager::run() {
 			// 2. the Task has finished and is ready to die
 		if (_activeTask != NULL) {
 		
-			deleteTask(_activeTask);
+			deleteTask(_activeTask->id);
 			_activeTask = _scheduler->getNextTask(_tasks);	
 		}
  	}
