@@ -1,5 +1,5 @@
 ////////////////////////////////////////////////////////
-// Linker command file for BeagleBoard)
+// Linker command file for BeagleBoard
 // 
 // Basic configuration using only external memory
 //
@@ -10,8 +10,7 @@
 MEMORY
 {
    int_ram:  ORIGIN = 0x40200000  LENGTH = 0x0000FFFF
-   ctx_swtch_mem: ORIGIN = 0x82000000 LENGTH = 0x00010000
-   ext_ddr:  ORIGIN = 0x82010000  LENGTH = 0x00010000
+   ext_ddr:  ORIGIN = 0x82000000  LENGTH = 0x00010000
 }
 
 SECTIONS

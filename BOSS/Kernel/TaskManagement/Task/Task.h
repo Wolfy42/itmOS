@@ -3,9 +3,8 @@
 
 #define REG_LENGTH 16
 
+#include "../../../API/dataTypes.h"
 #include <string>
-
-using namespace std;
 
 typedef int TID_t;
 
@@ -14,7 +13,7 @@ enum Status { Ready, Blocked, Running };
 class Task {
 public:
 	// empty Constructors
-	Task();
+	Task(TID_t id, std::string name);
 	virtual ~Task();
 
 	
@@ -25,14 +24,20 @@ public:
 	// id of task
 	TID_t id;
 	// name of task
-	string name;
+	std::string name;
 	// status of task
 	Status status;
 	// priority of task (from 0 to 20 -> higher = more important)
 	int priority;
+	
+	// stackpointer
+	int stackPointer;
 		
-	// registers
-	int registers[REG_LENGTH];
+	// return address
+	int returnAddress;
+	
+	// already started
+	bool hasBeenStarted;
 };
 
 #endif /*TASK_H_*/

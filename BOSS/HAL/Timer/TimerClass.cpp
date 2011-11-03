@@ -43,7 +43,7 @@ void TimerClass::setTimerLoadValues() {
 void TimerClass::setCompareValue() {
 	address target = (address)0x49032038;//m_baseAddress + GPTIMER_TMAR_OFFSET;
 	*(target) &= 0; // set 0
-	*(target) |= 500; // set 500
+	*(target) |= 10; // set 10
 }
 
 void TimerClass::enableInterrupt() {

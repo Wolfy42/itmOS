@@ -2,40 +2,38 @@
 #define TASKMANAGER_H_
 
 #include <list>
+
+#include "globals.h"
 #include "Task/Task.h"
 #include "Scheduler/Scheduler.h"
 
-#define SAVEREG 	asm ("\t push {r0,r1,r3,r4,r5,r6,r7,r8,r9,r10,r11,r12,r13,r14,r15}");
-#define LOADREG		asm ("\t pop {r0,r1,r3,r4,r5,r6,r7,r8,r9,r10,r11,r12,r13,r14,r15}");
+#pragma SWI_ALIAS(48);
+int swi ();
 
-using namespace std;
 
-extern "C" {
-	extern int save_reg();
-	
-}
-extern int reg_state[100];
 
 class TaskManager {
 public:
-
-
-
-
 	TaskManager();
 	virtual ~TaskManager();
 	
 	// create a new Task
-	TID_t createTask(void(*function)(void));
+	Task* createTask(std::string name, void(*function)(void));
 	
 	// deletes an existing Task
-	int deleteTask(TID_t id);
+	int deleteTask(Task* task);
 	
-	// schedules the next task
-	int scheduleTask();
+	// shows all runnig tasks
+	void showTasks();
+
+	// schedules a task called by interrupt
+	void schedule();
+	
+	// run all the tasks (this should be the start routine)
+	void run();
 	
 	// getter/setter
-	list<Task*> getTasks() const { return _tasks; }
+	//std::list<Task*> getTasks() const { return _tasks; }
 	
 	Scheduler* getScheduler() const { return _scheduler; }
 	void setScheduler(Scheduler* scheduler) { _scheduler = scheduler; }
@@ -45,13 +43,20 @@ public:
 	
 private:
 	// list of all tasks waiting to be executed
-	list<Task*> _tasks;
+	Task* _tasks[MAX_TASKS];
+	int pos;
 	
 	// Scheduler for deciding, which task is the CHOSEN ONE
 	Scheduler* _scheduler;
 	
 	// this is the active Task - we need to save for later reuse
 	Task* _activeTask;
+
+	// returns the next free TaskID
+	TID_t getNextTaskID();
+
+	// array of all task ids
+	TID_t _tids[MAX_TASKS];
 };
 
 #endif /*TASKMANAGER_H_*/
