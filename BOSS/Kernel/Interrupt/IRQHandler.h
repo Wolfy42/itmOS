@@ -10,12 +10,12 @@ public:
 	IRQHandler();
 	virtual ~IRQHandler();
 
-	void registerHandler(int irqNr, address handler);
+	void registerHandler(int irqNr, void* handler);
 	void callHandlerFor(int irqNr);
 
 private:
 	// list of all possible irq-handlers
-	address _irqHandlers[MAX_IRQ_HANDLERS];
+	void* _irqHandlers[MAX_IRQ_HANDLERS];
 
 };
 

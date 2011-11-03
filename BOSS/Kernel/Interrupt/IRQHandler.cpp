@@ -20,7 +20,7 @@ IRQHandler::IRQHandler() {
 
 IRQHandler::~IRQHandler() {}
 
-void IRQHandler::registerHandler(int irqNr, address handler)  {
+void IRQHandler::registerHandler(int irqNr, void* handler)  {
 	_irqHandlers[irqNr] = handler;
 
 	int registerNr = irqNr / 32;
