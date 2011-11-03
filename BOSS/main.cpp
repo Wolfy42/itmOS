@@ -2,18 +2,13 @@
 #include "HAL/Timer/HalTimerDriver.h"
 #include "HAL/LED/HalLedDriver.h"
 #include "API/dataTypes.h"
+#include "Kernel/Interrupt/IRQHandler.h"
 
-#pragma INTERRUPT (IRQ) ;
-extern "C"  void c_intIRQ()  {
-
-
+void ledToggler(void)  {
 	address target = (address)0x49032018;// GPTIMER2 -> PendingIRQs
 	*(target) |= 0x7; // reset GPTimer2 - IRQs
 
-	//reset irq
-	address intcps_control = (address)0x48200048;
-	*(intcps_control) |= 0x1;
-
+	printf("irq\n");
 	HalLedDriver dr;
 	if (dr.isOn(LED1))  {
 		dr.ledOn(LED2);
@@ -22,25 +17,25 @@ extern "C"  void c_intIRQ()  {
 		dr.ledOff(LED2);
 		dr.ledOn(LED1);
 	}
-	printf("irq \n");
+
+	address target3 = (address)0x49032028;//m_baseAddress + GPTIMER_TCRR_OFFSET;
+	*(target3) &= 0; // set 0 to set internal counter
 }
 
-int main()  {
+int main_()  {
 
-	//clear 0 -> 2
-	// --> Enable Interrupt from GPTIMER2
-	address clear1 = (address)0x482000A8;
-	*(clear1) |= (1 << 6);
+	IRQHandler hand;
 
-	_enable_interrupts( ) ;
+	hand.registerHandler(38, ledToggler);
+
+	//_enable_interrupts( ) ;
 	HalTimerDriver dr;
+	_enable_interrupts( ) ;
 	// --> (*0x482000B8) --> man sieht dass bit auf 1 springt und somit sollte der Interrupt ausgelöst werden
 
 	int i = 0;
-	while (i<1){
-		address target3 = (address)0x49032028;//m_baseAddress + GPTIMER_TCRR_OFFSET;
-		*(target3) &= 0; // set 0 to set internal counter
-	}
+	while (i<1){}
+
 	_disable_interrupts();
 	printf("end\n");
 	
