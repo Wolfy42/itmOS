@@ -109,7 +109,7 @@ void TaskManager::schedule() {
 	// save active register
 	if (_activeTask != NULL) {
 		
-		// save
+		// save 
 	}
 	
 	// switch to kernel stack
@@ -139,23 +139,21 @@ void TaskManager::run() {
 				
 				// save entry point for function
 				funcPointer = (int)_activeTask->initAddr;
-				asm("\t PUSH {r0}");
-				asm("\t LDR r0, funcPointer_a");
-    			asm("\t LDR r2, [r0, #0]");
-    			// TODO: R2(D2) is lost. RIP
-				asm("\t POP {r0}");
-				
-				// save kernel stack - load field in r0 - store sp in field 
-				asm("\t PUSH {r0}");
-				asm("\t LDR r0, kernelStackPointer_a");
-				asm("\t STR sp, [r0, #0]");
-				// now we have a problem - there is a pop after we saved kernelstackPointer?
-				// so we dont have the right kernelStackpointer its 4 bytes wrong
-				// we fix this problem at (strg+f) TYLULZ#1
-				asm("\t POP {r0}");
-				
 				// load stack of task
 				stackPointer = _activeTask->stackPointer;
+				
+				// first push all register on the stack
+				SAVEREG;
+				
+				// save function Pointer in register 2
+				asm("\t LDR r0, funcPointer_a");
+    			asm("\t LDR r2, [r0, #0]");
+				
+				// save kernel stack - load field in r0 - store sp in field 
+				asm("\t LDR r0, kernelStackPointer_a");
+				asm("\t STR sp, [r0, #0]");
+			
+				// set new stackpointer to task stackpointer
 				asm("\t LDR sp, stackPointer_a");
 				
 				// set return jump dingens before we fk off
@@ -183,11 +181,10 @@ void TaskManager::run() {
 		asm("\t LDR r0, kernelStackPointer_a");
 		// load the value of kernelstackpointer into r1 (otherwise its just address of kernelstackpointer)
 		asm("\t LDR r1, [r0, #0]");
-		// increase the kernelStackPointer by 4 - because we popped after we saved it
-		// have a look (strg+f) for TYLULZ#1 to see where it happens
-		asm("\t ADD r1, r1, #4");
 		// move the register to the stackpointer - never use LDR for this! y? i dont know.
 		asm("\t MOV sp, r1");
+		// now load all registers
+		LOADREG;
 		
 		
 		// there are two reasons why we are here:

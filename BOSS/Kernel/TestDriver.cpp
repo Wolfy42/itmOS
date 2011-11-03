@@ -5,6 +5,8 @@
 
 void task1function() {
 
+	int j = 0;
+	int k = 7;
 	for (int i = 0; i < 2; i++) {
 		
 		printf("task1\n");	
