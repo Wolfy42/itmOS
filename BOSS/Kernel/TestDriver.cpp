@@ -5,20 +5,22 @@
 
 void task1function() {
 
-	int j = 0;
-	int k = 7;
+	int j = 31;
+	int k = 40;
 	for (int i = 0; i < 2; i++) {
 		
-		printf("task1\n");	
-		//swi();
+		printf("task1 %d %d %d\n",i,j,k);
+		swi();
 	}	
 }
 
 void task2function() {
 
+	int j = 99;
+	int k = 70;
 	for (int i = 0; i < 5; i++) {
 		
-		printf("task2\n");	
+		printf("task2 %d %d %d\n",i,j,k);	
 		swi();
 	}	
 }

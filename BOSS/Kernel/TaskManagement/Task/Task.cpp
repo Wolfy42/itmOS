@@ -3,7 +3,7 @@
 Task::Task(TID_t id_)
 {
 	id = id_;
-	stackPointer = id * 64 + 12;
+	stackPointer = 0x8200B000 + id * 0x00010000;
 	hasBeenStarted = false;
 }
 

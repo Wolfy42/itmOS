@@ -11,7 +11,7 @@ public:
 	virtual ~Scheduler();
 	
 	// get the next Task which should be done out of a list
-	Task* getNextTask(std::list<Task*> tasks);
+	Task* getNextTask(Task** tasks, int active);
 };
 
 #endif /*SCHEDULER_H_*/

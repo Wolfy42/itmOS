@@ -11,6 +11,7 @@
 int swi ();
 
 
+
 class TaskManager {
 public:
 	TaskManager();
@@ -29,7 +30,7 @@ public:
 	void run();
 	
 	// getter/setter
-	std::list<Task*> getTasks() const { return _tasks; }
+	//std::list<Task*> getTasks() const { return _tasks; }
 	
 	Scheduler* getScheduler() const { return _scheduler; }
 	void setScheduler(Scheduler* scheduler) { _scheduler = scheduler; }
@@ -39,7 +40,8 @@ public:
 	
 private:
 	// list of all tasks waiting to be executed
-	std::list<Task*> _tasks;
+	Task* _tasks[MAX_TASKS];
+	int pos;
 	
 	// Scheduler for deciding, which task is the CHOSEN ONE
 	Scheduler* _scheduler;

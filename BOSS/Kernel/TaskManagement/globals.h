@@ -12,5 +12,6 @@
 extern int stackPointer;
 extern int funcPointer;
 extern int kernelStackPointer;
+extern int lrToPcPointer;
 
 #endif /*GLOBALS_H_*/
