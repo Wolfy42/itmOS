@@ -1,6 +1,8 @@
 
 #include "IRQHandler.h"
 
+IRQHandler* globalIRQHandler;
+
 #pragma INTERRUPT (IRQ) ;
 extern "C"  void c_intIRQ()  {
 
@@ -20,7 +22,7 @@ IRQHandler::IRQHandler() {
 
 IRQHandler::~IRQHandler() {}
 
-void IRQHandler::registerHandler(int irqNr, void* handler)  {
+void IRQHandler::registerHandler(int irqNr, void (*handler)(void))  {
 	_irqHandlers[irqNr] = handler;
 
 	int registerNr = irqNr / 32;
@@ -40,5 +42,5 @@ void IRQHandler::registerHandler(int irqNr, void* handler)  {
 }
 
 void IRQHandler::callHandlerFor(int irqNr)  {
-	//TODO: call function ... _irqHandlers[irqNr]();
+	(*_irqHandlers[irqNr])();
 }
