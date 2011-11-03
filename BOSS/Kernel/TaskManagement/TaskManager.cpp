@@ -98,11 +98,7 @@ Task* TaskManager::createTask(std::string name, void(*function)(void)) {
 	// check if there is a free task id -> lol should never happen!
 	if (tid > 0) {
 		// create new Task
-<<<<<<< HEAD
-		task = new Task(pos);
-=======
-		task = new Task(tid, name);
->>>>>>> dc1a0a5ed8599c5144a57ed02e061c450abc3f04
+		task = new Task(pos, name);
 		task->status = Ready;
 		task->priority = 100;
 		task->initAddr = function;
@@ -126,21 +122,11 @@ Task* TaskManager::createTask(std::string name, void(*function)(void)) {
  * deleteTask
  * removes a existings Task from the ProcessList
  */
-int TaskManager::deleteTask(TID_t tid) {
+int TaskManager::deleteTask(Task* task) {
 
 	// remove it from the list and from the tids array
-<<<<<<< HEAD
+
 	delete _tasks[task->id];
-=======
-	for (std::list<Task*>::const_iterator iterator = _tasks.begin(); iterator != _tasks.end(); ++iterator) {
-		if ( (*iterator)->id == tid ) {
-			_tasks.remove(*iterator);
-			_tids[(*iterator)->id - 1] = 0;
-			return 0;
-		}
-	}
- 	
->>>>>>> dc1a0a5ed8599c5144a57ed02e061c450abc3f04
 	return -1;
 }
 
@@ -150,9 +136,7 @@ int TaskManager::deleteTask(TID_t tid) {
  */
 void TaskManager::showTasks() {
 
-	for (std::list<Task*>::const_iterator iterator = _tasks.begin(); iterator != _tasks.end(); ++iterator) {
-		printf("%d\t\t%s", (*iterator)->id, (*iterator)->name);
-	}
+
 
 }
  
@@ -331,13 +315,10 @@ void TaskManager::run() {
 			// 2. the Task has finished and is ready to die
 		if (_activeTask != NULL) {
 		
-<<<<<<< HEAD
+
 			deleteTask(_activeTask);
 			//_activeTask = _scheduler->getNextTask(_tasks, _activeTask->id);	
-=======
-			deleteTask(_activeTask->id);
-			_activeTask = _scheduler->getNextTask(_tasks);	
->>>>>>> dc1a0a5ed8599c5144a57ed02e061c450abc3f04
+
 		}
  	}
 }

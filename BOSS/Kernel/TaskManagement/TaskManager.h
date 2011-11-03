@@ -21,7 +21,7 @@ public:
 	Task* createTask(std::string name, void(*function)(void));
 	
 	// deletes an existing Task
-	int deleteTask(TID_t tid);
+	int deleteTask(Task* task);
 	
 	// shows all runnig tasks
 	void showTasks();

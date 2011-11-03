@@ -6,23 +6,7 @@
 #pragma INTERRUPT (IRQ) ;
 extern "C"  void c_intIRQ()  {
 
-<<<<<<< HEAD
-	// Set Super-User Mode
-	asm("	MRS     r0, cpsr ;");
-	asm("	ORR     r0, r0, #0x1F  ;");
-	asm("	MSR     cpsr_cf, r0 ;");
 
-
-	//HalLedDriver dr;
-	//dr.toggle(LED1);
-
-	address irqNrAddr = (address)0x48200040;
-	int irqNr = *(irqNrAddr);
-	printf("irq: %i\n",irqNr);
-
-=======
-	//reset timer-interrupts
->>>>>>> dc1a0a5ed8599c5144a57ed02e061c450abc3f04
 	address target = (address)0x49032018;// GPTIMER2 -> PendingIRQs
 	*(target) |= 0x7; // reset GPTimer2 - IRQs
 
