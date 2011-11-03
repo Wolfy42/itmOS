@@ -10,6 +10,7 @@
 
 // save stackPointer of a task
 extern int stackPointer;
-
+extern int funcPointer;
+extern int kernelStackPointer;
 
 #endif /*GLOBALS_H_*/

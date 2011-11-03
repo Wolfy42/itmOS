@@ -5,10 +5,10 @@
 
 void task1function() {
 
-	for (int i = 0; i < 5; i++) {
+	for (int i = 0; i < 2; i++) {
 		
 		printf("task1\n");	
-		swi();
+		//swi();
 	}	
 }
 
@@ -48,7 +48,8 @@ int main() {
 	Task* task3 = manager->createTask(task3function);
 	Task* task4 = manager->createTask(task4function);
 
-	manager->deleteTask(task3);
+	// TODO: LOL!!!LO!LO!L!O!LOLOOOOLOLOL es löscht alles?
+	//manager->deleteTask(task3);
 	
 	manager->run();
 
