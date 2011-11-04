@@ -5,14 +5,14 @@
 #define OTHERWISE else
 
 // global variables
-asm("\t .bss _stackPointer, 4");
-asm("\t .global _stackPointer");
-asm("\t .bss _funcPointer, 4");
-asm("\t .global _funcPointer");
-asm("\t .bss _kernelStackPointer, 4");
-asm("\t .global _kernelStackPointer");
-asm("\t .bss _lrToPcPointer, 4");
-asm("\t .global _lrToPcPointer");
+asm("\t .bss _registers, 64");
+asm("\t .global _registers");
+asm("\t .bss _kernelRegisters, 64");
+asm("\t .global _kernelRegisters");
+asm("\t .bss _returnAddress, 4");
+asm("\t .global _returnAddress");
+asm("\t .bss _hasStarted, 4");
+asm("\t .global _hasStarted");
 
 class TaskManager;
 TaskManager* globalTaskManager;
@@ -20,48 +20,74 @@ TaskManager* globalTaskManager;
 // *** globals end ***
 
 
+
 // this is an interrupt and therefore it has to be c 
 // so this is not par of the Class Taskmanager
 // same code in schedule();
+#pragma TASK
 #pragma INTERRUPT (SWI) ;
 extern "C" void c_intSWI()  {
+	
+	if (hasStarted == 0) {
+		hasStarted = 1;
+	} else {
+		// save the return address of interrupt == pc of task
+		asm("\t LDR r0, returnAddress_a");
+		asm("\t STR lr, [r0, #0]");
+	
+		// save registers of app mode task
+		asm("\t PUSH {r0}");
+		asm("\t LDR r0, registers_a");
+		asm("\t STM r0, {r0-r14}^");
+		asm("\t POP {r0}");
+		
+		// load the registers (includeing sp) from kernel - so we can use the scheduler and tcbs.
+		asm("\t LDR r0, kernelRegisters_a");
+		asm("\t LDM r0, {r0-r14}");
+		// TODO: where the fkn hell is r0?	
+	}
 
-	// save return value of swi LR
-	asm("\t PUSH {r0}");
-	asm("\t LDR r0, lrToPcPointer_a");
-	asm("\t STR lr, [r0, #0]");
-	asm("\t POP {r0}");
+	// *** taskmanager stuff ***
 	
-	// switch to task (previous) stack (because we are @ swi stack)
-	// TODO: swtich stack (SuperUserMode?) - intrinsic
-	asm("\t MRS r0, cpsr");
-    asm("\t BIC r0, r0, #0x1F  ; CLEAR MODES");
-    asm("\t ORR r0, r0, #0x1F  ; SET Super-User MODE");
-    asm("\t MSR cpsr_cf, r0");
-    // TODO: GOODBYE r0!!!!
+	// get next Task
+	Task* nextTask = globalTaskManager->getScheduler()->getNextTask(globalTaskManager->getTasks(), globalTaskManager->getActiveTask()->id);
+		
+	// if its not the same task --> context switch
+
+	// save registers of previous task
+	int i = 0;
+	while (i < 15) {
+		globalTaskManager->getActiveTask()->registers[i] = registers[i];
+		i++;
+	}
+	// save register #15 which is PC / save program counter of task (lr of interrupt)
+	globalTaskManager->getActiveTask()->registers[15] = returnAddress;
+
+	// set new active task
+	globalTaskManager->setActiveTask(nextTask);
 	
-	// save registers of stack (task stack)
-	SAVEREG;
+	// load new registers
+	i = 0;
+	while (i < 15) {
+		registers[i] = nextTask->registers[i];
+		i++;
+	}
+	// set returnAddress
+	returnAddress = nextTask->returnAddress;
 	
-	// save stack pointer of task - load field in r0 - store sp in field 
-	asm("\t LDR r0, stackPointer_a");
-	asm("\t STR sp, [r0, #0]");
+	// save kernel stack
+	asm("\t LDR r0, kernelRegisters_a");
+	asm("\t STM r0, {r0-r14}");
 	
-	// switch to kernel stack
-	asm("\t LDR r0, kernelStackPointer_a");
-	// load the value of kernelstackpointer into r1 (otherwise its just address of kernelstackpointer)
-	asm("\t LDR r1, [r0, #0]");
-	// move the register to the stackpointer - never use LDR for this! y? i dont know.
-	asm("\t MOV sp, r1");
-	// now load all registers
-	LOADREG;
+	// set new returnAddress of the IRQ thing
+	asm("\t LDR r0, returnAddress_a");
+	asm("\t LDR r0, [r0, #0]");
+	asm("\t MOV lr, r0");
 	
-	// save the task stack
-	globalTaskManager->getActiveTask()->stackPointer = stackPointer;
-	globalTaskManager->getActiveTask()->returnAddress = lrToPcPointer;
-	
-	// **** do here some scheduling functions ****
-	globalTaskManager->run();
+	// load new registers in assembler and jump over there
+	asm("\t LDR r0, registers_a");
+	asm("\t LDM r0, {r0-r14}^");
+
 }
 
 
@@ -80,10 +106,10 @@ TaskManager::TaskManager() {
 	}
 	
 	// alloc some fields
-	asm("stackPointer_a .field _stackPointer, 32");
-  	asm("funcPointer_a .field _funcPointer, 32");
-  	asm("kernelStackPointer_a .field _kernelStackPointer, 32");
-  	asm("lrToPcPointer_a .field _lrToPcPointer, 32");
+	asm("registers_a .field _registers, 32");
+	asm("kernelRegisters_a .field _kernelRegisters, 32");
+	asm("returnAddress_a .field _returnAddress, 32");
+	asm("hasStarted_a .field _hasStarted, 32");
 }
 
 /**
@@ -98,10 +124,9 @@ Task* TaskManager::createTask(std::string name, void(*function)(void)) {
 	// check if there is a free task id -> lol should never happen!
 	if (tid > 0) {
 		// create new Task
-		task = new Task(pos, name);
+		task = new Task(pos, name, function);
 		task->status = Ready;
 		task->priority = 100;
-		task->initAddr = function;
 		//task->stackPointer = 0x82000000;
 	
 		// add Task to list
@@ -139,74 +164,6 @@ void TaskManager::showTasks() {
 
 
 }
- 
-/*
- * schedule
- * this routine should be called by the IRQ?
- * 
- */
-void TaskManager::schedule() {
-	
-	// SAVEREG
-		// this -> save register in active stack
-		
-	// change stack to main stack
-	
-	// save task stack
-	
-	// check if its different task
-		// do this with scheduler
-	
-	// save main stack
-	
-	// if it is different load
-	
-		// change stack to new active stack
-		// LOADREG
-	
-	// else if its the same:
-		// RETURN to return-address	
-
-// code here ---->
-
-	// save return value of swi LR
-	asm("\t PUSH {r0}");
-	asm("\t LDR r0, lrToPcPointer_a");
-	asm("\t STR lr, [r0, #0]");
-	asm("\t POP {r0}");
-	
-	// switch to task (previous) stack (because we are @ swi stack)
-	// TODO: swtich stack (SuperUserMode?) - intrinsic
-	asm("\t MRS r0, cpsr");
-    asm("\t BIC r0, r0, #0x1F  ; CLEAR MODES");
-    asm("\t ORR r0, r0, #0x1F  ; SET Super-User MODE");
-    asm("\t MSR cpsr_cf, r0");
-    // TODO: GOODBYE r0!!!!
-	
-	// save registers of stack (task stack)
-	SAVEREG;
-	
-	// save stack pointer of task - load field in r0 - store sp in field 
-	asm("\t LDR r0, stackPointer_a");
-	asm("\t STR sp, [r0, #0]");
-	
-	// switch to kernel stack
-	asm("\t LDR r0, kernelStackPointer_a");
-	// load the value of kernelstackpointer into r1 (otherwise its just address of kernelstackpointer)
-	asm("\t LDR r1, [r0, #0]");
-	// move the register to the stackpointer - never use LDR for this! y? i dont know.
-	asm("\t MOV sp, r1");
-	// now load all registers
-	LOADREG;
-	
-	// save the task stack
-	_activeTask->stackPointer = stackPointer;
-	_activeTask->returnAddress = lrToPcPointer;
-	
-	// **** do here some scheduling functions ****
-	Task* nextTask = 
-	
-}
 
 
  /**
@@ -217,7 +174,6 @@ void TaskManager::schedule() {
 void TaskManager::run() {
  	
  	
- 	
  	while (true) {
  		_activeTask = _scheduler->getNextTask(_tasks, _activeTask->id);
 		if (_activeTask == NULL) {
@@ -225,91 +181,30 @@ void TaskManager::run() {
 			// TODO: SYSTEM ERROR
 			// or just wait :)
 		} else { 
-		
-			// TODO: avoid code verdoppelung
 			
-			// first time we start this task
-			if (_activeTask->hasBeenStarted == false) {
-				
-				// now it has been started
-				_activeTask->hasBeenStarted = true;
-				
-				// save entry point for function
-				//funcPointer = (int)_activeTask->initAddr;
-				// load stack of task
-				//stackPointer = _activeTask->stackPointer;
-				
-				// first push all register on the stack
-				SAVEREG;
-				
-				// save function Pointer in register 2
-				asm("\t LDR r0, funcPointer_a");
-    			asm("\t LDR r2, [r0, #0]");
-				
-				// save kernel stack - load field in r0 - store sp in field 
-				asm("\t LDR r0, kernelStackPointer_a");
-				asm("\t STR sp, [r0, #0]");
-			
-				// set new stackpointer to task stackpointer
-				// get value of stackpointer - not address
-				asm("\t LDR r0, stackPointer_a");
-				asm("\t LDR r1, [r0, #0]");
-				asm("\t MOV sp, r1");
-				
-				// set return jump dingens before we fk off
-				asm("\t MOV lr, pc");
-				// move to r2 - loaded function - RUN
-				asm("\t MOV pc, r2");
-				
-			
-			// otherwise return from last point
-			} OTHERWISE {
-				
-				// save entry point for function
-				funcPointer = (int)_activeTask->returnAddress;
-				// load stack of task
-				stackPointer = _activeTask->stackPointer;
-				
-				// first push all register on the stack
-				SAVEREG;
-				
-				// save function Pointer in register 2
-				// TODO: this r2 is needed at the end of the block,
-				// but overwritten @ LOADREG - it still works - why?
-				asm("\t LDR r0, funcPointer_a");
-    			asm("\t LDR r2, [r0, #0]");
-				
-				// save kernel stack - load field in r0 - store sp in field 
-				asm("\t LDR r0, kernelStackPointer_a");
-				asm("\t STR sp, [r0, #0]");
-			
-				// set new stackpointer to task stackpointer
-				// get value of stackpointer - not address
-				asm("\t LDR r0, stackPointer_a");
-				asm("\t LDR r1, [r0, #0]");
-				asm("\t MOV sp, r1");
-				
-				// load all register of new task
-				LOADREG;
-				
-				// set return jump dingens before we fk off
-				asm("\t MOV lr, pc");
-				// move to r2 - loaded function - RUN
-				asm("\t MOV pc, r2");
+			// load new registers
+			for (int q = 0; q < 16; q++) {
+				registers[q] = _activeTask->registers[q];
 			}
+			//*registers = *(_activeTask->registers);
+			
+			// save kernel stack
+			asm("\t LDR r0, kernelRegisters_a");
+			asm("\t STM r0, {r0-r14}");
+			
+			// load new registers in assembler and jump over there
+			asm("\t LDR r0, registers_a");
+			asm("\t LDR r1, [r0, #52]");
+			asm("\t LDR r2, [r0, #60]");
+			asm("\t MOV sp, r1");
+			asm("\t MOV pc, r2");
+			//asm("\t LDM r0, {r0-r14}^");
 		}
 		
 		
-		// change the stack back to the main stack here - because the task is over :)
-			// be careful - dont whine about the task stack - task is done anyway
-		// just change back to my super duper kernel stack
-		asm("\t LDR r0, kernelStackPointer_a");
-		// load the value of kernelstackpointer into r1 (otherwise its just address of kernelstackpointer)
-		asm("\t LDR r1, [r0, #0]");
-		// move the register to the stackpointer - never use LDR for this! y? i dont know.
-		asm("\t MOV sp, r1");
-		// now load all registers
-		LOADREG;
+		// load the registers (includeing sp) from kernel - so we can use the scheduler and tcbs.
+		asm("\t LDR r0, kernelRegisters_a");
+		asm("\t LDM r0, {r0-r14}");
 		
 		
 		// there are two reasons why we are here:

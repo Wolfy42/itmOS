@@ -4,34 +4,42 @@
 #include "API/dataTypes.h"
 #include "Kernel/Interrupt/IRQHandler.h"
 
-void ledToggler(void)  {
-	address target = (address)0x49032018;// GPTIMER2 -> PendingIRQs
-	*(target) |= 0x7; // reset GPTimer2 - IRQs
+void led1Toggler(void)  {
+	HalTimerDriver timer;
+	timer.clearPendingInterrupts(GPTIMER2);
 
-	printf("irq\n");
 	HalLedDriver dr;
-	if (dr.isOn(LED1))  {
-		dr.ledOn(LED2);
-		dr.ledOff(LED1);
-	}  else  {
-		dr.ledOff(LED2);
-		dr.ledOn(LED1);
-	}
+	dr.toggle(LED1);
 
-	address target3 = (address)0x49032028;//m_baseAddress + GPTIMER_TCRR_OFFSET;
-	*(target3) &= 0; // set 0 to set internal counter
+	timer.resetInternalCounter(GPTIMER2);
+}
+
+void led2Toggler(void)  {
+	HalTimerDriver timer;
+	timer.clearPendingInterrupts(GPTIMER3);
+
+	HalLedDriver dr;
+	dr.toggle(LED2);
+
+	timer.resetInternalCounter(GPTIMER3);
 }
 
 
-int main___()  {
-
-
+int main()  {
 	IRQHandler hand;
 
-	hand.registerHandler(38, ledToggler);
+	hand.registerHandler(38, led1Toggler);
+	hand.registerHandler(39, led2Toggler);
 
 	//_enable_interrupts( ) ;
-	HalTimerDriver dr;
+	
+	HalTimerDriver timer;
+	timer.init(GPTIMER2, 1000000);
+	timer.start(GPTIMER2, GPT_IRQMODE_MATCH);
+
+	timer.init(GPTIMER3, 2000000);
+	timer.start(GPTIMER3, GPT_IRQMODE_MATCH);
+	
 	_enable_interrupts( ) ;
 	// --> (*0x482000B8) --> man sieht dass bit auf 1 springt und somit sollte der Interrupt ausgelöst werden
 

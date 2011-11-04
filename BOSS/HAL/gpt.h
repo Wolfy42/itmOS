@@ -1,7 +1,7 @@
 #ifndef GPT_H_
 #define GPT_H_
 
-#include "../API/dataTypes.h"
+#include "API/dataTypes.h"
 
 // Timer base adresses
 #define GPTIMER1_BASE (address)0x48318000
@@ -16,11 +16,36 @@
 #define GPTIMER10_BASE (address)0x48086000
 #define GPTIMER11_BASE (address)0x48088000
 
+
 // Timer offset adresses
-#define GPTIMER_TIER_OFFSET 0x01C	// Enable Interrupt
-#define GPTIMER_TCLR_OFFSET 0x024	// Optional features
-#define GPTIMER_TCRR_OFFSET 0x028	// Internal Counter
-#define GPTIMER_TLDR_OFFSET 0x02C	// Timer load values
-#define GPTIMER_TMAR_OFFSET 0x038	// Value to be compared with TCRR
+#define GPT_TIER_OFFSET 0x1C	// This register controls (enable/disable) the interrupt events
+#define GPT_TISR_OFFSET 0x18	// This register shows which interrupt events are pending inside the module
+#define GPT_TCLR_OFFSET 0x24	// This register controls optional features specific to the timer functionality
+#define GPT_TCRR_OFFSET 0x28	// This register holds the value of the internal counter
+#define GPT_TLDR_OFFSET 0x2C	// This register holds the timer load values
+#define GPT_TMAR_OFFSET 0x38	// This register holds the value to be compared with the counter value (TCRR)
+
+
+// TIER Fields 
+enum GptInterruptMode {
+	GPT_IRQMODE_CAPTURE = 2,		// Enable capture Interrupt
+	GPT_IRQMODE_OVERFLOW = 1,		// Enable overflow Interrupt
+	GPT_IRQMODE_MATCH = 0			// Enable match Interrupt
+};
+
+
+// TISR Fields 
+#define GPT_PENDING_CAPTURE  	2	// Pending capture interrupt status
+#define GPT_PENDING_OVERFLOW	1	// Pending overflow interrupt status
+#define GPT_PENDING_MATCH 		0	// Pending match interrupt status
+
+
+// TCLR Fields
+#define GPT_TCLR_COMPARE 	6	// Compare enable
+#define GPT_TCLR_AUTORELOAD 1	// Autoreload mode
+#define GPT_TCLR_START 		0	// Start/stop timer control
+
+
+
 
 #endif /*GPT_H_*/

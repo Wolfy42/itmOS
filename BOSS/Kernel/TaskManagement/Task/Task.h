@@ -2,8 +2,9 @@
 #define TASK_H_
 
 #define REG_LENGTH 16
+#define STACK_POINTER 13
+#define PROGRAM_COUNTER 15
 
-#include "../../../API/dataTypes.h"
 #include <string>
 
 typedef int TID_t;
@@ -13,13 +14,8 @@ enum Status { Ready, Blocked, Running };
 class Task {
 public:
 	// empty Constructors
-	Task(TID_t id, std::string name);
+	Task(TID_t id, std::string name, void(*initAddr)(void));
 	virtual ~Task();
-
-	
-	// do we need a code segment?
-	// if not here's at least a link to the start function
-	void(*initAddr)(void);
 
 	// id of task
 	TID_t id;
@@ -30,8 +26,8 @@ public:
 	// priority of task (from 0 to 20 -> higher = more important)
 	int priority;
 	
-	// stackpointer
-	int stackPointer;
+	// registers
+	int registers[REG_LENGTH];
 		
 	// return address
 	int returnAddress;

@@ -11,7 +11,6 @@
 int swi ();
 
 
-
 class TaskManager {
 public:
 	TaskManager();
@@ -25,20 +24,17 @@ public:
 	
 	// shows all runnig tasks
 	void showTasks();
-
-	// schedules a task called by interrupt
-	void schedule();
 	
 	// run all the tasks (this should be the start routine)
 	void run();
 	
 	// getter/setter
-	//std::list<Task*> getTasks() const { return _tasks; }
+	Task** getTasks() { return _tasks; }
 	
-	Scheduler* getScheduler() const { return _scheduler; }
+	Scheduler* getScheduler() { return _scheduler; }
 	void setScheduler(Scheduler* scheduler) { _scheduler = scheduler; }
 	
-	Task* getActiveTask() const { return _activeTask; }
+	Task* getActiveTask() { return _activeTask; }
 	void setActiveTask(Task* activeTask) { _activeTask = activeTask; }
 	
 private:
