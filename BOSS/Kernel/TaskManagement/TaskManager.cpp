@@ -204,7 +204,7 @@ void TaskManager::schedule() {
 	_activeTask->returnAddress = lrToPcPointer;
 	
 	// **** do here some scheduling functions ****
-	run();
+	Task* nextTask = 
 	
 }
 
@@ -274,6 +274,8 @@ void TaskManager::run() {
 				SAVEREG;
 				
 				// save function Pointer in register 2
+				// TODO: this r2 is needed at the end of the block,
+				// but overwritten @ LOADREG - it still works - why?
 				asm("\t LDR r0, funcPointer_a");
     			asm("\t LDR r2, [r0, #0]");
 				

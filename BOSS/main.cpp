@@ -22,7 +22,9 @@ void ledToggler(void)  {
 	*(target3) &= 0; // set 0 to set internal counter
 }
 
-int main_()  {
+
+int main___()  {
+
 
 	IRQHandler hand;
 
