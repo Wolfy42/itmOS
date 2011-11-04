@@ -2,26 +2,47 @@
 #define HALTIMERDRIVER_H_
 
 #include "TimerClass.h"
-
-#define GPTIMER_TCLR_ST address 0x00000001	// 1 = Start the timer, 0 = stop the timer
-#define GPTIMER_TCLR_AR address 0x00000010	// 1 = Autoreload mode overflow, 0 = One-shot mode overflow
-#define GPTIMER_TCLR_CE address 0x01000000	// 1 = Compare enabled, 0 = Compare disabled
+#include "HAL/gpt.h"
 
 enum Timer {
-	GPTIMER1 = 0,
-	GPTIMER2 = 1
+	GPTIMER1 = 1,
+	GPTIMER2 = 2,
+	GPTIMER3 = 3,
+	GPTIMER4 = 4,
+	GPTIMER5 = 5,
+	GPTIMER6 = 6,
+	GPTIMER7 = 7,
+	GPTIMER8 = 8,
+	GPTIMER9 = 9,
+	GPTIMER10 = 10,
+	GPTIMER11 = 11
 };
 
 class HalTimerDriver {
 	private:
 		TimerClass m_timer1;
+		TimerClass m_timer2;
+		TimerClass m_timer3;
+		TimerClass m_timer4;
+		TimerClass m_timer5;
+		TimerClass m_timer6;
+		TimerClass m_timer7;
+		TimerClass m_timer8;
+		TimerClass m_timer9;
+		TimerClass m_timer10;
+		TimerClass m_timer11;		
+		
 		TimerClass timerClassForEnum(Timer timerEnum);
 		
 	public:
 		HalTimerDriver();
 		virtual ~HalTimerDriver();
 		
-		void init();
+		void init(Timer timer, int compareValue);
+		void start(Timer timer, GptInterruptMode mode);
+		void stop(Timer timer);
+		void clearPendingInterrupts(Timer timer);
+		void resetInternalCounter(Timer timer);
 };
 
 #endif /*HALTIMERDRIVER_H_*/
