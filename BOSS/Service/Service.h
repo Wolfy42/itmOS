@@ -5,12 +5,14 @@
 
 class Service {
 	protected:
+        void registerService(int id);
 		virtual void start() = 0;
-		byte* readCommand(int commandId); // Blocking until a command is available
 		void writeResponse(byte command[]);
 	public:
 		Service();
 		virtual ~Service();
+        
+        virtual void command(int params[]) = 0;
 		
 		bool run();
 		virtual bool stop() = 0;

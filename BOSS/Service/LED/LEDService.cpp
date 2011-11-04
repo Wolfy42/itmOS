@@ -25,32 +25,31 @@ LEDState LEDService::getLEDState(LED led) {
 	return (LEDState)_driver.read(position)[0];
 }
 
+void LEDService::command(int params[]) {
+    
+    LED led = (LED)params[1];
+    LEDServiceCommand command = (LEDServiceCommand)params[2];
+    switch (command) {
+        case SERVICE_SWITCH_LED_OFF:
+            switchLEDOff(led);
+            break;
+        case SERVICE_SWITCH_LED_ON:
+            switchLEDOn(led);
+            break;
+        case SERVICE_TOGGLE_LED:
+            toggleLED(led);
+            break;
+        case SERVICE_GET_LED_STATUS:
+            LEDState state = getLEDState(led);
+            byte result[] = {led, state};
+            writeResponse(result);
+            break;
+    }
+}
 void LEDService::start() {
+    registerService(LED_SERVICE_CALL);
 	_running = true;
-	while (_running) {
-		byte* cmd = readCommand(LED_SERVICE_CALL);
-		LED led = (LED)cmd[0];
-		LEDServiceCommand command = (LEDServiceCommand)cmd[1];
-		switch (command) {
-			case SERVICE_SWITCH_LED_OFF:
-				printf("Switch LED%i off\n", led+1);
-				switchLEDOff(led);
-				break;
-			case SERVICE_SWITCH_LED_ON:
-				printf("Switch LED%i on\n", led+1);
-				switchLEDOn(led);
-				break;
-			case SERVICE_TOGGLE_LED:
-				printf("Toggle LED%i\n", led+1);
-				toggleLED(led);
-				break;
-			case SERVICE_GET_LED_STATUS:
-				LEDState state = getLEDState(led);
-				byte result[] = {led, state};
-				writeResponse(result);
-				break;
-		}
-	}
+//	while (_running);
 }
 bool LEDService::stop() {
 	_running = false;

@@ -43,7 +43,7 @@ void task4function() {
 	}
 }
 
-int main() {
+int _main() {
 
 	// create some tasks
 	TaskManager* manager = new TaskManager();
