@@ -43,10 +43,12 @@ void task4function() {
 	}
 }
 
-int _main() {
+int main() {
 
+	hasStarted = 0;
 	// create some tasks
 	TaskManager* manager = new TaskManager();
+	Task* dummy = new Task(7, "dummy", NULL);
 	manager->createTask("task 1", task1function);
 	manager->createTask("task 2", task2function);
 	manager->createTask("task 3", task3function);
@@ -57,6 +59,7 @@ int _main() {
 	// TODO: LOL!!!LO!LO!L!O!LOLOOOOLOLOL es l�scht alles?
 //	manager->deleteTask(3);
 	
+	swi();
 	manager->run();
 
 	return 0;

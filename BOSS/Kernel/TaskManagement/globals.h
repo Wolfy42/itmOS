@@ -9,9 +9,9 @@
 #define MAX_TASKS 256
 
 // save stackPointer of a task
-extern int stackPointer;
-extern int funcPointer;
-extern int kernelStackPointer;
-extern int lrToPcPointer;
+extern int registers[16];
+extern int kernelRegisters[16];
+extern int returnAddress;
+extern int hasStarted;
 
 #endif /*GLOBALS_H_*/
