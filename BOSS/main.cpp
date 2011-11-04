@@ -25,7 +25,7 @@ extern "C"  void c_intIRQ()  {
 	printf("irq \n");
 }
 
-int main()  {
+int main___()  {
 
 	//clear 0 -> 2
 	// --> Enable Interrupt from GPTIMER2
