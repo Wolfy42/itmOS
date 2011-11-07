@@ -23,72 +23,77 @@ TaskManager* globalTaskManager;
 
 // this is an interrupt and therefore it has to be c 
 // so this is not par of the Class Taskmanager
-// same code in schedule();
-#pragma TASK
-#pragma INTERRUPT (SWI) ;
-extern "C" void c_intSWI()  {
-	
-	if (hasStarted == 0) {
-		hasStarted = 1;
-	} else {
-		// save the return address of interrupt == pc of task
-		asm("\t LDR r0, returnAddress_a");
-		asm("\t STR lr, [r0, #0]");
-	
-		// save registers of app mode task
-		asm("\t PUSH {r0}");
-		asm("\t LDR r0, registers_a");
-		asm("\t STM r0, {r0-r14}^");
-		asm("\t POP {r0}");
-		
-		// load the registers (includeing sp) from kernel - so we can use the scheduler and tcbs.
-		asm("\t LDR r0, kernelRegisters_a");
-		asm("\t LDM r0, {r0-r14}");
-		// TODO: where the fkn hell is r0?	
-	}
-
-	// *** taskmanager stuff ***
-	
-	// get next Task
-	Task* nextTask = globalTaskManager->getScheduler()->getNextTask(globalTaskManager->getTasks(), globalTaskManager->getActiveTask()->id);
-		
-	// if its not the same task --> context switch
-
-	// save registers of previous task
-	int i = 0;
-	while (i < 15) {
-		globalTaskManager->getActiveTask()->registers[i] = registers[i];
-		i++;
-	}
-	// save register #15 which is PC / save program counter of task (lr of interrupt)
-	globalTaskManager->getActiveTask()->registers[15] = returnAddress;
-
-	// set new active task
-	globalTaskManager->setActiveTask(nextTask);
-	
-	// load new registers
-	i = 0;
-	while (i < 15) {
-		registers[i] = nextTask->registers[i];
-		i++;
-	}
-	// set returnAddress
-	returnAddress = nextTask->returnAddress;
-	
-	// save kernel stack
-	asm("\t LDR r0, kernelRegisters_a");
-	asm("\t STM r0, {r0-r14}");
-	
-	// set new returnAddress of the IRQ thing
-	asm("\t LDR r0, returnAddress_a");
-	asm("\t LDR r0, [r0, #0]");
-	asm("\t MOV lr, r0");
-	
-	// load new registers in assembler and jump over there
-	asm("\t LDR r0, registers_a");
-	asm("\t LDM r0, {r0-r14}^");
-
-}
+//// same code in schedule();
+//#pragma TASK
+//#pragma INTERRUPT (SWI) ;
+//extern "C" void c_intSWI()  {
+//	
+//	if (hasStarted == 0) {
+//		hasStarted = 1;
+//	} else {
+//		// save the return address of interrupt == pc of task
+//		asm("\t PUSH {r0}");
+//		asm("\t LDR r0, returnAddress_a");
+//		asm("\t STR lr, [r0, #0]");
+//		asm("\t POP {r0}");
+//	
+//		// save registers of app mode task
+//		asm("\t PUSH {r14}");
+//		asm("\t LDR r14, registers_a");
+//		asm("\t STM r14, {r0-r14}^");
+//		asm("\t POP {r14}");
+//		
+//		// load the registers (includeing sp) from kernel - so we can use the scheduler and tcbs.
+//		asm("\t LDR r0, kernelRegisters_a");
+//		asm("\t LDM r0, {r0-r14}");
+//
+//		// TODO: where the fkn hell is r0?	
+//	}
+//
+//	
+//
+//	// *** taskmanager stuff ***
+//	
+//	// get next Task
+//	Task* nextTask = globalTaskManager->getScheduler()->getNextTask(globalTaskManager->getTasks(), globalTaskManager->getActiveTask()->id);
+//		
+//	// if its not the same task --> context switch
+//
+//	// save registers of previous task
+//	int i = 0;
+//	while (i < 15) {
+//		globalTaskManager->getActiveTask()->registers[i] = registers[i];
+//		i++;
+//	}
+//	// save register #15 which is PC / save program counter of task (lr of interrupt)
+//	globalTaskManager->getActiveTask()->registers[15] = returnAddress;
+//
+//	// set new active task
+//	globalTaskManager->setActiveTask(nextTask);
+//	
+//	// load new registers
+//	i = 0;
+//	while (i < 15) {
+//		registers[i] = nextTask->registers[i];
+//		i++;
+//	}
+//	// set returnAddress
+//	returnAddress = nextTask->returnAddress;
+//	
+//	// save kernel stack
+//	asm("\t LDR r0, kernelRegisters_a");
+//	asm("\t STM r0, {r0-r14}");
+//	
+//	// set new returnAddress of the IRQ thing
+//	asm("\t LDR r0, returnAddress_a");
+//	asm("\t LDR r0, [r0, #0]");
+//	asm("\t MOV lr, r0");
+//	
+//	// load new registers in assembler and jump over there
+//	asm("\t LDR r0, registers_a");
+//	asm("\t LDM r0, {r0-r14}^");
+//
+//}
 
 
 /**
