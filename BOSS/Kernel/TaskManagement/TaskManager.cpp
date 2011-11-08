@@ -7,12 +7,8 @@
 // global variables
 asm("\t .bss _registers, 64");
 asm("\t .global _registers");
-asm("\t .bss _kernelRegisters, 64");
-asm("\t .global _kernelRegisters");
 asm("\t .bss _returnAddress, 4");
 asm("\t .global _returnAddress");
-asm("\t .bss _hasStarted, 4");
-asm("\t .global _hasStarted");
 
 class TaskManager;
 TaskManager* globalTaskManager;
@@ -21,7 +17,7 @@ TaskManager* globalTaskManager;
 
 // this is an interrupt and therefore it has to be c 
 // so this is not par of the Class Taskmanager
-// same code in schedule();
+
 #pragma TASK
 #pragma INTERRUPT (SWI) ;
 extern "C" void c_intSWI()  {
@@ -64,10 +60,7 @@ extern "C" void c_intSWI()  {
 	asm("\t LDM r0, {r0-r14}^");
 	
 	//Back to User mode
-	asm("\t MRS r0, cpsr");
-	asm("\t BIC r0, r0, #0x1F  ; CLEAR MODES");
-	asm("\t ORR r0, r0, #0x10  ; SET User MODE");
-	asm("\t MSR cpsr_cf, r0");
+	asm("\t CPS 0x10");
 
 	// set the PC to the Task-PC
 	asm("\t LDR r0, returnAddress_a");
@@ -75,12 +68,9 @@ extern "C" void c_intSWI()  {
 	asm("\t MOV pc, r0");
 }
 
-
 // alloc some fields
 asm("registers_a .field _registers, 32");
-asm("kernelRegisters_a .field _kernelRegisters, 32");
 asm("returnAddress_a .field _returnAddress, 32");
-asm("hasStarted_a .field _hasStarted, 32");
 
 /**
  * Constructor
