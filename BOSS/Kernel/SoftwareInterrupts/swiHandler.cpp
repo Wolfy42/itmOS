@@ -37,7 +37,7 @@ void callService(int params[]) {
 
 }
 
-#pragma INTERRUPT (SWI) ;
+/*#pragma INTERRUPT (SWI) ;
 extern "C" void c_intSWI(int swiNumber, int* parameters)  {
     _disable_interrupts( ) ;
     static byte initialized = 0;
@@ -71,4 +71,4 @@ extern "C" void c_intSWI(int swiNumber, int* parameters)  {
             break;
     }
     _enable_interrupts( ) ;
-}
+}*/

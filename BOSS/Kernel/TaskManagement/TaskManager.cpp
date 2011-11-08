@@ -19,77 +19,68 @@ TaskManager* globalTaskManager;
 
 // *** globals end ***
 
-
-
 // this is an interrupt and therefore it has to be c 
 // so this is not par of the Class Taskmanager
 // same code in schedule();
 #pragma TASK
 #pragma INTERRUPT (SWI) ;
 extern "C" void c_intSWI()  {
-	
-	if (hasStarted == 0) {
-		hasStarted = 1;
-	} else {
-		// save the return address of interrupt == pc of task
-		asm("\t LDR r0, returnAddress_a");
-		asm("\t STR lr, [r0, #0]");
-	
-		// save registers of app mode task
-		asm("\t PUSH {r0}");
-		asm("\t LDR r0, registers_a");
-		asm("\t STM r0, {r0-r14}^");
-		asm("\t POP {r0}");
-		
-		// load the registers (includeing sp) from kernel - so we can use the scheduler and tcbs.
-		asm("\t LDR r0, kernelRegisters_a");
-		asm("\t LDM r0, {r0-r14}");
-		// TODO: where the fkn hell is r0?	
-	}
 
-	// *** taskmanager stuff ***
-	
-	// get next Task
-	Task* nextTask = globalTaskManager->getScheduler()->getNextTask(globalTaskManager->getTasks(), globalTaskManager->getActiveTask()->id);
-		
-	// if its not the same task --> context switch
+	//TODO: r0 is lost...
 
+	asm("\t LDR r0, registers_a");
+	asm("\t STM r0, {r0-r14}^");
+
+	asm("\t LDR r0, returnAddress_a");
+	asm("\t STR lr, [r0, #0]");
 	// save registers of previous task
-	int i = 0;
-	while (i < 15) {
+	for (int i=0; i<15; i++) {
 		globalTaskManager->getActiveTask()->registers[i] = registers[i];
-		i++;
 	}
 	// save register #15 which is PC / save program counter of task (lr of interrupt)
 	globalTaskManager->getActiveTask()->registers[15] = returnAddress;
+
+	/*
+	 *
+	 * Do some interrupt handling?
+	 *
+	 */
+
+	// get next Task
+	Task* nextTask = globalTaskManager->getScheduler()->getNextTask(globalTaskManager->getTasks(), globalTaskManager->getActiveTask()->id);
 
 	// set new active task
 	globalTaskManager->setActiveTask(nextTask);
 	
 	// load new registers
-	i = 0;
-	while (i < 15) {
+	for (int i=0; i<15; i++) {
 		registers[i] = nextTask->registers[i];
-		i++;
 	}
 	// set returnAddress
-	returnAddress = nextTask->returnAddress;
-	
-	// save kernel stack
-	asm("\t LDR r0, kernelRegisters_a");
-	asm("\t STM r0, {r0-r14}");
-	
-	// set new returnAddress of the IRQ thing
-	asm("\t LDR r0, returnAddress_a");
-	asm("\t LDR r0, [r0, #0]");
-	asm("\t MOV lr, r0");
+	returnAddress = nextTask->registers[15];
 	
 	// load new registers in assembler and jump over there
 	asm("\t LDR r0, registers_a");
 	asm("\t LDM r0, {r0-r14}^");
+	
+	//Back to User mode
+	asm("\t MRS r0, cpsr");
+	asm("\t BIC r0, r0, #0x1F  ; CLEAR MODES");
+	asm("\t ORR r0, r0, #0x10  ; SET User MODE");
+	asm("\t MSR cpsr_cf, r0");
 
+	// set the PC to the Task-PC
+	asm("\t LDR r0, returnAddress_a");
+	asm("\t LDR r0, [r0, #0]");
+	asm("\t MOV pc, r0");
 }
 
+
+// alloc some fields
+asm("registers_a .field _registers, 32");
+asm("kernelRegisters_a .field _kernelRegisters, 32");
+asm("returnAddress_a .field _returnAddress, 32");
+asm("hasStarted_a .field _hasStarted, 32");
 
 /**
  * Constructor
@@ -104,12 +95,6 @@ TaskManager::TaskManager() {
 	for (int i = 0; i < MAX_TASKS; i++) {
 		_tids[i] = 0;
 	}
-	
-	// alloc some fields
-	asm("registers_a .field _registers, 32");
-	asm("kernelRegisters_a .field _kernelRegisters, 32");
-	asm("returnAddress_a .field _returnAddress, 32");
-	asm("hasStarted_a .field _hasStarted, 32");
 }
 
 /**
@@ -173,50 +158,8 @@ void TaskManager::showTasks() {
   */
 void TaskManager::run() {
  	
- 	
  	while (true) {
- 		_activeTask = _scheduler->getNextTask(_tasks, _activeTask->id);
-		if (_activeTask == NULL) {
-			
-			// TODO: SYSTEM ERROR
-			// or just wait :)
-		} else { 
-			
-			// load new registers
-			for (int q = 0; q < 16; q++) {
-				registers[q] = _activeTask->registers[q];
-			}
-			//*registers = *(_activeTask->registers);
-			
-			// save kernel stack
-			asm("\t LDR r0, kernelRegisters_a");
-			asm("\t STM r0, {r0-r14}");
-			
-			// load new registers in assembler and jump over there
-			asm("\t LDR r0, registers_a");
-			asm("\t LDR r1, [r0, #52]");
-			asm("\t LDR r2, [r0, #60]");
-			asm("\t MOV sp, r1");
-			asm("\t MOV pc, r2");
-			//asm("\t LDM r0, {r0-r14}^");
-		}
-		
-		
-		// load the registers (includeing sp) from kernel - so we can use the scheduler and tcbs.
-		asm("\t LDR r0, kernelRegisters_a");
-		asm("\t LDM r0, {r0-r14}");
-		
-		
-		// there are two reasons why we are here:
-			// 1. no Task running at all
-			// 2. the Task has finished and is ready to die
-		if (_activeTask != NULL) {
-		
-
-			deleteTask(_activeTask);
-			//_activeTask = _scheduler->getNextTask(_tasks, _activeTask->id);	
-
-		}
+ 		// idle-Task?
  	}
 }
 

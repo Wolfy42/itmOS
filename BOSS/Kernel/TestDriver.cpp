@@ -4,42 +4,38 @@
 #include "TaskManagement/TaskManager.h"
 
 void task1function() {
-
+	printf("start task1\n");
 	int j = 31;
 	int k = 40;
 	for (int i = 0; i < 2; i++) {
-		
-		printf("task1 %d %d %d\n",i,j,k);
 		swi();
+		printf("task1 %d %d %d\n",i,j,k);
 	}	
 }
 
 void task2function() {
-
+	printf("start task2\n");
 	int j = 99;
 	int k = 70;
 	for (int i = 0; i < 5; i++) {
-		
-		printf("task2 %d %d %d\n",i,j,k);	
 		swi();
+		printf("task2 %d %d %d\n",i,j,k);	
 	}	
 }
 
 void task3function() {
-
+	printf("start task3\n");
 	for (int i = 0; i < 5; i++) {
-
-		printf("task3\n");
 		swi();
+		printf("task3\n");
 	}
 }
 
 void task4function() {
-
+	printf("start task4\n");
 	for (int i = 0; i < 5; i++) {
-
-		printf("task4\n");
 		swi();
+		printf("task4\n");
 	}
 }
 

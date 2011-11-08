@@ -25,7 +25,7 @@ void led2Toggler(void)  {
 }
 
 
-int main()  {
+int main_()  {
 	IRQHandler hand;
 
 	hand.registerHandler(38, led1Toggler);

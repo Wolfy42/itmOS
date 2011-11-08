@@ -29,9 +29,6 @@ public:
 	// registers
 	int registers[REG_LENGTH];
 		
-	// return address
-	int returnAddress;
-	
 	// already started
 	bool hasBeenStarted;
 };
