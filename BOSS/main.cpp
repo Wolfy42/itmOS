@@ -2,7 +2,7 @@
 #include "HAL/Timer/HalTimerDriver.h"
 #include "HAL/LED/HalLedDriver.h"
 #include "API/dataTypes.h"
-#include "Kernel/Interrupt/IRQHandler.h"
+//#include "Kernel/Interrupt/IRQHandler.h"
 
 void led1Toggler(void)  {
 	HalTimerDriver timer;
@@ -26,10 +26,10 @@ void led2Toggler(void)  {
 
 
 int main_()  {
-	IRQHandler hand;
-
-	hand.registerHandler(38, led1Toggler);
-	hand.registerHandler(39, led2Toggler);
+//	IRQHandler hand;
+//
+//	hand.registerHandler(38, led1Toggler);
+//	hand.registerHandler(39, led2Toggler);
 
 	//_enable_interrupts( ) ;
 	
