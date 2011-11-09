@@ -76,6 +76,7 @@ asm("returnAddress_a .field _returnAddress, 32");
  * Constructor
  */
 TaskManager::TaskManager() {
+
 	_scheduler = new Scheduler();
 	_activeTask = NULL;
 	globalTaskManager = this;
