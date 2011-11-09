@@ -36,39 +36,39 @@ void callService(int params[]) {
     }
 
 }
-//
-//#pragma INTERRUPT (SWI) ;
-//extern "C" void c_intSWI(int swiNumber, int* parameters)  {
-//    _disable_interrupts( ) ;
-//    static byte initialized = 0;
-//
-//    switch (swiNumber) {
-//        case INIT:
-//            if (initialized == 0) {
-//                init();
-//                initialized = 1;
-//            }
-//            break;
-//        case EXIT:
-//            break;
-//        case KILL:
-//            break;
-//        case EXEC:
-//            break;
-//        case FORK:
-//            break;
-//        case YIELD:
-//            break;
-//        case REGISTER_SERVICE:
-//            registerService(parameters);
-//            break;
-//        case SERVICE_CALL:
-//            callService(parameters);
-//            break;
-//        case SERVICE_RESPONSE:
-//            break;
-//        default:
-//            break;
-//    }
-//    _enable_interrupts( ) ;
-//}
+
+#pragma INTERRUPT (SWI) ;
+extern "C" void c_intSWI(int swiNumber, int* parameters)  {
+    _disable_interrupts( ) ;
+    static byte initialized = 0;
+
+    switch (swiNumber) {
+        case INIT:
+            if (initialized == 0) {
+                init();
+                initialized = 1;
+            }
+            break;
+        case EXIT:
+            break;
+        case KILL:
+            break;
+        case EXEC:
+            break;
+        case FORK:
+            break;
+        case YIELD:
+            break;
+        case REGISTER_SERVICE:
+            registerService(parameters);
+            break;
+        case SERVICE_CALL:
+            callService(parameters);
+            break;
+        case SERVICE_RESPONSE:
+            break;
+        default:
+            break;
+    }
+    _enable_interrupts( ) ;
+}

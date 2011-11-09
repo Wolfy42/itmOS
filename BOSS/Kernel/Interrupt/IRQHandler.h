@@ -4,6 +4,8 @@
 
 #include "API/dataTypes.h"
 #include "Config.h"
+#include "HAL/Timer/TimerClass.h"
+
 
 class IRQHandler {
 public:
