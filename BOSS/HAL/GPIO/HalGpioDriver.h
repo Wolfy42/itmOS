@@ -5,6 +5,7 @@
 
 class HalGpioDriver {
     private:
+        address m_oeAddress;
         address m_dataOutAddress;
         address m_setDataOutAddress;
         address m_clearDataoutAddress;
@@ -13,7 +14,7 @@ class HalGpioDriver {
         int m_pinNumber;
         bool m_isInput;
         
-        void initControl(address controlAddress, int controlOffset, address oeAddress, bool isInput);
+        void initControl(address controlAddress, int controlOffset, bool isInput);
     public:
     	HalGpioDriver(int gpioPortNumber, bool isInput);
     	virtual ~HalGpioDriver();

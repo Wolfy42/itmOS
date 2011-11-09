@@ -7,36 +7,42 @@ HalGpioDriver::HalGpioDriver(int gpioNumber, bool isInput): m_isInput(isInput), 
     
     switch (m_portNumber) {
         case 1:
+            m_oeAddress = GPIO_OE_GPIO1;
             m_dataOutAddress = GPIO_DATAOUT_GPIO1;
             m_setDataOutAddress = GPIO_SETDATAOUT_GPIO1;
             m_clearDataoutAddress = GPIO_CLEARDATAOUT_GPIO1;
             m_dataInAddress = GPIO_DATAIN_GPIO1;
             break;        
         case 2:
+            m_oeAddress = GPIO_OE_GPIO2;
             m_dataOutAddress = GPIO_DATAOUT_GPIO2;
             m_setDataOutAddress = GPIO_SETDATAOUT_GPIO2;
             m_clearDataoutAddress = GPIO_CLEARDATAOUT_GPIO2;
             m_dataInAddress = GPIO_DATAIN_GPIO2;
             break;
         case 3:
+            m_oeAddress = GPIO_OE_GPIO3;
             m_dataOutAddress = GPIO_DATAOUT_GPIO3;
             m_setDataOutAddress = GPIO_SETDATAOUT_GPIO3;
             m_clearDataoutAddress = GPIO_CLEARDATAOUT_GPIO3;
             m_dataInAddress = GPIO_DATAIN_GPIO3;
             break;
         case 4:
+            m_oeAddress = GPIO_OE_GPIO4;
             m_dataOutAddress = GPIO_DATAOUT_GPIO4;
             m_setDataOutAddress = GPIO_SETDATAOUT_GPIO4;
             m_clearDataoutAddress = GPIO_CLEARDATAOUT_GPIO4;
             m_dataInAddress = GPIO_DATAIN_GPIO4;
             break;
         case 5:
+            m_oeAddress = GPIO_OE_GPIO5;
             m_dataOutAddress = GPIO_DATAOUT_GPIO5;
             m_setDataOutAddress = GPIO_SETDATAOUT_GPIO5;
             m_clearDataoutAddress = GPIO_CLEARDATAOUT_GPIO5;
             m_dataInAddress = GPIO_DATAIN_GPIO5;
             break;
         case 6:
+            m_oeAddress = GPIO_OE_GPIO6;
             m_dataOutAddress = GPIO_DATAOUT_GPIO6;
             m_setDataOutAddress = GPIO_SETDATAOUT_GPIO6;
             m_clearDataoutAddress = GPIO_CLEARDATAOUT_GPIO6;
@@ -47,13 +53,13 @@ HalGpioDriver::HalGpioDriver(int gpioNumber, bool isInput): m_isInput(isInput), 
     }
     switch (gpioNumber) {
         case 7:
-            initControl(CONTROL_GPIO_7, 0, GPIO_OE_GPIO1, isInput);
+            initControl(CONTROL_GPIO_7, 0, isInput);
             break;
         case 149:
-            initControl(CONTROL_GPIO_149, 0, GPIO_OE_GPIO5, isInput);
+            initControl(CONTROL_GPIO_149, 0, isInput);
             break;
         case 150:
-            initControl(CONTROL_GPIO_150, 16, GPIO_OE_GPIO5, isInput);
+            initControl(CONTROL_GPIO_150, 16, isInput);
             break;
         default:
             break;
@@ -64,7 +70,7 @@ HalGpioDriver::HalGpioDriver(int gpioNumber, bool isInput): m_isInput(isInput), 
 HalGpioDriver::~HalGpioDriver() {
 }
 
-void HalGpioDriver::initControl(address controlAddress, int controlOffset, address oeAddress, bool isInput) {
+void HalGpioDriver::initControl(address controlAddress, int controlOffset, bool isInput) {
     if (m_portNumber == 1) {
         // enable gpio1 clock
         setBit(((address)0x48004C00), 3);
@@ -85,9 +91,9 @@ void HalGpioDriver::initControl(address controlAddress, int controlOffset, addre
         // enable input
         setBit(controlAddress, 8 + controlOffset);
         
-        setBit(oeAddress, m_pinNumber);
+        setBit(m_oeAddress, m_pinNumber);
     } else {
-        unsetBit(oeAddress, m_pinNumber);
+        unsetBit(m_oeAddress, m_pinNumber);
     }
 }
 void HalGpioDriver::set() {
