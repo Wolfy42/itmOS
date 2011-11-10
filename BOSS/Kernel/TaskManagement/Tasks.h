@@ -3,9 +3,6 @@
 
 #define MAX_TASKS 256
 
-typedef volatile unsigned int* address;
-#define INTCPS_CONTROL (address) 0x48200048
-#define INTCPS_SIR_IRQ (address) 0x48200040
 
 #include "HAL/Timer/HalTimerDriver.h"
 #include <stdlib.h>
