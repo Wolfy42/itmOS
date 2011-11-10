@@ -1,17 +1,9 @@
 #ifndef LEDSERVICE_H_
 #define LEDSERVICE_H_
 
-#include "../../Driver/LED/LEDDriver.h"
-#include "../Service.h"
-#include "../../API/serviceCalls.h"
-
-
-enum LEDServiceCommand {
-	SERVICE_TOGGLE_LED,
-	SERVICE_SWITCH_LED_ON,
-	SERVICE_SWITCH_LED_OFF,
-	SERVICE_GET_LED_STATUS
-};
+#include <Driver/LED/LEDDriver.h>
+#include <Service/Service.h>
+#include <API/serviceCalls.h>
 
 class LEDService : public Service {
 	private:

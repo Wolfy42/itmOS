@@ -1,5 +1,5 @@
-#include "../../API/serviceCalls.h"
-#include "../../API/systemCalls.h"
+#include <API/serviceCalls.h>
+#include <API/systemCalls.h>
 
 #include "softwareInterrupt.h"
 
