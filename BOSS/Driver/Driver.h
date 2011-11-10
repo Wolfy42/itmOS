@@ -1,7 +1,7 @@
 #ifndef DRIVER_H_
 #define DRIVER_H_
 
-#include "../API/dataTypes.h"
+#include "API/dataTypes.h"
 
 class Driver {
 	public:

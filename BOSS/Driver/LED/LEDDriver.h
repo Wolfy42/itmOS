@@ -1,8 +1,8 @@
 #ifndef LEDDRIVER_H_
 #define LEDDRIVER_H_
 
-#include "../Driver.h"
-#include "../../HAL/LED/HalLedDriver.h"
+#include "Driver/Driver.h"
+#include "HAL/LED/HalLedDriver.h"
 
 enum LEDState {
 	LED_OFF = 0,

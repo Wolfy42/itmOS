@@ -1,8 +1,8 @@
 #ifndef LEDCLASS_H_
 #define LEDCLASS_H_
 
-#include <API/dataTypes.h>
-#include <HAL/GPIO/HalGpioDriver.h>
+#include "API/dataTypes.h"
+#include "HAL/GPIO/HalGpioDriver.h"
 
 class LEDClass {
 	private:
