@@ -34,21 +34,23 @@ void TimerClass::init(GptInterruptMode mode, int intervalValue) {
 	// Stop the timer (could be already running)
 	stop();
 	
+	
+	// DEFAULT = GPT_IRQMODE_OVERFLOW
 	switch (mode) {
 		case GPT_IRQMODE_CAPTURE:
 			// TODO: Not yet supported
 			break;
-		
-		case GPT_IRQMODE_OVERFLOW:
+			
+		case GPT_IRQMODE_MATCH:  
+			setCompareValue(intervalValue);
+			setInternalCounter(0);
+			break;
+			
+		default:	// GPT_IRQMODE_OVERFLOW
 			setTimerLoadValue(0xFFFFFFFF - intervalValue);
 			
 			// Set bit to trigger load of "timer load value" to "timer counter register"
 			setBit(m_ttgr, 1);
-			break;
-			
-		default: // GPT_IRQMODE_MATCH
-			setCompareValue(intervalValue);
-			setInternalCounter(0);
 			break;
 	}
 	
