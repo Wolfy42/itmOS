@@ -15,6 +15,7 @@ class TimerClass {
 		address m_tclr;
 		address m_tcrr;
 		address m_tldr;
+		address m_ttgr;
 		address m_tmar;
 		
 		void stopTimer();
@@ -30,8 +31,8 @@ class TimerClass {
 		TimerClass(address baseAddress);
 		virtual ~TimerClass();
 		
-		void init(int compareValue);
-		void start(GptInterruptMode mode);
+		void init(GptInterruptMode mode, int intervalValue);
+		void start();
 		void stop();
 		void clearPendingInterrupts();
 		void resetInternalCounter();

@@ -18,6 +18,9 @@ TimerClass::TimerClass(address baseAddress): m_baseAddress(baseAddress) {
 	// This register holds the timer load values
 	m_tldr = (address)((int)m_baseAddress + GPT_TLDR_OFFSET);
 	
+	// This register triggers a counter reload of timer by writing any value in it
+	m_ttgr = (address)((int)m_baseAddress + GPT_TTGR_OFFSET);
+	
 	// This register holds the value to be compared with the counter value
 	m_tmar = (address)((int)m_baseAddress + GPT_TMAR_OFFSET);
 }
@@ -27,23 +30,38 @@ TimerClass::~TimerClass() {
 
 
 // ~~~~~~~~~~~~~~~~~~~~ PUBLIC ~~~~~~~~~~~~~~~~~~~~
-void TimerClass::init(int compareValue) {
+void TimerClass::init(GptInterruptMode mode, int intervalValue) {
 	// Stop the timer (could be already running)
 	stop();
 	
-	setTimerLoadValue(0);
-	setCompareValue(compareValue);
+	switch (mode) {
+		case GPT_IRQMODE_CAPTURE:
+			// TODO: Not yet supported
+			break;
+		
+		case GPT_IRQMODE_OVERFLOW:
+			setTimerLoadValue(0xFFFFFFFF - intervalValue);
+			
+			// Set bit to trigger load of "timer load value" to "timer counter register"
+			setBit(m_ttgr, 1);
+			break;
+			
+		default: // GPT_IRQMODE_MATCH
+			setCompareValue(intervalValue);
+			setInternalCounter(0);
+			break;
+	}
+	
 	setOptionalFeatures();
+	enableInterrupt(mode);
 }
 
 void TimerClass::stop() {
 	disableInterrupt();
 	stopTimer();
-	setInternalCounter(0);
 }
 
-void TimerClass::start(GptInterruptMode mode) {
-	enableInterrupt(mode);
+void TimerClass::start() {
 	startTimer();
 }
 
@@ -80,13 +98,13 @@ void TimerClass::setCompareValue(int compareValue) {
 }
 
 void TimerClass::enableInterrupt(GptInterruptMode mode) {
-	//disableInterrupt();
+	disableInterrupt();
 	setBit(m_tier, mode);
 }
 
 void TimerClass::setOptionalFeatures() {
 	// Set 0 before setting optional features
-	//*(m_tclr) &= 0; // set 0
+	*(m_tclr) &= 0; // set 0
 	
 	setBit(m_tclr, GPT_TCLR_COMPARE);
 	setBit(m_tclr, GPT_TCLR_AUTORELOAD);
