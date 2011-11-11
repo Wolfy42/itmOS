@@ -31,4 +31,5 @@ SECTIONS
    .text       > ext_ddr
    .sysmem     > ext_ddr
    .switch     > ext_ddr
+   .pinit      > ext_ddr
 }

@@ -1,7 +1,7 @@
 #ifndef SERVICE_H_
 #define SERVICE_H_
 
-#include "../API/dataTypes.h"
+#include "API/dataTypes.h"
 
 class Service {
 	protected:

@@ -1,22 +1,22 @@
-#include "../bitOperations.h"
+#include "HAL/bitOperations.h"
 #include "LEDClass.h"
 
-LEDClass::LEDClass(address oeAddress, address registerAddress, address setRegisterAddress, address clearRegisterAddress, int bitNumber): m_oeAddress(oeAddress), m_registerAddress(registerAddress), m_setRegisterAddress(setRegisterAddress), m_clearRegisterAddress(clearRegisterAddress), m_bitNumber(bitNumber) {
-    unsetBit(m_oeAddress, m_bitNumber);
+LEDClass::LEDClass(int gpioNumber): m_gpio(gpioNumber, false) {
+    
 }
 
 LEDClass::~LEDClass() {
 }
 
 void LEDClass::toggle() {
-    toggleBit(m_registerAddress, m_bitNumber);
+    m_gpio.toggle();
 }
 void LEDClass::switchOn() {
-    *(m_setRegisterAddress) = (1 << m_bitNumber);
+    m_gpio.set();
 }
 void LEDClass::switchOff() {
-	*(m_clearRegisterAddress) = (1 << m_bitNumber);
+	m_gpio.unset();
 }
 bool LEDClass::isOn() {
-    return readBit(m_registerAddress, m_bitNumber);
+    return m_gpio.read();
 }

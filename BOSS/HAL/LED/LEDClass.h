@@ -1,18 +1,15 @@
-#ifndef LED_H_
-#define LED_H_
+#ifndef LEDCLASS_H_
+#define LEDCLASS_H_
 
-#include "../../API/dataTypes.h"
+#include "API/dataTypes.h"
+#include "HAL/GPIO/HalGpioDriver.h"
 
 class LEDClass {
 	private:
-        address m_oeAddress;
-        address m_registerAddress;
-        address m_setRegisterAddress;
-        address m_clearRegisterAddress;
-		int m_bitNumber;
+        HalGpioDriver m_gpio;    
 	
 	public:
-		LEDClass(address oeAddress, address registerAddress, address setRegisterAddress, address clearRegisterAddress, int bitNumber);
+		LEDClass(int gpioNumber);
 		virtual ~LEDClass();
 		
 		void toggle();
@@ -21,4 +18,4 @@ class LEDClass {
 		bool isOn();
 };
 
-#endif /*LED_H_*/
+#endif /*LEDCLASS_H_*/

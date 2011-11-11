@@ -7,6 +7,6 @@
 #define BUTTON_SERVICE_CALL 0xB
 #define LED_SERVICE_CALL 0xED
 
-void performServiceCall(int serviceCallId, byte params[]);
+void performServiceCall(int params[]);
 
 #endif /*SERVICECALLS_H_*/

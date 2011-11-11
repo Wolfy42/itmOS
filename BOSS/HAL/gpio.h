@@ -1,7 +1,7 @@
 #ifndef GPIO_H_
 #define GPIO_H_
 
-#include "../API/dataTypes.h"
+#include "API/dataTypes.h"
 
 #define GPIO_OE_GPIO1 (address) 0x48310034
 #define GPIO_OE_GPIO2 (address) 0x49050034

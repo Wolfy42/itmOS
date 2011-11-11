@@ -1,16 +1,15 @@
 #ifndef BUTTONCLASS_H_
 #define BUTTONCLASS_H_
 
-#include "../../API/dataTypes.h"
+#include "API/dataTypes.h"
+#include "HAL/GPIO/HalGpioDriver.h"
 
 class ButtonClass {
     private:
-        address m_oeAddress;
-        address m_registerAddress;
-        int m_bitNumber;
+        HalGpioDriver m_gpio;
         
     public:
-    	ButtonClass(address oeAddress, address registerAddress, int bitNumber);
+    	ButtonClass(int gpioNumber);
     	virtual ~ButtonClass();
         
         bool isPressed();

@@ -2,11 +2,7 @@
 #define HALLEDDRIVER_H_
 
 #include "LEDClass.h"
-
-enum LED {
-	LED1 = 0,
-	LED2 = 1
-};
+#include "BOSSAPI/LEDConstants.h"
 
 class HalLedDriver {
 	private:

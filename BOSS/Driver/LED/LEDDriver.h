@@ -1,8 +1,8 @@
 #ifndef LEDDRIVER_H_
 #define LEDDRIVER_H_
 
-#include "../Driver.h"
-#include "../../HAL/LED/HalLedDriver.h"
+#include "Driver/Driver.h"
+#include "HAL/LED/HalLedDriver.h"
 
 enum LEDState {
 	LED_OFF = 0,
@@ -10,9 +10,9 @@ enum LEDState {
 };
 
 enum LEDCommand {
-	SWITCH_LED_OFF = 0,
-	SWITCH_LED_ON = 1,
-	TOGGLE_LED = 2
+    SWITCH_LED_OFF = 0,
+    SWITCH_LED_ON = 1,
+    TOGGLE_LED = 2
 };
 
 /*

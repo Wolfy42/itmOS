@@ -1,7 +1,7 @@
-#include "../../API/dataTypes.h"
-#include "../../API/systemCalls.h"
-#include "../../HAL/Timer/HalTimerDriver.h"
-#include "../../Service/Service.h"
+#include "API/dataTypes.h"
+#include "API/systemCalls.h"
+#include "HAL/Timer/HalTimerDriver.h"
+#include "Service/Service.h"
 
 #define MAX_SERVICES 25
 #define INIT 0x0
@@ -26,10 +26,11 @@ void callService(int params[]) {
     int serviceId = params[0];
     int index = -1;
     int currentIndex = 0;
-    while ((currentIndex < MAX_SERVICES) && (index < 0)) {
+    while ((currentIndex < nrOfServices) && (index < 0)) {
         if (serviceIds[currentIndex] == serviceId) {
             index = currentIndex;
         }
+        currentIndex++;
     }
     if (index >= 0) {
         services[index]->command(params);
