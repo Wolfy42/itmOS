@@ -40,7 +40,8 @@ TID_t createTask(char* name, int priority, int initAddress) {
 // delete Task
 void deleteTask(int TID_t) {
 
-	free(_tasks[TID_t]);	
+	//free(_tasks[TID_t]);
+	_tasks[TID_t] = NULL;
 }
 
 // Scheduler - get next Task to Run
@@ -64,5 +65,5 @@ void initTasks() {
 
 void exitTask() {
 	
-	//printf("task done");
+	printf("task done");
 }
