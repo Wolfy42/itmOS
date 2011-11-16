@@ -4,27 +4,25 @@
 
 asm(	"\t .bss _stack_pointer_interrupted, 4 \n" \
 		"\t .bss _stack_pointer_restored, 4 \n" \
-		"\t .bss _stack_pointer_task_manager, 4 \n" \
+		"\t .bss _stack_pointer_kernel, 4 \n" \
 		"\t .bss _return_address, 4 \n" \
 		"\t .bss _function_pointer, 4 \n" \
-		
+
 		"\t .global _stack_pointer_interrupted \n" \
 		"\t .global _stack_pointer_restored \n" \
-		"\t .global _stack_pointer_task_manager \n" \
+		"\t .global _stack_pointer_kernel\n" \
 		"\t .global _return_address \n" \
-		"\t .global _function_pointer \n");
+		"\t .global _function_pointer \n" \
 
-
-asm(	"function_pointer .field _function_pointer, 32 \n" \
+		"function_pointer .field _function_pointer, 32 \n" \
 		"stack_pointer_interrupted .field _stack_pointer_interrupted, 32 \n" \
 		"stack_pointer_restored .field _stack_pointer_restored, 32 \n" \
-		"stack_pointer_task_manager .field _stack_pointer_task_manager, 32 \n" \
+		"stack_pointer_kernel .field _stack_pointer_kernel, 32 \n" \
 		"return_address .field _return_address, 32");
 
-
+extern int stack_pointer_kernel;
 extern int stack_pointer_interrupted;
 extern int stack_pointer_restored;
-extern int stack_pointer_task_manager;
 extern int return_address;
 extern int function_pointer;
 
@@ -72,41 +70,40 @@ extern "C" void c_intIRQ()  {
 	// IN BETWEEN			r0 - r11
 	// BOTTOM OF STACK		r12
 	
+
 	// store the return address
 	asm("\t PUSH {r0} \n" \
 		"\t LDR r0, return_address \n" \
 		"\t STR lr, [r0] \n" \
-		"\t POP {r0} \n");
-
-
+		"\t POP {r0}");
 
 	// to save the process context we can switch in the system
 	// mode, because system mode has the same stack
 	asm("\t CPS 0x1F");
-	
+
 	if(activeTask != -1) {
 	
 		// now save all registers inclusive CPSR
-		asm("\t STMFD sp!, {r0-r12} \n" \
-			"\t MRS r5, cpsr \n" \
-			"\t STMFD sp!, {r5}");
-	
+		asm("\t STMFD sp!, {r0-r12, lr} \n" \
+			"\t MRS r0, cpsr \n" \
+			"\t STMFD sp!, {r0}");
+
 		// save the new return address
 		asm("\t LDR r0, return_address \n" \
 			"\t LDR r0, [r0] \n" \
 			"\t STMFD sp!, {r0}");
-	
+
 		// the new stack pointer of the process has to be saved
 		// to restore the process
 		asm("\t LDR r0, stack_pointer_interrupted \n" \
 			"\t STR sp, [r0]");
-	
-		// the register r0 to r12 and the cpsr plus the new return address
+
+		// the register r0 to r12 and the cpsr, plus the new return address
 		// are now on the process stack
-		
-		// load the context of the task manager
-		// TODO load the cpsr register?
-		asm("\t LDR sp, stack_pointer_task_manager \n" \
+
+		// to switch to the next process we have to switch
+		// to the kernel stack and the restore the context
+		asm("\t LDR sp, stack_pointer_kernel \n" \
 			"\t LDR sp, [sp] \n" \
 			"\t LDMFD sp!, {r0-r12}");
 
@@ -123,7 +120,7 @@ extern "C" void c_intIRQ()  {
 	
 
 	// Call Global IRQ-Handler
-	globalIRQHandler->callHandlerFor(irqNr);
+	//globalIRQHandler->callHandlerFor(irqNr);
 	// reset interrupt
 	
 	timer.clearPendingInterrupts(GPTIMER2);
@@ -157,33 +154,40 @@ extern "C" void c_intIRQ()  {
 		// the new process has its own stack and we have to set
 		// the stack pointer of it
 		stack_pointer_interrupted = _tasks[activeTask]->stackPointer;
-		
-		// set return address to exit point of tasks
+
+		// set return address to EXIT
 		return_address = (int)exitTask;
-		
-		// TODO set the return address to a done function
-		asm("\t LDR lr, return_address \n" \
-			"\t LDR lr, [lr]");
-		
-		// save taskmanager context
+	
+		// save the kernel context
+		// TODO restore r0
 		asm("\t STMFD sp!, {r0-r12} \n" \
-			"\t LDR r0, stack_pointer_task_manager \n" \
-			"\t STR sp, [r0, #0]");
-		
-		
-		// switch to task stack
+			"\t LDR r0, stack_pointer_kernel \n" \
+			"\t STR sp, [r0]");
+
+		// load the stack pointer of the process
 		asm("\t LDR sp, stack_pointer_interrupted \n" \
 			"\t LDR sp, [sp]");
+			
+
+		asm("\t LDR r0, return_address \n " \
+			"\t LDR lr, [r0]");
 
 		// switch back to the interrupt handler
 		asm("\t CPS 0x12");
 
-		// set the new return address
+		// ******************************
+		// ****** INTERRUPPT STACK ******
+		// ******************************
+
+		// set the return address of the interrupt handler to the entry
+		// point of the process
 		asm("\t LDR lr, function_pointer \n" \
 			"\t LDR lr, [lr]");
 
-		// ultimative change lr hack
-		asm("\t ADD lr, lr, #4");
+		// jump to process and leave the interrupt
+		asm("\t STMFD sp!, {lr} \n" \
+			"\t LDMFD sp!, {pc}^");
+
 
 	} else {
 
@@ -193,14 +197,12 @@ extern "C" void c_intIRQ()  {
 		// therefore we set the stack pointer of the process
 		stack_pointer_restored = _tasks[activeTask]->stackPointer;
 		
-		
-		// save taskmanager context
+		// save the kernel context
 		asm("\t STMFD sp!, {r0-r12} \n" \
-			"\t LDR r0, stack_pointer_task_manager \n" \
-			"\t STR sp, [r0, #0]");
-		
-		
-		// switch to task stack
+			"\t LDR r0, stack_pointer_kernel \n" \
+			"\t STR sp, [r0]");
+
+		// load the stack pointer of the process
 		asm("\t LDR sp, stack_pointer_restored \n" \
 			"\t LDR sp, [sp]");
 
@@ -217,21 +219,26 @@ extern "C" void c_intIRQ()  {
 			"\t MSR SPSR_cxsf, r0");
 
 		// now read the registers r0-r12
-		asm("\t LDMFD sp!, {r0-r12}");
+		asm("\t LDMFD sp!, {r0-r12, lr}");
 
 		// switch back to the interrupt handler
 		asm("\t CPS 0x12");
 
-		// set the new return address
+
+
+		// ******************************
+		// ****** INTERRUPPT STACK ******
+		// ******************************
+
+		// set the return address of the interrupt handler to the entry
+		// point of the process
 		asm("\t LDR lr, function_pointer \n" \
 			"\t LDR lr, [lr]");
-			
-		// ultimative change lr hack
-		asm("\t ADD lr, lr, #4");
+
+		// jump to process and leave the interrupt
+		asm("\t STMFD sp!, {lr} \n" \
+			"\t LDMFD sp!, {pc}^");
 	}
-
-
-
 }
 
 IRQHandler::IRQHandler() {

@@ -21,7 +21,7 @@ void led2Toggler(void)  {
 }
 
 
-int main()  {
+int main_()  {
 	IRQHandler hand;
 
 	hand.registerHandler(HalTimerDriver::irqNumberForTimer(GPTIMER2), led1Toggler);
