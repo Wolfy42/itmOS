@@ -13,7 +13,7 @@ void task1function() {
 	int j = 31;
 	int k = 40;
 	int i = 0;
-	for (i = 0; i < 333; i++) {
+	for (i = 0; i < 10; i++) {
 		HalLedDriver dr;
 		dr.toggle(LED1);
 		for (int z = 0; z < 160000;) {

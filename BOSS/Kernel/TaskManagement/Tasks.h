@@ -5,6 +5,7 @@
 
 
 #include "HAL/Timer/HalTimerDriver.h"
+#include "API/systemCalls.h"
 #include <stdlib.h>
 #include <stdio.h>
 

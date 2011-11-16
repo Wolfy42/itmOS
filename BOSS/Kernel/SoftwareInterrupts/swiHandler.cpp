@@ -3,6 +3,8 @@
 #include "../../HAL/Timer/HalTimerDriver.h"
 #include "../../Service/Service.h"
 
+#include "Kernel/TaskManagement/Tasks.h"
+
 #define MAX_SERVICES 25
 #define INIT 0x0
 
@@ -38,8 +40,22 @@ void callService(int params[]) {
 
 }
 
+void endTask(TID_t id) {
+	
+	deleteTask(id);
+	//yield();
+	activeTask = -1;
+	_enable_interrupts();
+	while (1) {
+		
+	}
+}
+
+// TODO: STOP PLENKING!!!
 #pragma INTERRUPT (SWI) ;
 extern "C" void c_intSWI(int swiNumber, int* parameters)  {
+	
+	// TODO: STOP PLENKING!!!
     _disable_interrupts( ) ;
     static byte initialized = 0;
 
@@ -51,6 +67,7 @@ extern "C" void c_intSWI(int swiNumber, int* parameters)  {
             }
             break;
         case EXIT:
+        	endTask(parameters[0]);
             break;
         case KILL:
             break;
@@ -71,5 +88,6 @@ extern "C" void c_intSWI(int swiNumber, int* parameters)  {
         default:
             break;
     }
+    // TODO: STOP PLENKING!!!
     _enable_interrupts( ) ;
 }

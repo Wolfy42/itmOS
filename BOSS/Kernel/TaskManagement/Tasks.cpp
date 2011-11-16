@@ -1,12 +1,5 @@
 #include "Tasks.h"
 
-
-
-
-
-
-
-
 Task* _tasks[MAX_TASKS];
 int nextTask = 0;
 int activeTask = -1;
@@ -40,7 +33,7 @@ TID_t createTask(char* name, int priority, int initAddress) {
 // delete Task
 void deleteTask(int TID_t) {
 
-	//free(_tasks[TID_t]);
+	free(_tasks[TID_t]);
 	_tasks[TID_t] = NULL;
 }
 
@@ -65,5 +58,5 @@ void initTasks() {
 
 void exitTask() {
 	
-	printf("task done");
+	performSyscall(EXIT, &activeTask);
 }
