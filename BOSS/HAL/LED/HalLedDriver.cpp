@@ -1,6 +1,6 @@
 #include "HalLedDriver.h"
 
-#include "../gpio.h"
+#include "HAL/gpio.h"
 
 #define LED1_REG 21
 #define LED2_REG 22

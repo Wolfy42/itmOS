@@ -1,4 +1,4 @@
-#include "../bitOperations.h"
+#include "HAL/bitOperations.h"
 #include "LEDClass.h"
 
 LEDClass::LEDClass(int gpioNumber): m_gpio(gpioNumber, false) {

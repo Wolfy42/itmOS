@@ -1,7 +1,7 @@
-#include "../../API/dataTypes.h"
-#include "../../API/systemCalls.h"
-#include "../../HAL/Timer/HalTimerDriver.h"
-#include "../../Service/Service.h"
+#include "API/dataTypes.h"
+#include "API/systemCalls.h"
+#include "HAL/Timer/HalTimerDriver.h"
+#include "Service/Service.h"
 
 #include "Kernel/TaskManagement/Tasks.h"
 

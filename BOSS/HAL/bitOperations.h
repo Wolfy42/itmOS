@@ -1,7 +1,7 @@
 #ifndef BITOPERATIONS_H_
 #define BITOPERATIONS_H_
 
-#include "../API/dataTypes.h"
+#include "API/dataTypes.h"
 
 void setBit(address number, int bitOffset);
 

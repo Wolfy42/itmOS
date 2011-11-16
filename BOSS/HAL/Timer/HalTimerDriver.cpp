@@ -18,12 +18,20 @@ HalTimerDriver::~HalTimerDriver() {
 
 
 // ~~~~~~~~~~~~~~~~~~~~ PUBLIC ~~~~~~~~~~~~~~~~~~~~
-void HalTimerDriver::init(Timer timer, int compareValue) {
-	timerClassForEnum(timer).init(compareValue);
+Timer HalTimerDriver::timerForIRQNumber(int irqNumber) {
+	return (Timer)(GPT_MPU_IRQ_ID_START - irqNumber + 1);
 }
 
-void HalTimerDriver::start(Timer timer, GptInterruptMode mode) {
-	timerClassForEnum(timer).start(mode);
+int HalTimerDriver::irqNumberForTimer(Timer timerEnum) {
+	return timerEnum + GPT_MPU_IRQ_ID_START - 1;
+}
+
+void HalTimerDriver::init(Timer timer, GptInterruptMode mode, int intervalValue) {
+	timerClassForEnum(timer).init(mode, intervalValue);
+}
+
+void HalTimerDriver::start(Timer timer) {
+	timerClassForEnum(timer).start();
 }
 
 void HalTimerDriver::stop(Timer timer) {

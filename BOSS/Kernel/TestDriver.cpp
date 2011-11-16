@@ -82,8 +82,8 @@ void initScheduler() {
 	hand.registerHandler(38, dummy);
 
 	HalTimerDriver timer;
-	timer.init(GPTIMER2, 100000);
-	timer.start(GPTIMER2, GPT_IRQMODE_MATCH);
+	timer.init(GPTIMER2, GPT_IRQMODE_MATCH, 100000);
+	timer.start(GPTIMER2);
 
 	_enable_interrupts( ) ;
 }

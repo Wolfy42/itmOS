@@ -1,6 +1,6 @@
-#include <HAL/gpio.h>
-#include <HAL/control.h>
-#include <HAL/bitOperations.h>
+#include "HAL/gpio.h"
+#include "HAL/control.h"
+#include "HAL/bitOperations.h"
 #include "HalGpioDriver.h"
 
 HalGpioDriver::HalGpioDriver(int gpioNumber, bool isInput): m_isInput(isInput), m_portNumber((gpioNumber / 32) + 1), m_pinNumber(gpioNumber % 32) {

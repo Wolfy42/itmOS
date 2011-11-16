@@ -2,7 +2,7 @@
 #include "HAL/Timer/HalTimerDriver.h"
 #include "HAL/LED/HalLedDriver.h"
 #include "API/dataTypes.h"
-//#include "Kernel/Interrupt/IRQHandler.h"
+#include "Kernel/Interrupt/IRQHandler.h"
 
 void led1Toggler(void)  {
 	HalTimerDriver timer;
@@ -20,25 +20,23 @@ void led2Toggler(void)  {
 
 	HalLedDriver dr;
 	dr.toggle(LED2);
-
-	timer.resetInternalCounter(GPTIMER3);
 }
 
 
 int main_()  {
-//	IRQHandler hand;
-//
-//	hand.registerHandler(38, led1Toggler);
-//	hand.registerHandler(39, led2Toggler);
+	IRQHandler hand;
+	HalTimerDriver timer;
+
+	hand.registerHandler(timer.irqNumberForTimer(GPTIMER2), led1Toggler);
+	hand.registerHandler(timer.irqNumberForTimer(GPTIMER3), led2Toggler);
 
 	//_enable_interrupts( ) ;
 	
-	HalTimerDriver timer;
-	timer.init(GPTIMER2, 1000000);
-	timer.start(GPTIMER2, GPT_IRQMODE_MATCH);
+	timer.init(GPTIMER2, GPT_IRQMODE_MATCH, 5000000);
+	timer.start(GPTIMER2);
 
-	timer.init(GPTIMER3, 2000000);
-	timer.start(GPTIMER3, GPT_IRQMODE_MATCH);
+	timer.init(GPTIMER3, GPT_IRQMODE_OVERFLOW, 10000000);
+	timer.start(GPTIMER3);
 	
 	_enable_interrupts( ) ;
 	// --> (*0x482000B8) --> man sieht dass bit auf 1 springt und somit sollte der Interrupt ausgelöst werden

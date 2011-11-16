@@ -1,8 +1,8 @@
 #ifndef BUTTONCLASS_H_
 #define BUTTONCLASS_H_
 
-#include <API/dataTypes.h>
-#include <HAL/GPIO/HalGpioDriver.h>
+#include "API/dataTypes.h"
+#include "HAL/GPIO/HalGpioDriver.h"
 
 class ButtonClass {
     private:
