@@ -46,6 +46,10 @@ void HalTimerDriver::resetInternalCounter(Timer timer) {
 	timerClassForEnum(timer).resetInternalCounter();
 }
 
+GptInterruptMode HalTimerDriver::getMode(Timer timer) {
+	return timerClassForEnum(timer).getMode();
+}
+
 
 // ~~~~~~~~~~~~~~~~~~~~ PRIVATE ~~~~~~~~~~~~~~~~~~~~
 // TODO: Implement all the timers
