@@ -20,6 +20,11 @@ enum Timer {
 
 class HalTimerDriver {
 	private:		
+		static HalTimerDriver TIMERDRIVER;
+	
+		HalTimerDriver();
+		virtual ~HalTimerDriver();
+		
 		TimerClass m_timer1;
 		TimerClass m_timer2;
 		TimerClass m_timer3;
@@ -35,18 +40,16 @@ class HalTimerDriver {
 		TimerClass timerClassForEnum(Timer timerEnum);
 		
 	public:		
-		HalTimerDriver();
-		virtual ~HalTimerDriver();
-		Timer timerForIRQNumber(int irqNumber);
-		int irqNumberForTimer(Timer timerEnum);
+		static Timer timerForIRQNumber(int irqNumber);
+		static int irqNumberForTimer(Timer timerEnum);
 		
-		void init(Timer timer, GptInterruptMode mode, int intervalValue);
-		void start(Timer timer);
-		void stop(Timer timer);
-		void clearPendingInterrupts(Timer timer);
-		void resetInternalCounter(Timer timer);
+		static void init(Timer timer, GptInterruptMode mode, int intervalValue);
+		static void start(Timer timer);
+		static void stop(Timer timer);
+		static void clearPendingInterrupts(Timer timer);
+		static void resetInternalCounter(Timer timer);
 		
-		GptInterruptMode getMode(Timer timer);
+		static GptInterruptMode getMode(Timer timer);
 };
 
 #endif /*HALTIMERDRIVER_H_*/

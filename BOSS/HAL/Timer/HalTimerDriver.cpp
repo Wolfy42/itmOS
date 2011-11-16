@@ -1,5 +1,7 @@
 #include "HalTimerDriver.h"
 
+HalTimerDriver HalTimerDriver::TIMERDRIVER = HalTimerDriver();
+
 HalTimerDriver::HalTimerDriver(): 	m_timer1(GPTIMER1_BASE),
 									m_timer2(GPTIMER2_BASE),
 									m_timer3(GPTIMER3_BASE),
@@ -27,27 +29,27 @@ int HalTimerDriver::irqNumberForTimer(Timer timerEnum) {
 }
 
 void HalTimerDriver::init(Timer timer, GptInterruptMode mode, int intervalValue) {
-	timerClassForEnum(timer).init(mode, intervalValue);
+	HalTimerDriver::TIMERDRIVER.timerClassForEnum(timer).init(mode, intervalValue);
 }
 
 void HalTimerDriver::start(Timer timer) {
-	timerClassForEnum(timer).start();
+	HalTimerDriver::TIMERDRIVER.timerClassForEnum(timer).start();
 }
 
 void HalTimerDriver::stop(Timer timer) {
-	timerClassForEnum(timer).stop();
+	HalTimerDriver::TIMERDRIVER.timerClassForEnum(timer).stop();
 }
 
 void HalTimerDriver::clearPendingInterrupts(Timer timer) {
-	timerClassForEnum(timer).clearPendingInterrupts();
+	HalTimerDriver::TIMERDRIVER.timerClassForEnum(timer).clearPendingInterrupts();
 }
 
 void HalTimerDriver::resetInternalCounter(Timer timer) {
-	timerClassForEnum(timer).resetInternalCounter();
+	HalTimerDriver::TIMERDRIVER.timerClassForEnum(timer).resetInternalCounter();
 }
 
 GptInterruptMode HalTimerDriver::getMode(Timer timer) {
-	return timerClassForEnum(timer).getMode();
+	return HalTimerDriver::TIMERDRIVER.timerClassForEnum(timer).getMode();
 }
 
 

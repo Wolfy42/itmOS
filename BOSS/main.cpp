@@ -5,18 +5,16 @@
 #include "Kernel/Interrupt/IRQHandler.h"
 
 void led1Toggler(void)  {
-	HalTimerDriver timer;
-	timer.clearPendingInterrupts(GPTIMER2);
+	HalTimerDriver::clearPendingInterrupts(GPTIMER2);
 
 	HalLedDriver dr;
 	dr.toggle(LED1);
 
-	timer.resetInternalCounter(GPTIMER2);
+	HalTimerDriver::resetInternalCounter(GPTIMER2);
 }
 
 void led2Toggler(void)  {
-	HalTimerDriver timer;
-	timer.clearPendingInterrupts(GPTIMER3);
+	HalTimerDriver::clearPendingInterrupts(GPTIMER3);
 
 	HalLedDriver dr;
 	dr.toggle(LED2);
@@ -25,18 +23,17 @@ void led2Toggler(void)  {
 
 int main()  {
 	IRQHandler hand;
-	HalTimerDriver timer;
 
-	hand.registerHandler(timer.irqNumberForTimer(GPTIMER2), led1Toggler);
-	hand.registerHandler(timer.irqNumberForTimer(GPTIMER3), led2Toggler);
+	hand.registerHandler(HalTimerDriver::irqNumberForTimer(GPTIMER2), led1Toggler);
+	hand.registerHandler(HalTimerDriver::irqNumberForTimer(GPTIMER3), led2Toggler);
 
 	//_enable_interrupts( ) ;
 	
-	timer.init(GPTIMER2, GPT_IRQMODE_MATCH, 5000000);
-	timer.start(GPTIMER2);
+	HalTimerDriver::init(GPTIMER2, GPT_IRQMODE_MATCH, 5000000);
+	HalTimerDriver::start(GPTIMER2);
 
-	timer.init(GPTIMER3, GPT_IRQMODE_OVERFLOW, 10000000);
-	timer.start(GPTIMER3);
+	HalTimerDriver::init(GPTIMER3, GPT_IRQMODE_OVERFLOW, 10000000);
+	HalTimerDriver::start(GPTIMER3);
 	
 	_enable_interrupts( ) ;
 	// --> (*0x482000B8) --> man sieht dass bit auf 1 springt und somit sollte der Interrupt ausgelöst werden
