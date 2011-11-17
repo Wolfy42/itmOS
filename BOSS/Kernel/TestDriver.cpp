@@ -6,15 +6,15 @@
 #include "Kernel/TaskManagement/Tasks.h"
 #include "HAL/LED/HalLedDriver.h"
 
-
+HalLedDriver dr;
 
 void task1function() {
 	
 	int j = 31;
 	int k = 40;
 	int i = 0;
-	for (i = 0; i < 10; i++) {
-		HalLedDriver dr;
+	for (i = 0; i < 100; i++) {
+
 		dr.toggle(LED1);
 		for (int z = 0; z < 160000;) {
 			z++;
@@ -31,7 +31,7 @@ void task2function() {
 	int k = 70;
 	int i = 0;
 	for (i = 0; i < 10000; i++) {
-		HalLedDriver dr;
+
 		dr.toggle(LED2);
 		for (int z = 0; z < 80000;) {
 			z++;
@@ -82,7 +82,7 @@ void initScheduler() {
 	hand.registerHandler(38, dummy);
 
 	HalTimerDriver timer;
-	timer.init(GPTIMER2, GPT_IRQMODE_MATCH, 100000);
+	timer.init(GPTIMER2, GPT_IRQMODE_MATCH, 5000000);
 	timer.start(GPTIMER2);
 
 	_enable_interrupts( ) ;

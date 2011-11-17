@@ -1,8 +1,8 @@
 #include "API/dataTypes.h"
+#include "HAL/bitOperations.h"
 #include "API/systemCalls.h"
-#include "HAL/Timer/HalTimerDriver.h"
 #include "Service/Service.h"
-
+#include "Kernel/MMU/mmu.h"
 #include "Kernel/TaskManagement/Tasks.h"
 
 #define MAX_SERVICES 25
@@ -13,10 +13,7 @@ Service* services[MAX_SERVICES];
 int nrOfServices = 0;
 
 void init() {
-    address clear1 = (address)0x482000A8;
-    *(clear1) |= (1 << 6);
-
-    HalTimerDriver dr;
+    mmu_initMemoryForTask(0);
 }
 
 void registerService(int params[]) {
