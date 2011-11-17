@@ -79,11 +79,10 @@ void initScheduler() {
 
 	IRQHandler hand;
 
-	hand.registerHandler(38, dummy);
+	hand.registerHandler(HalTimerDriver::irqNumberForTimer(GPTIMER2), dummy);
 
-	HalTimerDriver timer;
-	timer.init(GPTIMER2, GPT_IRQMODE_MATCH, 5000000);
-	timer.start(GPTIMER2);
+	HalTimerDriver::init(GPTIMER2, GPT_IRQMODE_MATCH, 5000000);
+	HalTimerDriver::start(GPTIMER2);
 
 	_enable_interrupts( ) ;
 }

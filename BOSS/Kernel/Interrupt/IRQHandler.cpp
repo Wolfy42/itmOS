@@ -38,7 +38,6 @@ extern int function_pointer;
 
 
 
-HalTimerDriver timer;
 IRQHandler* globalIRQHandler;
 
 #pragma TASK
@@ -123,8 +122,8 @@ extern "C" void c_intIRQ()  {
 	//globalIRQHandler->callHandlerFor(irqNr);
 	// reset interrupt
 	
-	timer.clearPendingInterrupts(GPTIMER2);
-	timer.resetInternalCounter(GPTIMER2);
+	HalTimerDriver::clearPendingInterrupts(GPTIMER2);
+	HalTimerDriver::resetInternalCounter(GPTIMER2);
 
 	// Reset IRQ output and enable new IRQ generation.
 	*(INTCPS_CONTROL) |= 0x1;
