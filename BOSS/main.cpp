@@ -2,6 +2,7 @@
 #include "HAL/Timer/HalTimerDriver.h"
 #include "HAL/LED/HalLedDriver.h"
 #include "API/dataTypes.h"
+#include "API/systemCalls.h"
 #include "Kernel/Interrupt/IRQHandler.h"
 
 void led1Toggler(void)  {
@@ -32,6 +33,7 @@ int main_()  {
 
 	//_enable_interrupts( ) ;
 	
+    performSyscall(0x0, NULL);
 	timer.init(GPTIMER2, GPT_IRQMODE_MATCH, 5000000);
 	timer.start(GPTIMER2);
 
