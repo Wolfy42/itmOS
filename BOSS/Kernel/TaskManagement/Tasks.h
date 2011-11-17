@@ -38,7 +38,6 @@ typedef struct {
 
 // logic variables
 extern Task* _tasks[MAX_TASKS];
-extern int nextTask;
 extern int activeTask;
 
 
@@ -46,7 +45,7 @@ extern int activeTask;
 TID_t createTask(char* name, int priority, int initAddress);
 
 // delete Task
-void deleteTask(int TID_t);
+void deleteTask(TID_t taskId);
 
 // Scheduler - get next Task to Run
 void scheduleNextTask();
@@ -54,6 +53,8 @@ void scheduleNextTask();
 // init Task Array with NULL
 void initTasks();
 
+// returns the next free task id
+int getNextTaskId();
 
 void exitTask();
 
