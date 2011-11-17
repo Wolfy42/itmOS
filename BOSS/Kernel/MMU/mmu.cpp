@@ -1,10 +1,14 @@
 #include "API/dataTypes.h"
 #include "mmu.h"
 
-address taskMasterTableAddresses[MAX_TASKS] = {(address)0x0};
+asm("\t .bss _taskMasterTableAddress, 4\n" \
+    "\t .global _taskMasterTableAddress\n" \
+    "taskMasterTableAddress .field _taskMasterTableAddress, 32");
+extern address taskMasterTableAddress;
+address taskMasterTableAddresses[MAX_TASKS] = {0};
 
 void mmu_initMemoryForTask(int taskId) {
-    address taskMasterTableAddress = taskMasterTableAddresses[taskId];
+    taskMasterTableAddress = taskMasterTableAddresses[taskId];
     if (taskMasterTableAddress == (address)0x0) {
         if (taskId == 0) {
             unsigned int i;
@@ -35,7 +39,8 @@ void mmu_initMemoryForTask(int taskId) {
             // TODO init task memory
         }
     } else {
-        // TODO switch master table
+        asm("\t LDR r1, taskMasterTableAddress\n");
+        asm("\t MCR p15, #0, r1, c2, c0, #0\n");
     }
     taskMasterTableAddresses[taskId] = taskMasterTableAddress;
 }
