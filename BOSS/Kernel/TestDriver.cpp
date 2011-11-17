@@ -4,37 +4,49 @@
 #include "HAL/Timer/HalTimerDriver.h"
 #include "Kernel/Interrupt/IRQHandler.h"
 #include "Kernel/TaskManagement/Tasks.h"
+#include "HAL/LED/HalLedDriver.h"
 
 
 
 void task1function() {
-printf("task1\n");
+	
 	int j = 31;
 	int k = 40;
-	for (int i = 0; i < 2; i++) {
-		
-		printf("task1 %d %d %d\n",i,j,k);
+	int i = 0;
+	for (i = 0; i < 10; i++) {
+		HalLedDriver dr;
+		dr.toggle(LED1);
+		for (int z = 0; z < 160000;) {
+			z++;
+		}
+	//	printf("task1 %d %d %d\n",i,j,k);
 	//	swi();
-	}	
+	}
+	//printf("task1 %d %d %d\n",i,j,k);
 }
 
 void task2function() {
 
 	int j = 99;
 	int k = 70;
-	for (int i = 0; i < 5; i++) {
-		
-		printf("task2 %d %d %d\n",i,j,k);	
+	int i = 0;
+	for (i = 0; i < 10000; i++) {
+		HalLedDriver dr;
+		dr.toggle(LED2);
+		for (int z = 0; z < 80000;) {
+			z++;
+		}
+	//	printf("task2 %d %d %d\n",i,j,k);	
 	//	swi();
 	}	
 }
 
 void task3function() {
 
-	for (int i = 0; i < 5; i++) {
+	for (int i = 0; i < 5000; i++) {
 
 		printf("task3\n");
-		task1function();
+		//task1function();
 	}
 }
 
@@ -70,8 +82,8 @@ void initScheduler() {
 	hand.registerHandler(38, dummy);
 
 	HalTimerDriver timer;
-	timer.init(GPTIMER2, 10000000);
-	timer.start(GPTIMER2, GPT_IRQMODE_MATCH);
+	timer.init(GPTIMER2, GPT_IRQMODE_MATCH, 100000);
+	timer.start(GPTIMER2);
 
 	_enable_interrupts( ) ;
 }
@@ -81,7 +93,7 @@ int main() {
 
 	// init few necessary tasks
 	initTasks();
-	createTask("task 1\0", 100, (int)task3function);
+	createTask("task 1\0", 100, (int)task1function);
 	createTask("task 2\0", 100, (int)task2function);
 	
 	// init scheduler

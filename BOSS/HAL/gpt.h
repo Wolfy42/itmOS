@@ -23,7 +23,13 @@
 #define GPT_TCLR_OFFSET 0x24	// This register controls optional features specific to the timer functionality
 #define GPT_TCRR_OFFSET 0x28	// This register holds the value of the internal counter
 #define GPT_TLDR_OFFSET 0x2C	// This register holds the timer load values
+#define GPT_TTGR_OFFSET 0x30	// This register triggers a counter reload of timer by writing any value in it
 #define GPT_TMAR_OFFSET 0x38	// This register holds the value to be compared with the counter value (TCRR)
+
+
+// Timer IRQ Numbers (Offset only)
+#define GPT_MPU_IRQ_ID_START 37		// The first MPU-IRQ for the timer module (-> GPTIMER1)
+#define GPT_MPU_IRQ_ID_END 47		// The last MPU-IRQ for the timer module (-> GPTIMER11)
 
 
 // TIER Fields 

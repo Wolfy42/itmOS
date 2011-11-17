@@ -38,8 +38,11 @@ class HalTimerDriver {
 		HalTimerDriver();
 		virtual ~HalTimerDriver();
 		
-		void init(Timer timer, int compareValue);
-		void start(Timer timer, GptInterruptMode mode);
+		Timer timerForIRQNumber(int irqNumber);
+		int irqNumberForTimer(Timer timerEnum);
+		
+		void init(Timer timer, GptInterruptMode mode, int intervalValue);
+		void start(Timer timer);
 		void stop(Timer timer);
 		void clearPendingInterrupts(Timer timer);
 		void resetInternalCounter(Timer timer);

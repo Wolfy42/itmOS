@@ -5,6 +5,7 @@
 
 
 #include "HAL/Timer/HalTimerDriver.h"
+#include "API/systemCalls.h"
 #include <stdlib.h>
 #include <stdio.h>
 
@@ -29,6 +30,8 @@ typedef struct {
 	int stackPointer;
 	// entry
 	int initAddr;
+	// entry
+	int returnAddr;
 	// already started
 	bool hasBeenStarted;
 } Task;
