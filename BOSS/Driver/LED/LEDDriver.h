@@ -21,8 +21,6 @@ enum LEDCommand {
  *  read({(enum LED)}) => {(enum LEDState)}
  */
 class LEDDriver : public Driver {
-	private:
-		HalLedDriver m_driver;
 	public:
 		LEDDriver();
 		virtual ~LEDDriver();
