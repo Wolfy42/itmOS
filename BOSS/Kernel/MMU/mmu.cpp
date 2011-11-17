@@ -5,7 +5,7 @@ asm("\t .bss _taskMasterTableAddress, 4\n" \
     "\t .global _taskMasterTableAddress\n" \
     "taskMasterTableAddress .field _taskMasterTableAddress, 32");
 extern address taskMasterTableAddress;
-address taskMasterTableAddresses[MAX_TASKS] = {0};
+address taskMasterTableAddresses[MAX_MMU_TABLES] = {0};
 
 void mmu_initMemoryForTask(int taskId) {
     taskMasterTableAddress = taskMasterTableAddresses[taskId];
@@ -40,6 +40,7 @@ void mmu_initMemoryForTask(int taskId) {
         }
     } else {
         asm("\t LDR r1, taskMasterTableAddress\n");
+        asm("\t LDR r1, [r1]\n");
         asm("\t MCR p15, #0, r1, c2, c0, #0\n");
     }
     taskMasterTableAddresses[taskId] = taskMasterTableAddress;
