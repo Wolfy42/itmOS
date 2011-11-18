@@ -11,14 +11,14 @@
 ;***************************************************************
 
     .asg	__args_main,   ARGS_MAIN_RTN
-	.global ARGS_MAIN_RTN
+    .global ARGS_MAIN_RTN
     .global __TI_auto_init
 
 ;***************************************************************
 ;* Included addresses from the linker
 ;***************************************************************
 
-	.global irqStack
+    .global irqStack
     .global kernelStack
     .global systemStack
 
@@ -38,17 +38,17 @@ _c_int00: .asmfunc
 
     ; SET IRQ-Stack
     CPS   0x12
-	LDR   sp, c_r13_irq
+    LDR   sp, c_r13_irq
 
-	; SET SWI-Stack / Kernel-Stack
-	CPS   0x13
-	LDR   sp, c_r13_kernel
+    ; SET SWI-Stack / Kernel-Stack
+    CPS   0x13
+    LDR   sp, c_r13_kernel
 
-	; SET System-Stack
-	CPS   0x1F
-	LDR   sp, c_r13_system
+    ; SET System-Stack
+    CPS   0x1F
+    LDR   sp, c_r13_system
 
-	; Disable Interrupts
+    ; Disable Interrupts
     MRS   R12, CPSR
     BIC   R12, R12, #192
     MSR   CPSR_cf, R12
@@ -59,7 +59,7 @@ _c_int00: .asmfunc
     ;  - Call global constructors)
     BL      __TI_auto_init
 
-	; CALL APPLICATION
+    ; CALL APPLICATION
     BL      ARGS_MAIN_RTN
 
 .end
