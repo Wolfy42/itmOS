@@ -83,7 +83,6 @@ void scheduleNextTask() {
 	}
 
 	// calculate the magicSmartFunnyNumber
-	srand_((unsigned int) time(NULL));
 	magicSmartFunnyNumber = (float)(rand_() % RAND_MAX ) / RAND_MAX;
 
 	// who is the winner? (we do the second loop for the anti-performance thing)
