@@ -1,16 +1,17 @@
-	.if __TI_EABI_ASSEMBLER
-		.asg c_intSWI, C_INTSWI
-		.asg c_intIRQ, C_INTIRQ
-	.else
-		.asg _c_intSWI, C_INTSWI
-		.asg _c_intIRQ, C_INTIRQ
-	.endif
+
+	.asg _c_intSWI, C_INTSWI
+	.asg _c_intIRQ, C_INTIRQ
 
 	.global _c_int00
 	.global C_INTSWI
 	.global C_INTIRQ
 
-	.sect ".intswi"
-	B C_INTSWI ; software interrupt
-	.sect ".intirq"
-	B C_INTIRQ ; IRQ
+	.sect ".intvecs"
+	     B _c_int00    ; Reset Interrupt
+	     .word 0       ; Undefined Instructions Interrupt
+	     B C_INTSWI    ; Software Interrupt
+	     .word 0       ; Prefetch Abort Interrupt
+	     .word 0       ; Data Abort Interrupt
+	     .word 0       ; Unused
+	     B C_INTIRQ,   ; IRQ Interrupt
+	     .word 0       ; FIQ Interrupt
