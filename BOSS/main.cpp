@@ -7,18 +7,13 @@
 
 void led1Toggler(void)  {
 	HalTimerDriver::clearPendingInterrupts(GPTIMER2);
-
-	HalLedDriver dr;
-	dr.toggle(LED1);
-
+	HalLedDriver::toggle(LED1);
 	HalTimerDriver::resetInternalCounter(GPTIMER2);
 }
 
 void led2Toggler(void)  {
 	HalTimerDriver::clearPendingInterrupts(GPTIMER3);
-
-	HalLedDriver dr;
-	dr.toggle(LED2);
+	HalLedDriver::toggle(LED2);
 }
 
 

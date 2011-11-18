@@ -20,7 +20,7 @@ enum Timer {
 
 class HalTimerDriver {
 	private:		
-		static HalTimerDriver TIMERDRIVER;
+		static HalTimerDriver TIMER_DRIVER;
 	
 		HalTimerDriver();
 		virtual ~HalTimerDriver();

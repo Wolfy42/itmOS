@@ -6,8 +6,6 @@
 #include "Kernel/TaskManagement/Tasks.h"
 #include "HAL/LED/HalLedDriver.h"
 
-HalLedDriver dr;
-
 void task1function() {
 	
 	int j = 31;
@@ -15,7 +13,7 @@ void task1function() {
 	int i = 0;
 	for (i = 0; i < 100; i++) {
 
-		dr.toggle(LED1);
+		HalLedDriver::toggle(LED1);
 		for (int z = 0; z < 160000;) {
 			z++;
 		}
@@ -32,7 +30,7 @@ void task2function() {
 	int i = 0;
 	for (i = 0; i < 10000; i++) {
 
-		dr.toggle(LED2);
+		HalLedDriver::toggle(LED2);
 		for (int z = 0; z < 80000;) {
 			z++;
 		}
