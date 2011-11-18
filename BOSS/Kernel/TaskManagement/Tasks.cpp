@@ -66,6 +66,7 @@ void deleteTask(TID_t taskId) {
  */
 void scheduleNextTask() {
 
+	
 	int prioritySum = 0;
 	int taskSum = 0;
 	float level = 0.0;
@@ -102,6 +103,10 @@ void scheduleNextTask() {
 	// if we reach this line - all is over :(
 	// was joking - just take the same task again :)
 	// but this should never happen!
+	 /*
+	 while (_tasks[++activeTask % MAX_TASKS] == NULL) { }
+	 activeTask = activeTask % MAX_TASKS;
+	 */
 }
 
 // init Task Array with NULL

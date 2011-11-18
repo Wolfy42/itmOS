@@ -132,6 +132,8 @@ extern "C" void c_intIRQ()  {
 	// back to system mode
 	asm("\t CPS 0x1F");
 
+	_disable_interrupts();
+
 	// schedule next task
 	scheduleNextTask();
 
