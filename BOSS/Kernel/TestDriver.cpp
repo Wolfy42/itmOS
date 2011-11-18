@@ -76,7 +76,7 @@ void dummy(void) {
 void initScheduler() {
 
 	IRQHandler hand;
-	srand_(5);
+	srand_(time_());
 	hand.registerHandler(HalTimerDriver::irqNumberForTimer(GPTIMER2), dummy);
 
 	HalTimerDriver::init(GPTIMER2, GPT_IRQMODE_MATCH, 5000000);
