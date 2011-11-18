@@ -3,6 +3,7 @@
 
 #include "API/dataTypes.h"
 
+
 // Timer base adresses
 #define GPTIMER1_BASE (address)0x48318000
 #define GPTIMER2_BASE (address)0x49032000
@@ -15,6 +16,18 @@
 #define GPTIMER9_BASE (address)0x49040000
 #define GPTIMER10_BASE (address)0x48086000
 #define GPTIMER11_BASE (address)0x48088000
+
+
+// Registers to enable and set up GPTIMER1
+#define CM_FCLKEN_WKUP (address) 0x48004C00		// Controls the modules functional clock activity
+#define EN_GPT1					0				// GPTIMER 1 clock control
+
+
+#define CM_CLKSEL_WKUP (address) 0x48004C40		// WAKEUP domain modules source clock selection.
+#define CLKSEL_GPT1				0				// Selects GPTIMER 1 source clock
+#define CLKSEL_GPT1_32K_FCLK	0 				// source is 32K_FCLK
+#define CLKSEL_GPT1_SYS_CLK		1				// source is SYS_CLK
+// ~~~~~ Registers to enable and set up GPTIMER1 ~~~~~ 
 
 
 // Timer offset adresses
