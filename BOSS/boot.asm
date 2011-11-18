@@ -10,7 +10,7 @@
 ;* TI includes
 ;***************************************************************
 
-    .asg	__args_main,   ARGS_MAIN_RTN
+    .asg    __args_main,   ARGS_MAIN_RTN
     .global ARGS_MAIN_RTN
     .global __TI_auto_init
 
@@ -26,7 +26,7 @@
 ;* CONSTANTS USED BY THIS MODULE
 ;***************************************************************
 
-c_r13_irq		.long    irqStack
+c_r13_irq       .long    irqStack
 c_r13_kernel    .long    kernelStack
 c_r13_system    .long    systemStack
 
@@ -57,9 +57,9 @@ _c_int00: .asmfunc
     ;  - Process BINIT Table
     ;  - Perform C auto initialization
     ;  - Call global constructors)
-    BL      __TI_auto_init
+    BL    __TI_auto_init
 
     ; CALL APPLICATION
-    BL      ARGS_MAIN_RTN
+    BL    ARGS_MAIN_RTN
 
 .end
