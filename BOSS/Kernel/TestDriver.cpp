@@ -14,7 +14,7 @@ void task1function() {
 	for (i = 0; i < 100; i++) {
 
 		HalLedDriver::toggle(LED1);
-		for (int z = 0; z < 160000;) {
+		for (int z = 0; z < 80000;) {
 			z++;
 		}
 	//	printf("task1 %d %d %d\n",i,j,k);
