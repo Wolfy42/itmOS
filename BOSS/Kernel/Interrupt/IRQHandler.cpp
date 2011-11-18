@@ -1,8 +1,4 @@
-
 #include "IRQHandler.h"
-#include "Kernel/TaskManagement/Tasks.h"
-
-
 
 /************** GLOBALS START **************/
 
@@ -42,7 +38,6 @@ extern int function_pointer;
 
 
 
-HalTimerDriver timer;
 IRQHandler* globalIRQHandler;
 
 #pragma TASK
@@ -127,8 +122,8 @@ extern "C" void c_intIRQ()  {
 	//globalIRQHandler->callHandlerFor(irqNr);
 	// reset interrupt
 	
-	timer.clearPendingInterrupts(GPTIMER2);
-	timer.resetInternalCounter(GPTIMER2);
+	HalTimerDriver::clearPendingInterrupts(GPTIMER2);
+	HalTimerDriver::resetInternalCounter(GPTIMER2);
 
 	// Reset IRQ output and enable new IRQ generation.
 	*(INTCPS_CONTROL) |= 0x1;
@@ -247,6 +242,11 @@ extern "C" void c_intIRQ()  {
 
 IRQHandler::IRQHandler() {
 	globalIRQHandler = this;
+	
+	// Initialize all handlers to NULL 
+	for (int i = 0; i < MAX_IRQ_HANDLERS; i++) {
+		_irqHandlers[i] = NULL;
+	}
 }
 
 IRQHandler::~IRQHandler() {}
@@ -271,11 +271,27 @@ void IRQHandler::registerHandler(int irqNr, void (*handler)(void))  {
 }
 
 void IRQHandler::callHandlerFor(int irqNr)  {
-	(*_irqHandlers[irqNr])();
+	if (irqNr > GPT_MPU_IRQ_ID_START && irqNr < GPT_MPU_IRQ_ID_END) {
+		callHandlerForTimerInterrupt(irqNr);
+	} else {	
+		callHandlerIfAvailable(irqNr);
+	}
 }
 
+void IRQHandler::callHandlerForTimerInterrupt(int irqNr) {
+	// Clear pending interrupts	
+		
+	callHandlerIfAvailable(irqNr);	
+
+	// Set counter to 0 if MATCH MODE
+}
+
+void IRQHandler::callHandlerIfAvailable(int irqNr) {
+	if (_irqHandlers[irqNr] != NULL) {
+		(*_irqHandlers[irqNr])();
+	}
+}
 
 void contextSwitch() {
 	
-
 }

@@ -3,6 +3,9 @@
 #include "HAL/bitOperations.h"
 
 TimerClass::TimerClass(address baseAddress): m_baseAddress(baseAddress) {
+	// Interruptmode Overflow as default
+	m_mode = GPT_IRQMODE_OVERFLOW;
+	
 	// This register controls (enable/disable) the interrupt events
 	m_tier = (address)((int)m_baseAddress + GPT_TIER_OFFSET);
 
@@ -31,12 +34,15 @@ TimerClass::~TimerClass() {
 
 // ~~~~~~~~~~~~~~~~~~~~ PUBLIC ~~~~~~~~~~~~~~~~~~~~
 void TimerClass::init(GptInterruptMode mode, int intervalValue) {
+	// Set the mode
+	m_mode = mode;
+	
 	// Stop the timer (could be already running)
 	stop();
 	
 	
 	// DEFAULT = GPT_IRQMODE_OVERFLOW
-	switch (mode) {
+	switch (m_mode) {
 		case GPT_IRQMODE_CAPTURE:
 			// TODO: Not yet supported
 			break;
@@ -75,6 +81,10 @@ void TimerClass::clearPendingInterrupts() {
 
 void TimerClass::resetInternalCounter() {
 	setInternalCounter(0);
+}
+
+GptInterruptMode TimerClass::getMode() {
+	return m_mode;
 }
 
 

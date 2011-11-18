@@ -9,6 +9,9 @@ class TimerClass {
 		// Timer base address 
 		address m_baseAddress;
 		
+		// Interrupt Mode
+		GptInterruptMode m_mode;
+		
 		// Calculated from base address
 		address m_tier;
 		address m_tisr;
@@ -36,6 +39,8 @@ class TimerClass {
 		void stop();
 		void clearPendingInterrupts();
 		void resetInternalCounter();
+		
+		GptInterruptMode getMode();
 };
 
 #endif /*TIMERCLASS_H_*/
