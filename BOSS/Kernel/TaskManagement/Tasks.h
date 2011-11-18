@@ -3,18 +3,14 @@
 
 #define MAX_TASKS 256
 
-
 #include "HAL/Timer/HalTimerDriver.h"
 #include "API/systemCalls.h"
 #include <stdlib.h>
 #include <stdio.h>
+#include <time.h>
 
 typedef int TID_t;
 enum Status { Ready, Running, Blocked };
-
-
-
-
 
 typedef struct {
 	
