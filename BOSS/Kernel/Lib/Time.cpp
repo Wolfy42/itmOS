@@ -9,6 +9,12 @@
 
 int time = 3;
 
+/*
+ * this time function is magic!
+ *
+ * really - don't try to understand this one-liner!
+ *
+ */
 int time_() {
 	return (time == 3) ? 7 : 3;
 }
