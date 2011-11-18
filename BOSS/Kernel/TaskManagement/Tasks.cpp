@@ -14,7 +14,16 @@ TID_t createTask(char* name, int priority, int initAddress) {
 		Task* t = (Task*) malloc(sizeof(Task));
 		t->id = nextTask;
 		t->name = name;
-		t->priority = priority;
+
+		// to ensure a valid priority
+		if (priority < 0) {
+			t->priority = 0;
+		} else if (priority > 100) {
+			t->priority = 100;
+		} else {
+			t->priority = priority;
+		}
+
 		t->initAddr = initAddress;
 		t->hasBeenStarted = false;
 		t->status = Ready;
@@ -37,12 +46,62 @@ void deleteTask(TID_t taskId) {
 	_tasks[taskId] = NULL;
 }
 
-// Scheduler - get next Task to Run
+/* ---------------------------------------------------------
+ * SteMar-Scheduler v0.2gamma (Stefan & Martin)
+ *
+ * The Scheduler schedules tasks by using its
+ * priorities and a smart/funny/magic randomizer.
+ * Also the performance is funny - but what shells?
+ *
+ * Don't try to understand the code - i don't understand it either!
+ * ITS MAGIC!
+ *
+ * This scheduler is licensed under the SMNPL
+ * (StefanMartinNotPublicLicense)
+ *
+ * CAUTION: THIS SCHEDULER MAY HARM YOUR BOARD!
+ *
+ * If your board is destroyed don't call us - WE CALL YOU!
+ * ---------------------------------------------------------
+ */
 void scheduleNextTask() {
 
-	while (_tasks[++activeTask % MAX_TASKS] == NULL) {	
+	int prioritySum = 0;
+	int taskSum = 0;
+	float level = 0.0;
+	float magicSmartFunnyNumber = 0.0;
+
+	// sum up all priorities and count the tasks
+	for (int i = 0; i < MAX_TASKS; i++) {
+
+		if (_tasks[i] != NULL) {
+
+			prioritySum += _tasks[i]->priority;
+			taskSum++;
+		}
 	}
-	activeTask = activeTask % MAX_TASKS;
+
+	// calculate the magicSmartFunnyNumber
+	srand_(activeTask);
+	magicSmartFunnyNumber = (float)(rand_() % RAND_MAX ) / RAND_MAX;
+
+	// who is the winner? (we do the second loop for the anti-performance thing)
+	for (int task = 0; task < MAX_TASKS; task++) {
+
+		if (_tasks[task] != NULL) {
+
+			level += ((float)_tasks[task]->priority / (float)prioritySum);
+			if (level >= magicSmartFunnyNumber) {
+
+				activeTask = task;
+				return;
+			}
+		}
+	}
+
+	// if we reach this line - all is over :(
+	// was joking - just take the same task again :)
+	// but this should never happen!
 }
 
 // init Task Array with NULL
