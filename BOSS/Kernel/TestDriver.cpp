@@ -93,6 +93,8 @@ int main() {
 	createTask("task 1\0", 80, (int)task1function);
 	createTask("task 2\0", 30, (int)task2function);
 
+	scheduleNextTask();
+
 	// init scheduler
 	initScheduler();
 

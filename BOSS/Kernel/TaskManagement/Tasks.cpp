@@ -47,7 +47,7 @@ void deleteTask(TID_t taskId) {
 }
 
 /* ---------------------------------------------------------
- * SteMar-Scheduler v0.1beta (Stefan & Martin)
+ * SteMar-Scheduler v0.2gamma (Stefan & Martin)
  *
  * The Scheduler schedules tasks by using its
  * priorities and a smart/funny/magic randomizer.
@@ -82,8 +82,8 @@ void scheduleNextTask() {
 	}
 
 	// calculate the magicSmartFunnyNumber
-	srand_(taskSum);
-	magicSmartFunnyNumber = (float)rand_() / (float)RAND_MAX;
+	srand_(activeTask);
+	magicSmartFunnyNumber = (float)(rand_() % RAND_MAX ) / RAND_MAX;
 
 	// who is the winner? (we do the second loop for the anti-performance thing)
 	for (int task = 0; task < MAX_TASKS; task++) {
