@@ -82,8 +82,8 @@ void scheduleNextTask() {
 	}
 
 	// calculate the magicSmartFunnyNumber
-	srand((unsigned)time(NULL));
-	magicSmartFunnyNumber = (float)rand() / (float)RAND_MAX;
+	srand_(taskSum);
+	magicSmartFunnyNumber = (float)rand_() / (float)RAND_MAX;
 
 	// who is the winner? (we do the second loop for the anti-performance thing)
 	for (int task = 0; task < MAX_TASKS; task++) {
