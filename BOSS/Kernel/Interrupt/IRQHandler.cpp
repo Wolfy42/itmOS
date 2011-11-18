@@ -119,11 +119,8 @@ extern "C" void c_intIRQ()  {
 	
 
 	// Call Global IRQ-Handler
-	//globalIRQHandler->callHandlerFor(irqNr);
-	// reset interrupt
-	
-	HalTimerDriver::clearPendingInterrupts(GPTIMER2);
-	HalTimerDriver::resetInternalCounter(GPTIMER2);
+	globalIRQHandler->callHandlerFor(irqNr);
+
 
 	// Reset IRQ output and enable new IRQ generation.
 	*(INTCPS_CONTROL) |= 0x1;
@@ -282,9 +279,14 @@ void IRQHandler::callHandlerFor(int irqNr)  {
 
 void IRQHandler::callHandlerForTimerInterrupt(int irqNr) {
 	// Clear pending interrupts	
+	Timer timer = HalTimerDriver::timerForIRQNumber(irqNr);
+	HalTimerDriver::clearPendingInterrupts(timer);
+		
 		
 	callHandlerIfAvailable(irqNr);	
 
+	
+	//HalTimerDriver::resetInternalCounter(GPTIMER2);
 	// Set counter to 0 if MATCH MODE
 }
 

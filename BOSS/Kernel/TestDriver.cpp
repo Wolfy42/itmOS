@@ -28,7 +28,7 @@ void task2function() {
 	int j = 99;
 	int k = 70;
 	int i = 0;
-	for (i = 0; i < 100; i++) {
+	for (i = 0; i < 10000; i++) {
 
 		HalLedDriver::toggle(LED2);
 		for (int z = 0; z < 80000;) {
@@ -70,16 +70,19 @@ void initShell() {
 	createTask("shell\0", 100, (int)shell);	
 }
 
-void dummy(void) {
+void ledOff(void) {
+	
+	HalLedDriver::ledOff(LED1);
+	HalLedDriver::ledOff(LED2);
 }
 
 void initScheduler() {
 
 	IRQHandler hand;
 	srand_(time_());
-	hand.registerHandler(HalTimerDriver::irqNumberForTimer(GPTIMER2), dummy);
+	hand.registerHandler(HalTimerDriver::irqNumberForTimer(GPTIMER2), ledOff);
 
-	HalTimerDriver::init(GPTIMER2, GPT_IRQMODE_MATCH, 5000000);
+	HalTimerDriver::init(GPTIMER2, GPT_IRQMODE_OVERFLOW, 5000000);
 	HalTimerDriver::start(GPTIMER2);
 
 	_enable_interrupts( ) ;
