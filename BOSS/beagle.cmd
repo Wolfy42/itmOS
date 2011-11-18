@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////
 // Linker command file for BeagleBoard
 // 
-// Basic configuration using only external memory
+// Configuration of the BOSS-Project
 //
 
 -stack           0x00002000
