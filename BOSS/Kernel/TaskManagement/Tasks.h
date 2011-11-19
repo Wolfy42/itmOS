@@ -6,6 +6,7 @@
 #include "HAL/Timer/HalTimerDriver.h"
 #include "API/systemCalls.h"
 #include "Kernel/Lib/Rand.h"
+#include "Kernel/Lib/Time.h"
 #include <stdlib.h>
 #include <stdio.h>
 
