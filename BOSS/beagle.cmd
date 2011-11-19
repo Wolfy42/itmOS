@@ -22,7 +22,11 @@ SECTIONS
 ///////////////////////////// int_ram //////////////////////////////
    .intvecs    > int_vecs
 		
-   .const      > int_ram
+   .const      > int_ram {
+       _kernelMasterTable = . ;
+       . = . + (16 * 1024);
+       *(.const)
+   }
    .bss        > int_ram
    .far        > int_ram
    
@@ -34,10 +38,7 @@ SECTIONS
    .text       > int_ram
    .sysmem     > int_ram
    .switch     > int_ram
-   .pinit      > int_ram  {
-   	   *(.pinit)
-       kernelMasterTable = . ;
-   }
+   .pinit      > int_ram
    
 ///////////////////////////// ext_ddr //////////////////////////////
    .stackArea      > ext_ddr {
