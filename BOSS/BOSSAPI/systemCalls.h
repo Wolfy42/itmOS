@@ -1,7 +1,7 @@
 #ifndef SYSTEMCALLS_H_
 #define SYSTEMCALLS_H_
 
-#include "dataTypes.h"
+#include "API/dataTypes.h"
 
 #define EXIT                0x1
 #define KILL                0x2

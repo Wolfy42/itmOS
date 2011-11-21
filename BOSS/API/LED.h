@@ -1,11 +1,10 @@
-#ifndef LEDCONSTANTS_H_
-#define LEDCONSTANTS_H_
+#ifndef LED_H_
+#define LED_H_
 
 enum LED {
     LED1 = 0,
     LED2 = 1
 };
-
 
 enum LEDServiceCommand {
     SERVICE_TOGGLE_LED,
@@ -14,4 +13,10 @@ enum LEDServiceCommand {
     SERVICE_GET_LED_STATUS
 };
 
-#endif /*LEDCONSTANTS_H_*/
+void toggleLED(LED led);
+void switchLEDOn(LED led);
+void switchLEDOff(LED led);
+
+bool getLEDState(LED led);
+
+#endif /*LED_H_*/

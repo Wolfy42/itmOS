@@ -2,7 +2,7 @@
 #define HALLEDDRIVER_H_
 
 #include "LEDClass.h"
-#include "BOSSAPI/LEDConstants.h"
+#include "API/LED.h"
 
 class HalLedDriver {
 	private:

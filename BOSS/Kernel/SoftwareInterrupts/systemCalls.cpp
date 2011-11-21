@@ -1,6 +1,6 @@
 
-#include "API/systemCalls.h"
-#include "API/serviceCalls.h"
+#include "BOSSAPI/systemCalls.h"
+#include "BOSSAPI/serviceCalls.h"
 #include "softwareInterrupt.h"
 
 void performServiceCall(int params[]) {
