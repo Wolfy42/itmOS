@@ -14,4 +14,4 @@
 #define INTCPS_MIR_SET_1 (address) 0x482000A8
 #define INTCPS_MIR_SET_2 (address) 0x482000C8
 
-#endif /* IRWCONFIG_H_ */
+#endif /* IRQCONFIG_H_ */
