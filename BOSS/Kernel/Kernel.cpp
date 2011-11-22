@@ -3,13 +3,14 @@
 
 Kernel::Kernel() {
 
+	_kernel = this;
+
 	LEDService ledService;
 	registerService(&ledService);
 
 }
 
 Kernel::~Kernel() {
-	_kernel = this;
 }
 
 void Kernel::registerService(Service* service)  {
