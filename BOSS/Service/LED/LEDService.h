@@ -20,7 +20,9 @@ class LEDService : public Service {
 		LEDService();
 		virtual ~LEDService();
 		
-        virtual void command(int params[]);
+		virtual int getServiceId();
+        virtual void execute(int params[]);
+
 		virtual bool stop();
 };
 

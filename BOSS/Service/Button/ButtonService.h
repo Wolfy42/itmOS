@@ -2,6 +2,7 @@
 #define BUTTONSERVICE_H_
 
 #include "Service/Service.h"
+#include "BOSSAPI/serviceCalls.h"
 #include "Driver/Button/ButtonDriver.h"
 
 class ButtonService : public Service {
@@ -15,7 +16,9 @@ class ButtonService : public Service {
     public:
     	ButtonService();
     	virtual ~ButtonService();
-        virtual void command(int params[]);
+
+    	virtual int getServiceId();
+        virtual void execute(int params[]);
         
         virtual bool stop();
 };

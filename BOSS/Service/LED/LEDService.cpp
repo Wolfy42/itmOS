@@ -25,7 +25,7 @@ LEDState LEDService::getLEDState(LED led) {
 	return (LEDState)_driver.read(position)[0];
 }
 
-void LEDService::command(int params[]) {
+void LEDService::execute(int params[]) {
     
     LED led = (LED)params[1];
     LEDServiceCommand command = (LEDServiceCommand)params[2];
@@ -47,7 +47,6 @@ void LEDService::command(int params[]) {
     }
 }
 void LEDService::start() {
-    registerService(LED_SERVICE_CALL);
 	_running = true;
 //	while (_running);
 }
@@ -55,5 +54,9 @@ bool LEDService::stop() {
 	_running = false;
 	// TODO interrupt reading
 	return true;
+}
+
+int LEDService::getServiceId()  {
+	return LED_SERVICE_CALL;
 }
 

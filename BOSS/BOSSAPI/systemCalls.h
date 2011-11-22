@@ -9,9 +9,8 @@
 #define FORK                0x4
 #define YIELD               0x5
 
-#define REGISTER_SERVICE    0x6
-#define SERVICE_CALL        0x7
-#define SERVICE_RESPONSE    0x8
+#define SERVICE_CALL        0x6
+#define SERVICE_RESPONSE    0x7
 
 void performSyscall(int syscallId, int parameters[]);
 

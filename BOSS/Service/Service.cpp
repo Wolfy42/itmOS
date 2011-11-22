@@ -17,11 +17,6 @@ bool Service::run() {
 	return true;
 }
 
-void Service::registerService(int id) {
-    int params[] = {id, (int)this};
-    performSyscall(REGISTER_SERVICE, params);
-}
-
 bool Service::restart() {
 	stop();
 	return run();

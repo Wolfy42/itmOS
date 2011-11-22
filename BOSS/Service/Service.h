@@ -5,14 +5,14 @@
 
 class Service {
 	protected:
-        void registerService(int id);
 		virtual void start() = 0;
 		void writeResponse(byte command[]);
 	public:
 		Service();
 		virtual ~Service();
         
-        virtual void command(int params[]) = 0;
+		virtual int getServiceId() = 0;
+        virtual void execute(int params[]) = 0;
 		
 		bool run();
 		virtual bool stop() = 0;

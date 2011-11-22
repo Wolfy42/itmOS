@@ -9,10 +9,9 @@ ButtonService::~ButtonService() {
 
 void ButtonService::start() {
     m_running = true;
-    registerService(BUTTON_SERVICE_CALL);
 }
 
-void ButtonService::command(int params[]) {
+void ButtonService::execute(int params[]) {
     if (m_running) {
         while (!(m_buttonDriver.read((byte*)0x0)[0]));
     }
@@ -21,4 +20,8 @@ void ButtonService::command(int params[]) {
 bool ButtonService::stop() {
     m_running = false;
     return true;
+}
+
+int ButtonService::getServiceId()  {
+	return BUTTON_SERVICE_CALL;
 }

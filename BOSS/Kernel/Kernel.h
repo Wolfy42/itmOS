@@ -17,6 +17,11 @@ private:
 public:
 	Kernel();
 	virtual ~Kernel();
+
+	void callService(int params[]);
 };
+
+static Kernel* _kernel;
+
 
 #endif /* KERNEL_H_ */

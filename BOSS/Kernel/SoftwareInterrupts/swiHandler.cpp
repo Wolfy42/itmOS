@@ -4,37 +4,12 @@
 #include "Service/Service.h"
 #include "Kernel/MMU/mmu.h"
 #include "Kernel/TaskManagement/Tasks.h"
+#include "Kernel/Kernel.h"
 
-#define MAX_SERVICES 25
 #define INIT 0x0
-
-int serviceIds[MAX_SERVICES];
-Service* services[MAX_SERVICES];
-int nrOfServices = 0;
 
 void init() {
     mmu_initMemoryForTask(0);
-}
-
-void registerService(int params[]) {
-    serviceIds[nrOfServices] = params[0];
-    services[nrOfServices] = (Service*)params[1];
-    nrOfServices++;
-}
-void callService(int params[]) {
-    int serviceId = params[0];
-    int index = -1;
-    int currentIndex = 0;
-    while ((currentIndex < nrOfServices) && (index < 0)) {
-        if (serviceIds[currentIndex] == serviceId) {
-            index = currentIndex;
-        }
-        currentIndex++;
-    }
-    if (index >= 0) {
-        services[index]->command(params);
-    }
-
 }
 
 void endTask(TID_t id) {
@@ -47,6 +22,8 @@ void endTask(TID_t id) {
 		
 	}
 }
+
+extern Kernel* _kernel;
 
 // TODO: STOP PLENKING!!!
 #pragma INTERRUPT (SWI) ;
@@ -74,11 +51,8 @@ extern "C" void c_intSWI(int swiNumber, int* parameters)  {
             break;
         case YIELD:
             break;
-        case REGISTER_SERVICE:
-            registerService(parameters);
-            break;
         case SERVICE_CALL:
-            callService(parameters);
+            _kernel->callService(parameters);
             break;
         case SERVICE_RESPONSE:
             break;
