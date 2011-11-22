@@ -5,7 +5,7 @@
  *      Author: stefan
  */
 
-#include "Kernel/Lib/Time.h"
+#include "Time.h"
 
 int time = 3;
 
