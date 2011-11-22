@@ -1,5 +1,5 @@
 #include "API/dataTypes.h"
-#include "HAL/bitOperations.h"
+#include "Lib/bitOperations.h"
 #include "BOSSAPI/systemCalls.h"
 #include "Service/Service.h"
 #include "Kernel/MMU/mmu.h"

@@ -1,5 +1,5 @@
 #include "HAL/control.h"
-#include "HAL/bitOperations.h"
+#include "Lib/bitOperations.h"
 #include "ButtonClass.h"
 
 ButtonClass::ButtonClass(int gpioNumber): m_gpio(gpioNumber, true) {

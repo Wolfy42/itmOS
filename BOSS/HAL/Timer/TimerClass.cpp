@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include "TimerClass.h"
-#include "HAL/bitOperations.h"
+#include "Lib/bitOperations.h"
 
 TimerClass::TimerClass(address baseAddress): m_baseAddress(baseAddress) {
 	// Interruptmode Overflow as default
