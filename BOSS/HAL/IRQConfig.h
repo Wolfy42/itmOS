@@ -1,6 +1,6 @@
 
-#ifndef CONFIG_H_
-#define CONFIG_H_
+#ifndef IRQCONFIG_H_
+#define IRQCONFIG_H_
 
 #include "API/dataTypes.h"
 
@@ -14,4 +14,4 @@
 #define INTCPS_MIR_SET_1 (address) 0x482000A8
 #define INTCPS_MIR_SET_2 (address) 0x482000C8
 
-#endif /* CONFIG_H_ */
+#endif /* IRWCONFIG_H_ */
