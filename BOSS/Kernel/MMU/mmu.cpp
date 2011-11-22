@@ -51,3 +51,12 @@ void mmu_initMemoryForTask(int taskId) {
 void mmu_loadPage(int pageNumber) {
     //TODO
 }
+
+void mmu_prepagePagesFor(Service* service)  {
+	//TODO: to be implemented
+}
+
+address mmu_parameterAddressFor(Service* service)  {
+	//TODO: to be implemented
+	return 0x00000000;
+}

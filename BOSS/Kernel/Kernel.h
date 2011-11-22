@@ -4,6 +4,7 @@
 
 #include <map>
 
+#include "Kernel/MMU/mmu.h"
 #include "Service/Service.h"
 #include "Service/LED/LEDService.h"
 
