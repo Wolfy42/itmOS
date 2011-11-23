@@ -1,16 +1,8 @@
 
 #include "Kernel.h"
 
-Kernel::Kernel() {
-
-	_kernel = this;
-
-	LEDService ledService;
-	registerService(&ledService);
-}
-
-Kernel::~Kernel() {
-}
+Kernel::Kernel() {}
+Kernel::~Kernel() {}
 
 void Kernel::registerService(Service* service)  {
 	_serviceMapping.insert(std::pair<int, Service*>(service->getServiceId(), service));

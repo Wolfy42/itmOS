@@ -1,10 +1,4 @@
-#include "API/dataTypes.h"
-#include "Lib/bitOperations.h"
-#include "BOSSAPI/systemCalls.h"
-#include "Service/Service.h"
-#include "Kernel/MMU/mmu.h"
-#include "Kernel/TaskManagement/Tasks.h"
-#include "Kernel/Kernel.h"
+#include "Kernel/SoftwareInterrupts/swiHandler.h"
 
 #define INIT 0x0
 
@@ -23,7 +17,11 @@ void endTask(TID_t id) {
 	}
 }
 
-extern Kernel* _kernel;
+static Kernel* _kernel;
+
+void swi_setKernel(void* kernel)  {
+	_kernel = (Kernel*)kernel;
+}
 
 // TODO: STOP PLENKING!!!
 #pragma INTERRUPT (SWI) ;
@@ -52,7 +50,7 @@ extern "C" void c_intSWI(int swiNumber, int* parameters)  {
         case YIELD:
             break;
         case SERVICE_CALL:
-            _kernel->callService(parameters);
+        	_kernel->callService(parameters);
             break;
         case SERVICE_RESPONSE:
             break;
