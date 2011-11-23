@@ -27,6 +27,7 @@ void Kernel::callService(int params[])  {
 
 void Kernel::executeServiceCalls()  {
 
+	//TODO:  iterate over all service calls
 	ServiceCall* serviceCall = _serviceCalls.front();
 
 	Service* service = serviceCall->getService();
