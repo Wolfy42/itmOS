@@ -4,7 +4,7 @@
 Kernel::Kernel() {}
 Kernel::~Kernel() {}
 
-void Kernel::registerService(Service* service)  {
+void Kernel::startService(Service* service)  {
 	_serviceMapping.insert(std::pair<int, Service*>(service->getServiceId(), service));
 	mmu_prepagePagesFor(service);
 }

@@ -12,7 +12,7 @@ int _main(int argc, char **argv) {
 	swi_setKernel(&kernel);
 
 	LEDService ledService;
-	kernel.registerService(&ledService);
+	kernel.startService(&ledService);
 
 	// up to user-mode
 	asm("	CPS   0x10");
