@@ -16,7 +16,7 @@ public:
 	Kernel();
 	virtual ~Kernel();
 
-	void registerService(Service* service);
+	void startService(Service* service);
 	void callService(int params[]);
 };
 
