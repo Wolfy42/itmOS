@@ -6,14 +6,19 @@ asm("\t .bss _taskMasterTableAddress, 4\n" \
     "taskMasterTableAddress .field _taskMasterTableAddress, 32");
 extern address taskMasterTableAddress;
 extern volatile unsigned int kernelMasterTable;
+extern volatile unsigned int intRamStart;
+extern volatile unsigned int extDDRStart;
 address taskMasterTableAddresses[MAX_MMU_TABLES] = {0x0};
-
+address firstFreeInIntRam;
+address firstFreeInExtDDR;
 bool occupiedAddresses[MAX_PAGES_IN_MEMORY] = {false};
 
 void mmu_initMemoryForTask(int taskId) {
     taskMasterTableAddress = taskMasterTableAddresses[taskId];
     if (taskMasterTableAddress == (address)0x0) {
         if (taskId == 0) {
+            firstFreeInIntRam = &intRamStart;
+            firstFreeInExtDDR = &extDDRStart;
             unsigned int i;
             taskMasterTableAddress = &kernelMasterTable;
             // Set Domain Access control register to 0101 0101 0101 0101 0101 0101 0101 0111 
