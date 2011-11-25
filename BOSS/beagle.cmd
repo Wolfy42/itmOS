@@ -33,7 +33,6 @@ SECTIONS
    .cinit      > int_ram
    .cio        > int_ram
    
-   .sysmem     > int_ram
    .switch     > int_ram
    .pinit      > int_ram {
    		*(.pinit)
@@ -44,6 +43,7 @@ SECTIONS
 ///////////////////////////// ext_ddr //////////////////////////////
    .const      > ext_ddr
    .text	   > ext_ddr
+   .sysmem     > ext_ddr
    .stackArea  > ext_ddr {
        . = . + (4 * 1024);
        kernelStack = .;
