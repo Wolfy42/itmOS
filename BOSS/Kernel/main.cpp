@@ -3,7 +3,7 @@
 #include "API/LED.h"
 #include "Kernel/SoftwareInterrupts/swiHandler.h"
 
-int main(int argc, char **argv) {
+int _main(int argc, char **argv) {
 
 	//TODO: start already in kernel-mode
 	asm("	CPS   0x13");

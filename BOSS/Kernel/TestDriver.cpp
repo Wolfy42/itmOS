@@ -6,10 +6,35 @@
 #include "Kernel/TaskManagement/Tasks.h"
 #include "HAL/LED/HalLedDriver.h"
 
+
+void ledOff(void) {
+
+	HalLedDriver::ledOff(LED1);
+	HalLedDriver::ledOff(LED2);
+}
+
+void initScheduler() {
+
+	IRQHandler hand;
+	srand_(time_());
+	hand.registerHandler(HalTimerDriver::irqNumberForTimer(GPTIMER2), ledOff);
+
+	HalTimerDriver::init(GPTIMER2, GPT_IRQMODE_OVERFLOW, 50000000);
+	HalTimerDriver::start(GPTIMER2);
+
+}
+
+
+void dummy()  {
+
+	initScheduler();
+	_enable_interrupts();
+	asm("\t CPS 0x10");
+	while(1);
+}
+
 void task1function() {
 	
-	int j = 31;
-	int k = 40;
 	int i = 0;
 	for (i = 0; i < 100; i++) {
 
@@ -17,16 +42,12 @@ void task1function() {
 		for (int z = 0; z < 80000;) {
 			z++;
 		}
-	//	printf("task1 %d %d %d\n",i,j,k);
-	//	swi();
 	}
-	//printf("task1 %d %d %d\n",i,j,k);
+	while(1);
 }
 
 void task2function() {
 
-	int j = 99;
-	int k = 70;
 	int i = 0;
 	for (i = 0; i < 10000; i++) {
 
@@ -34,28 +55,10 @@ void task2function() {
 		for (int z = 0; z < 80000;) {
 			z++;
 		}
-	//	printf("task2 %d %d %d\n",i,j,k);	
-	//	swi();
 	}	
+	while(1);
 }
 
-void task3function() {
-
-	for (int i = 0; i < 5000; i++) {
-
-		printf("task3\n");
-		//task1function();
-	}
-}
-
-void task4function() {
-
-	for (int i = 0; i < 5; i++) {
-
-		printf("task4\n");
-	//	swi();
-	}
-}
 
 void shell() {
 
@@ -70,53 +73,29 @@ void initShell() {
 	createTask("shell\0", 100, (int)shell);	
 }
 
-void ledOff(void) {
-	
-	HalLedDriver::ledOff(LED1);
-	HalLedDriver::ledOff(LED2);
-}
-
-void initScheduler() {
-
-	IRQHandler hand;
-	srand_(time_());
-	hand.registerHandler(HalTimerDriver::irqNumberForTimer(GPTIMER2), ledOff);
-
-	HalTimerDriver::init(GPTIMER2, GPT_IRQMODE_OVERFLOW, 5000000);
-	HalTimerDriver::start(GPTIMER2);
-
-	_enable_interrupts( ) ;
-}
 
 
-int _main() {
+
+
+int main() {
 
 	// init few necessary tasks
 	initTasks();
-	createTask("task 1\0", 70, (int)task1function);
-	createTask("task 2\0", 30, (int)task2function);
 
-	// init scheduler
-	initScheduler();
+	createTask("task 1\0", 0, (int)dummy);
+	createTask("task 1\0", 50, (int)task1function);
+	createTask("task 2\0", 50, (int)task2function);
+
+
+	dummy();
 
 	while(1) {
+		HalLedDriver::toggle(LED1);
+		HalLedDriver::toggle(LED2);
+		for (int z = 0; z < 80000;) {
+			z++;
+		}
 	}
-//	hasStarted = 0;
-	// create some tasks
-//	TaskManager* manager = new TaskManager();
-//	Task* dummy = new Task(7, "dummy", NULL);
-//	manager->createTask("task 1", task1function);
-//	manager->createTask("task 2", task2function);
-//	manager->createTask("task 3", task3function);
-//	manager->createTask("task 4", task4function);
-//
-//	manager->showTasks();
-//
-//	// TODO: LOL!!!LO!LO!L!O!LOLOOOOLOLOL es l�scht alles?
-////	manager->deleteTask(3);
-//	
-//	swi();
-//	manager->run();
 
 	return 0;
 }
