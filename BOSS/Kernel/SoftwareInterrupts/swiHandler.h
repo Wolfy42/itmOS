@@ -5,6 +5,6 @@
 #include "BOSSAPI/systemCalls.h"
 #include "Kernel/Kernel.h"
 
-	void swi_setKernel(void* kernel);
+	void swi_setKernel(Kernel* kernel);
 
 #endif /* SWIHANDLER_H_ */

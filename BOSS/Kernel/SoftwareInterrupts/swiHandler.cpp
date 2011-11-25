@@ -14,8 +14,8 @@
 
 static Kernel* _kernel;
 
-void swi_setKernel(void* kernel)  {
-	_kernel = (Kernel*)kernel;
+void swi_setKernel(Kernel* kernel)  {
+	_kernel = kernel;
 }
 
 // TODO: STOP PLENKING!!!
