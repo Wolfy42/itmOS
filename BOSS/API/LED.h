@@ -2,8 +2,8 @@
 #define LED_H_
 
 enum LED {
-    LED1 = 0,
-    LED2 = 1
+    LED1,
+    LED2
 };
 
 enum LEDServiceCommand {

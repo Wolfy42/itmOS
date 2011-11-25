@@ -63,5 +63,5 @@ void mmu_prepagePagesFor(Service* service)  {
 
 address mmu_parameterAddressFor(Service* service)  {
 	//TODO: to be implemented
-	return 0x00000000;
+	return (address)0x820F0000;
 }

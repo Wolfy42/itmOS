@@ -4,6 +4,8 @@
 
 #include <map>
 #include <queue>
+#include <stdio.h>
+#include <string.h>
 
 #include "Kernel/MMU/mmu.h"
 #include "Service/Service.h"

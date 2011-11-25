@@ -6,24 +6,22 @@
 #include "BOSSAPI/serviceCalls.h"
 
 class LEDService : public Service {
+
 	private:
 		LEDDriver _driver;
-		bool _running;
 		
+		virtual void execute(int params[]);
+
 		void switchLEDOn(LED led);
 		void switchLEDOff(LED led);
 		void toggleLED(LED led);
 		LEDState getLEDState(LED led);
-	protected:
-		virtual void start();	
+
 	public:
 		LEDService();
 		virtual ~LEDService();
 		
 		virtual int getServiceId();
-        virtual void execute(int params[]);
-
-		virtual bool stop();
 };
 
 #endif /*LEDSERVICE_H_*/

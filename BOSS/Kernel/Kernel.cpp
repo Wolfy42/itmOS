@@ -14,12 +14,10 @@ void Kernel::callService(int params[])  {
 	Service* service = _serviceMapping.find(params[0])->second;
 
 	//TODO: determine size of array...
-	int size = 3;
-	int* servicePara = new int[size];
-	int i;
-	for (i=0; i < size; i++ )  {
-		servicePara[0] = params[0];
-	}
+	int length = 3;
+	int* servicePara = new int[length];
+	memcpy(servicePara, params, length * sizeof(int));
+	servicePara[0] = SERVICE_REQ;
 
 	ServiceCall* serviceCall = new ServiceCall(service, servicePara);
 	_serviceCalls.push(serviceCall);
@@ -29,9 +27,13 @@ void Kernel::executeServiceCalls()  {
 
 	//TODO:  iterate over all service calls
 	ServiceCall* serviceCall = _serviceCalls.front();
-
 	Service* service = serviceCall->getService();
+	address parameterAddress = mmu_parameterAddressFor(service);
+
+	//copy parameters to Service
 	int* params = serviceCall->getParams();
+	int length = 3;
+	memcpy((int*)parameterAddress, params, length * sizeof(int));
 
 	//TODO:
 	// * check if parameters of service are free (service is not busy)
@@ -41,5 +43,6 @@ void Kernel::executeServiceCalls()  {
 	// * high priority for service
 	// * FREE MEMORY!
 
-	service->execute(params);
+	service->run();
+	//service->execute((byte*)parameterAddress);
 }

@@ -89,7 +89,7 @@ void initScheduler() {
 }
 
 
-int main() {
+int _main() {
 
 	// init few necessary tasks
 	initTasks();
