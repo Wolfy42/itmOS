@@ -1,12 +1,7 @@
 #include "Kernel/SoftwareInterrupts/swiHandler.h"
 
-#define INIT 0x0
-
-void init() {
-    mmu_initMemoryForTask(0);
-}
-
-void endTask(TID_t id) {
+//TODO: this code should not be here
+/*void endTask(TID_t id) {
 	
 	deleteTask(id);
 	//yield();
@@ -15,7 +10,7 @@ void endTask(TID_t id) {
 	while (1) {
 		
 	}
-}
+}*/
 
 static Kernel* _kernel;
 
@@ -29,17 +24,10 @@ extern "C" void c_intSWI(int swiNumber, int* parameters)  {
 	
 	// TODO: STOP PLENKING!!!
     _disable_interrupts( ) ;
-    static byte initialized = 0;
 
     switch (swiNumber) {
-        case INIT:
-            if (initialized == 0) {
-                init();
-                initialized = 1;
-            }
-            break;
-        case EXIT:
-        	endTask(parameters[0]);
+         case EXIT:
+        	//endTask(parameters[0]);
             break;
         case KILL:
             break;
