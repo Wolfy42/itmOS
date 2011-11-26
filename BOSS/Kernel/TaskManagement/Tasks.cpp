@@ -25,7 +25,7 @@ TID_t createTask(char* name, int priority, int initAddress) {
 		}
 
 		t->tcb.restartAddress = initAddress;
-		t->tcb.R13 = 0x8200E000 + (nextTask + 1) * 0x00010000;
+		t->tcb.R13 = 0x820E0000 + (nextTask + 1) * 0x00010000;
 		t->tcb.CPSR = 0;
 		t->tcb.R0 = 0;
 		t->tcb.R1 = 0;

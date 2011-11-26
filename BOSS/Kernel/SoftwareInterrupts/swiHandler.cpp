@@ -25,6 +25,10 @@ extern "C" void c_intSWI(int swiNumber, int* parameters)  {
 	// TODO: STOP PLENKING!!!
     _disable_interrupts( ) ;
 
+	// Store User registers
+	asm("	SUB 	R14, R14, #4");
+	asm("	STMFD 	R13!, {R0-R3, R12, R14}");
+
     switch (swiNumber) {
          case EXIT:
         	//endTask(parameters[0]);
@@ -45,6 +49,9 @@ extern "C" void c_intSWI(int swiNumber, int* parameters)  {
         default:
             break;
     }
+    // Restore User registers
+    asm ("	LDMFD 	R13!, {R0-R12, PC}^");
+
     // TODO: STOP PLENKING!!!
     _enable_interrupts( ) ;
 }

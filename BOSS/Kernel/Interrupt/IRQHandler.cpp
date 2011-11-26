@@ -17,6 +17,7 @@ extern int tcb2;
 #pragma TASK
 extern "C" void c_intIRQ()  {
 	
+	// Store User registers
 	asm("	SUB R14, R14, #4");
 	asm("	STMFD R13!, {R0-R3, R12, R14}");
 
@@ -29,35 +30,35 @@ extern "C" void c_intIRQ()  {
 	// Reset IRQ output and enable new IRQ generation.
 	*(INTCPS_CONTROL) |= 0x1;
 
+	// Get the TCB's of the processes to switch the context
 	tcb1 = (int)&_tasks[activeTask]->tcb.CPSR;
 	scheduleNextTask();
 	tcb2 = (int)&_tasks[activeTask]->tcb.CPSR;
 
-	asm("	LDR R0, tcb1 ;" );
-	asm("	LDR R0, [R0], #0 ;" );
-	asm("	LDR R1, tcb2 ;" );
-	asm("	LDR R1, [R1], #0 ;" );
+	// Load addresses of the TCB's of the Tasks to switch into R0 and R1
 
-	//asm("	;First store the old precess's User mode state to the PCB pointed to by R0.");
+	asm("	LDR 	R0, tcb1 ;" );
+	asm("	LDR 	R0, [R0], #0 ;" );
+	asm("	LDR 	R1, tcb2 ;" );
+	asm("	LDR 	R1, [R1], #0 ;" );
 
-	asm("	MRS R12, SPSR					; Get CPSR of interrupted process" );
-	asm("	STR R12, [R0], #8				;	" );
-	asm("	LDMFD R13!, {R2, R3}			;					" );
-	asm("	STMIA R0!, {R2, R3}				;" );
-	asm("	LDMFD R13!, {R2, R3, R12, R14}  ;" );
-	asm("	STR R14, [R0, #-12]				;" );
-	asm("	STMIA R0, {R2-R14}^");
+	// First store the old precess's User mode state to the PCB pointed to by R0."
 
-	//asm("	; Then load the new process's User mode state and return to it.");
+	asm("	MRS 	R12, SPSR					; Get CPSR of interrupted process" );
+	asm("	STR 	R12, [R0], #8				; Store CPSR to PCB, point R0 at PCB location for R0 value" );
+	asm("	LDMFD	R13!, {R2, R3}				; Reload R0/R1 of interrupted process from stack" );
+	asm("	STMIA 	R0!, {R2, R3}				; Store R0/R1 values to PCB, point R0 at PCB location for R2 value" );
+	asm("	LDMFD 	R13!, {R2, R3, R12, R14}  	; Reload remaining stacked values" );
+	asm("	STR 	R14, [R0, #-12]				; Store R14_irq, the interrupted process's restart address" );
+	asm("	STMIA 	R0, {R2-R14}^				; Store user R2-R14 ");
 
-	asm("	LDMIA R1!, {R12, R14}  			;" );
-	asm("	MSR SPSR_fsxc, R12				;" );
-	asm("	LDMIA R1, {R0-R14}^				;" );
-	asm("	NOP								;" );
-	asm("	MOVS PC, R14					;" );
+	// Then load the new process's User mode state and return to it.");
 
-	//TODO: would work without task-change
-	//asm ("	LDMFD R13!, {R0-R12, PC}^");
+	asm("	LDMIA 	R1!, {R12, R14}  			; Put interrupted process's CPSR" );
+	asm("	MSR 	SPSR_fsxc, R12				; and restart address in SPSR_irq and R14_irq" );
+	asm("	LDMIA 	R1, {R0-R14}^				; Load user R0-R14" );
+	asm("	NOP									; Note: cannot use banked register immediately after User mode LDM" );
+	asm("	MOVS 	PC, R14						; Return to address in R14_irq, with SPSR_irq -> CPSR transfer" );
 
 }
 
