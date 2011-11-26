@@ -19,7 +19,8 @@ extern "C" void c_intIRQ()  {
 	
 	// Store User registers
 	asm("	SUB R14, R14, #4");
-	asm("	STMFD R13!, {R0-R3, R12, R14}");
+	asm("   STMFD R13!, {R0-R3, R12, R14}");
+
 
 	// Determine Nr. of IRQ (e.g. GPTIMER2 is IRQ_38 --> irqNr = 38)
 	int irqNr = *(INTCPS_SIR_IRQ);
@@ -35,6 +36,11 @@ extern "C" void c_intIRQ()  {
 	scheduleNextTask();
 	tcb2 = (int)&_tasks[activeTask]->tcb.CPSR;
 
+	while (tcb1 == tcb2)  {
+		scheduleNextTask();
+		tcb2 = (int)&_tasks[activeTask]->tcb.CPSR;
+	}
+
 	// Load addresses of the TCB's of the Tasks to switch into R0 and R1
 
 	asm("	LDR 	R0, tcb1 ;" );
@@ -48,7 +54,7 @@ extern "C" void c_intIRQ()  {
 	asm("	STR 	R12, [R0], #8				; Store CPSR to PCB, point R0 at PCB location for R0 value" );
 	asm("	LDMFD	R13!, {R2, R3}				; Reload R0/R1 of interrupted process from stack" );
 	asm("	STMIA 	R0!, {R2, R3}				; Store R0/R1 values to PCB, point R0 at PCB location for R2 value" );
-	asm("	LDMFD 	R13!, {R2, R3, R12, R14}  	; Reload remaining stacked values" );
+	asm("   LDMFD   R13!, {R2, R3, R12, R14}	; Reload remaining stacked values" );
 	asm("	STR 	R14, [R0, #-12]				; Store R14_irq, the interrupted process's restart address" );
 	asm("	STMIA 	R0, {R2-R14}^				; Store user R2-R14 ");
 
