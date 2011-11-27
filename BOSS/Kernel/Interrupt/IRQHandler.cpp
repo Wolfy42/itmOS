@@ -37,11 +37,6 @@ extern "C" void c_intIRQ()  {
 	scheduleNextTask();
 	tcb2 = (int)&_tasks[activeTask]->tcb.CPSR;
 
-	while (tcb1 == tcb2)  {
-		scheduleNextTask();
-		tcb2 = (int)&_tasks[activeTask]->tcb.CPSR;
-	}
-
 	// Load addresses of the TCB's of the Tasks to switch into R0 and R1
 
 	asm("	LDR 	R0, tcb1 ;" );
