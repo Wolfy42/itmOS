@@ -17,10 +17,11 @@ extern int tcb2;
 #pragma TASK
 extern "C" void c_intIRQ()  {
 	
-	// Store User registers
-	asm("	SUB R14, R14, #4");
-	asm("   STMFD R13!, {R0-R3, R12, R14}");
+	// This will be called before enterint the function
+	// SUB             R13, R13, #4
 
+	asm("	SUB 	R14, R14, #4				; Put return address of the interrupted task into R14 ");
+	asm("   STMFD 	R13!, {R0-R3, R12, R14}		; Save Task-Registers ");
 
 	// Determine Nr. of IRQ (e.g. GPTIMER2 is IRQ_38 --> irqNr = 38)
 	int irqNr = *(INTCPS_SIR_IRQ);
@@ -64,8 +65,12 @@ extern "C" void c_intIRQ()  {
 	asm("	MSR 	SPSR_fsxc, R12				; and restart address in SPSR_irq and R14_irq" );
 	asm("	LDMIA 	R1, {R0-R14}^				; Load user R0-R14" );
 	asm("	NOP									; Note: cannot use banked register immediately after User mode LDM" );
-	asm("	MOVS 	PC, R14						; Return to address in R14_irq, with SPSR_irq -> CPSR transfer" );
 
+	// !! The next line is a added to the code in the ARM-book, because
+	//    normally this would be called at the end of the function, but we don't reach that
+	asm("	ADD     R13, R13, #4 ");
+
+	asm("	MOVS 	PC, R14						; Return to address in R14_irq, with SPSR_irq -> CPSR transfer" );
 }
 
 IRQHandler::IRQHandler() {

@@ -11,7 +11,7 @@ TID_t createTask(char* name, int priority, int initAddress) {
 	if (nextTask != -1) {
 
 		// init task
-		Task* t = (Task*) malloc(sizeof(Task));
+		Task* t = new Task();
 		t->id = nextTask;
 		t->name = name;
 
@@ -44,8 +44,7 @@ TID_t createTask(char* name, int priority, int initAddress) {
 		t->tcb.R14 = 0;
 
 		t->status = Ready;
-		//t->stackPointer = 0x8200A000 + (nextTask + 1) * 0x00010000;
-	
+
 		// add Task
 		_tasks[nextTask] = t;
 

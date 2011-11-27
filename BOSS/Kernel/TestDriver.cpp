@@ -39,7 +39,7 @@ void dummy()  {
 void task1function() {
 	
 	int i = 0;
-	for (i = 0; i < 100000000; i++) {
+	for (i = 0; i < 10000; i++) {
 		HalLedDriver::toggle(LED1);
 		for (int z = 0; z < 80000;) {
 			z++;
@@ -51,7 +51,7 @@ void task1function() {
 void task2function() {
 
 	int i = 0;
-	for (i = 0; i < 100000000; i++) {
+	for (i = 0; i < 1000; i++) {
 		HalLedDriver::toggle(LED2);
 		for (int z = 0; z < 80000;) {
 			z++;
@@ -84,8 +84,8 @@ int main() {
 	initTasks();
 
 	createTask("task 1\0", 0, (int)dummy);
-	createTask("task 1\0", 50, (int)task1function);
-	createTask("task 2\0", 50, (int)task2function);
+	createTask("task 1\0", 20, (int)task1function);
+	createTask("task 2\0", 20, (int)task2function);
 
 
 	dummy();

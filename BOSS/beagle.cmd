@@ -45,13 +45,13 @@ SECTIONS
    .text	   > ext_ddr
    .sysmem     > ext_ddr
    .stackArea  > ext_ddr {
-       . = . + (8 * 1024);
+       . = . + (4 * 1024);
        kernelStack = .;
-       . = . + (8 * 1024);
+       . = . + (4 * 1024);
        irqStack = .;
-       . = . + (8 * 1024);
+       . = . + (4 * 1024);
        systemStack = .;
-       . = . + (8 * 1024);
+       . = . + (4 * 1024);
        _extDDRStart = .;
    }
 }
