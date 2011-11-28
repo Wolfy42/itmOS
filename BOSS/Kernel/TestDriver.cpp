@@ -70,7 +70,6 @@ void initShell() {
 }
 
 void ledOff(void) {
-	
 	HalLedDriver::ledOff(LED1);
 	HalLedDriver::toggle(LED2);
 }
@@ -79,10 +78,10 @@ void initScheduler() {
 
 	IRQHandler hand;
 	srand_(time_());
-	hand.registerHandler(HalTimerDriver::irqNumberForTimer(GPTIMER2), ledOff);
+	hand.registerHandler(HalTimerDriver::irqNumberForTimer(GPTIMER1), ledOff);
 
-	HalTimerDriver::init(GPTIMER2, GPT_IRQMODE_OVERFLOW, 1000);
-	HalTimerDriver::start(GPTIMER2);
+	HalTimerDriver::init(GPTIMER1, GPT_IRQMODE_OVERFLOW, 1000);
+	HalTimerDriver::start(GPTIMER1);
 
 	_enable_interrupts( ) ;
 }

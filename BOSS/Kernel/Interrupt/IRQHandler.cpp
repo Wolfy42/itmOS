@@ -270,7 +270,7 @@ void IRQHandler::registerHandler(int irqNr, void (*handler)(void))  {
 }
 
 void IRQHandler::callHandlerFor(int irqNr)  {
-	if (irqNr > GPT_MPU_IRQ_ID_START && irqNr < GPT_MPU_IRQ_ID_END) {
+	if (irqNr >= GPT_MPU_IRQ_ID_START && irqNr <= GPT_MPU_IRQ_ID_END) {
 		callHandlerForTimerInterrupt(irqNr);
 	} else {	
 		callHandlerIfAvailable(irqNr);

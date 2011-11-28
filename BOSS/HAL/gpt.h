@@ -43,11 +43,23 @@ enum Timer {
 
 // Registers to enable and set up GPTIMER1
 #define CM_FCLKEN_WKUP (address) 0x48004C00		// Controls the modules functional clock activity
-#define EN_GPT1					0				// GPTIMER 1 clock control
+#define CM_ICLKEN_WKUP (address) 0x48004C10		// Controls the modules interface clock activity.
+#define EN_GPT1					0				// GPTIMER1 clock control
 
 
-#define CM_CLKSEL_WKUP (address) 0x48004C40		// WAKEUP domain modules source clock selection.
-#define CLKSEL_GPT1				0				// Selects GPTIMER 1 source clock
+#define CM_IDLEST_WKUP (address) 0x48004C20		// WAKEUP domain modules access monitoring.This register is read only and automatically updated.
+#define ST_GPT1					0				// GPTIMER 1 idle status | 0x0: GPTIMER 1 can be accessed. | 0x1: GPTIMER 1 cannot be accessed. Any access may return an error.
+
+
+#define TIOCP_CFG_GPT1 (address) 0x48318010		// This register controls the various parameters of the GP timer L4 interface.
+#define SOFTRESET				1				// Software reset. This bit is automatically reset by the hardware. During reads, it always returns 0. | 0x0: Normal mode. | 0x1: The module is reset.
+
+
+#define TISTAT_GPT1 (address) 0x48318014		// 
+#define RESETDONE 				0				// Internal reset monitoring. | 0x0: Internal module reset is ongoing. | 0x1: Reset completed.
+
+
+#define CM_CLKSEL_WKUP (address) 0x48004C40		// WAKEUP domain modules source clock selection. (GPT1 = BitNo. 0)
 #define CLKSEL_GPT1_32K_FCLK	0 				// source is 32K_FCLK
 #define CLKSEL_GPT1_SYS_CLK		1				// source is SYS_CLK
 // ~~~~~ Registers to enable and set up GPTIMER1 ~~~~~ 
@@ -95,7 +107,7 @@ enum GptInterruptMode {
 
 
 // PER domain modules source clock selection for GPT2 to GPT9
-#define CM_CLKSEL_PER   (address)0x48005040    	// Clock Selection Register
+#define CM_CLKSEL_PER   (address) 0x48005040    // Clock Selection Register
 #define CM_CLKSEL_GPT2  0						// 0x0: source is 32K_FCLK | 0x1: source is SYS_CLK
 #define CM_CLKSEL_GPT3  1
 #define CM_CLKSEL_GPT4  2

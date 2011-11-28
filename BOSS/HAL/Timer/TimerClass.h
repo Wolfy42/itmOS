@@ -44,6 +44,7 @@ class TimerClass {
 		void setOneMsOverflowCompareValue();
 		void selectSourceClock(bool is32k); 
 		
+		void enableGptimer1();
 		void initOneMsTimer();
 		
 	public:

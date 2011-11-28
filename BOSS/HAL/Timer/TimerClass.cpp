@@ -55,13 +55,18 @@ void TimerClass::init(GptInterruptMode mode, int intervalValue) {
 	// Set interval value
 	m_intervalValue = intervalValue;
 	
+	// Setup GPTIMER1
+	if (m_id == GPTIMER1) {
+		enableGptimer1();
+	}
+	
 	// Stop the timer (could be already running)
 	stop();
 	
 	// Clear all interrupts
 	clearPendingInterrupts();
 	
-	if (m_id == GPTIMER2) {
+	if (m_id == GPTIMER1 || m_id == GPTIMER2) {
 		initOneMsTimer();
 	} else {		
 		// DEFAULT = GPT_IRQMODE_OVERFLOW
@@ -140,6 +145,28 @@ void TimerClass::initOneMsTimer() {
 	selectSourceClock(true);
 }
 
+void TimerClass::enableGptimer1() {
+	// Set registers to use GPTIMER1
+	setBit(CM_FCLKEN_WKUP, EN_GPT1);
+	setBit(CM_ICLKEN_WKUP, EN_GPT1);
+	unsetBit(CM_CLKSEL_WKUP, 0);
+		
+	// Wait until GPTIMER1 is ready to use
+	unsigned int totalWaitTimeMs = 0;
+	while (readBit(CM_IDLEST_WKUP, ST_GPT1)) {
+	 	totalWaitTimeMs++;
+	}
+		 
+	// Softreset GPTIMER1
+	setBit(TIOCP_CFG_GPT1, SOFTRESET);
+		 
+	// Wait until GPTIMER1 is reset
+	totalWaitTimeMs = 0;
+ 	while (readBit(TISTAT_GPT1, RESETDONE) == 0) {
+  		totalWaitTimeMs++;
+ 	}
+}
+
 void TimerClass::disableInterrupt() {
 	*(m_tier) &= 0; // set 0
 }
@@ -181,9 +208,8 @@ void TimerClass::startTimer() {
 void TimerClass::setIncrementRegisters() {
 	// Set up 1ms 
 	int overflow_ticks = 1;
-	int freqMultOverflow = CLK_FREQUENCE * overflow_ticks;
-  	int pos_inc = ((  ((int)(freqMultOverflow))+1)	* 1000000) - freqMultOverflow * 1000000;
-  	int neg_inc = ((   (int)(freqMultOverflow))		* 1000000) - freqMultOverflow * 1000000;
+  	int pos_inc = ((((int)(CLK_FREQUENCE * overflow_ticks)) + 1) * 1000000) - (CLK_FREQUENCE * overflow_ticks * 1000000);
+  	int neg_inc = (( (int)(CLK_FREQUENCE * overflow_ticks)) 	 * 1000000) - (CLK_FREQUENCE * overflow_ticks * 1000000);
   	
   	*(m_tpir) = pos_inc;
   	*(m_tnir) = neg_inc;	

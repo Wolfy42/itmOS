@@ -57,8 +57,8 @@ GptInterruptMode HalTimerDriver::getMode(Timer timer) {
 // TODO: Implement all the timers
 TimerClass HalTimerDriver::timerClassForEnum(Timer timerEnum) {
 	switch (timerEnum) {
-		/*case GPTIMER1:
-			return m_timer1;*/
+		case GPTIMER1:
+			return m_timer1;
 			
 		case GPTIMER2:
 			return m_timer2;
