@@ -5,6 +5,7 @@
 #include "Kernel/Interrupt/IRQHandler.h"
 #include "Kernel/TaskManagement/Tasks.h"
 #include "HAL/LED/HalLedDriver.h"
+#include "Service/LED/main.h"
 
 
 void ledOff(void) {
@@ -84,6 +85,7 @@ int main() {
 	createTask("task 2\0", 40, (int)task2function);
 	createTask("task 1\0", 10, (int)task1function);
 	createTask("task 2\0", 90, (int)task2function);
+	createTask("LED-Service\0", 80, (int)led_main);
 	
 	dummy();
 

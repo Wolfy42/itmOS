@@ -43,6 +43,4 @@ void Kernel::executeServiceCalls()  {
 	// * high priority for service
 	// * FREE MEMORY!
 
-	service->run();
-	//service->execute((byte*)parameterAddress);
 }
