@@ -88,12 +88,17 @@ void initScheduler() {
 }
 
 
-int _main() {
+int main() {
 
 	// init few necessary tasks
 	initTasks();
 	createTask("task 1\0", 70, (int)task1function);
 	createTask("task 2\0", 30, (int)task2function);
+	createTask("task 1\0", 40, (int)task1function);
+	createTask("task 2\0", 40, (int)task2function);
+	createTask("task 1\0", 10, (int)task1function);
+	createTask("task 2\0", 90, (int)task2function);
+	
 
 	// init scheduler
 	initScheduler();
