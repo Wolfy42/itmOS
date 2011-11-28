@@ -282,12 +282,13 @@ void IRQHandler::callHandlerForTimerInterrupt(int irqNr) {
 	Timer timer = HalTimerDriver::timerForIRQNumber(irqNr);
 	HalTimerDriver::clearPendingInterrupts(timer);
 		
-		
+	// Call Handler
 	callHandlerIfAvailable(irqNr);	
 
-	
-	//HalTimerDriver::resetInternalCounter(GPTIMER2);
 	// Set counter to 0 if MATCH MODE
+	if (HalTimerDriver::getMode(timer) == GPT_IRQMODE_MATCH) { 
+		HalTimerDriver::resetInternalCounter(timer);
+	}
 }
 
 void IRQHandler::callHandlerIfAvailable(int irqNr) {

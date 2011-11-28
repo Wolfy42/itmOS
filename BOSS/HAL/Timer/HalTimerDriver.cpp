@@ -21,7 +21,7 @@ HalTimerDriver::~HalTimerDriver() {
 
 // ~~~~~~~~~~~~~~~~~~~~ PUBLIC ~~~~~~~~~~~~~~~~~~~~
 Timer HalTimerDriver::timerForIRQNumber(int irqNumber) {
-	return (Timer)(GPT_MPU_IRQ_ID_START - irqNumber + 1);
+	return (Timer)(irqNumber - GPT_MPU_IRQ_ID_START + 1);
 }
 
 int HalTimerDriver::irqNumberForTimer(Timer timerEnum) {

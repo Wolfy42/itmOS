@@ -66,7 +66,7 @@ void TimerClass::init(GptInterruptMode mode, int intervalValue) {
 	// Clear all interrupts
 	clearPendingInterrupts();
 	
-	if (m_id == GPTIMER1 || m_id == GPTIMER2) {
+	if (m_id == GPTIMER1 || m_id == GPTIMER2 || m_id == GPTIMER10) {
 		initOneMsTimer();
 	} else {		
 		// DEFAULT = GPT_IRQMODE_OVERFLOW
