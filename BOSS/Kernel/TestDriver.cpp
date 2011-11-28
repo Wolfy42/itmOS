@@ -11,7 +11,7 @@ void task1function() {
 	int j = 31;
 	int k = 40;
 	int i = 0;
-	for (i = 0; i < 100; i++) {
+	for (i = 0; i < 10000; i++) {
 
 		HalLedDriver::toggle(LED1);
 		for (int z = 0; z < 80000;) {
@@ -89,12 +89,17 @@ void initScheduler() {
 }
 
 
-int _main() {
+int main() {
 
 	// init few necessary tasks
 	initTasks();
 	createTask("task 1\0", 70, (int)task1function);
 	createTask("task 2\0", 30, (int)task2function);
+	createTask("task 1\0", 40, (int)task1function);
+	createTask("task 2\0", 40, (int)task2function);
+	createTask("task 1\0", 10, (int)task1function);
+	createTask("task 2\0", 90, (int)task2function);
+	
 
 	// init scheduler
 	initScheduler();
