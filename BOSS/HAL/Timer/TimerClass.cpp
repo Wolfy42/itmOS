@@ -2,9 +2,12 @@
 #include "TimerClass.h"
 #include "HAL/bitOperations.h"
 
-TimerClass::TimerClass(address baseAddress): m_baseAddress(baseAddress) {
+TimerClass::TimerClass(Timer id, address baseAddress): m_id(id), m_baseAddress(baseAddress) {
 	// Interruptmode Overflow as default
 	m_mode = GPT_IRQMODE_OVERFLOW;
+	
+	// Interval Value default
+	m_intervalValue = 1000;
 	
 	// This register controls (enable/disable) the interrupt events
 	m_tier = (address)((int)m_baseAddress + GPT_TIER_OFFSET);
@@ -26,6 +29,18 @@ TimerClass::TimerClass(address baseAddress): m_baseAddress(baseAddress) {
 	
 	// This register holds the value to be compared with the counter value
 	m_tmar = (address)((int)m_baseAddress + GPT_TMAR_OFFSET);
+	
+	// This register holds the value to be compared with the counter value
+	m_tpir = (address)((int)m_baseAddress + GPT_TPIR_OFFSET);
+	
+	// This register holds the value to be compared with the counter value
+	m_tnir = (address)((int)m_baseAddress + GPT_TNIR_OFFSET);
+	
+	// This register holds the value to be compared with the counter value
+	m_tocr = (address)((int)m_baseAddress + GPT_TOCR_OFFSET);
+	
+	// This register holds the value to be compared with the counter value
+	m_towr = (address)((int)m_baseAddress + GPT_TOWR_OFFSET);
 }
 
 TimerClass::~TimerClass() {
@@ -37,27 +52,36 @@ void TimerClass::init(GptInterruptMode mode, int intervalValue) {
 	// Set the mode
 	m_mode = mode;
 	
+	// Set interval value
+	m_intervalValue = intervalValue;
+	
 	// Stop the timer (could be already running)
 	stop();
 	
+	// Clear all interrupts
+	clearPendingInterrupts();
 	
-	// DEFAULT = GPT_IRQMODE_OVERFLOW
-	switch (m_mode) {
-		case GPT_IRQMODE_CAPTURE:
-			// TODO: Not yet supported
-			break;
-			
-		case GPT_IRQMODE_MATCH:  
-			setCompareValue(intervalValue);
-			setInternalCounter(0);
-			break;
-			
-		default:	// GPT_IRQMODE_OVERFLOW
-			setTimerLoadValue(0xFFFFFFFF - intervalValue);
-			
-			// Set bit to trigger load of "timer load value" to "timer counter register"
-			setBit(m_ttgr, 1);
-			break;
+	if (m_id == GPTIMER2) {
+		initOneMsTimer();
+	} else {		
+		// DEFAULT = GPT_IRQMODE_OVERFLOW
+		switch (m_mode) {
+			case GPT_IRQMODE_CAPTURE:
+				// TODO: Not yet supported
+				break;
+				
+			case GPT_IRQMODE_MATCH:  
+				setCompareValue(intervalValue);
+				setInternalCounter(0);
+				break;
+				
+			default:	// GPT_IRQMODE_OVERFLOW
+				setTimerLoadValue(0xFFFFFFFF - intervalValue);
+				
+				// Set bit to trigger load of "timer load value" to "timer counter register"
+				setBit(m_ttgr, 1);
+				break;
+		}
 	}
 	
 	setOptionalFeatures();
@@ -89,6 +113,33 @@ GptInterruptMode TimerClass::getMode() {
 
 
 // ~~~~~~~~~~~~~~~~~~~~ PRIVATE ~~~~~~~~~~~~~~~~~~~~
+void TimerClass::initOneMsTimer() {	
+  	setIncrementRegisters();
+  	
+  	// DEFAULT = GPT_IRQMODE_OVERFLOW
+	switch (m_mode) {
+		case GPT_IRQMODE_CAPTURE:
+			// TODO: Not yet supported
+			break;
+			
+		case GPT_IRQMODE_MATCH:  
+			setCompareValue(0xFFFFFFFF - ONE_MS_VALUE);
+			setInternalCounter(0);
+			break;
+			
+		default:	// GPT_IRQMODE_OVERFLOW
+			setTimerLoadValue(ONE_MS_VALUE);
+			
+			// Set bit to trigger load of "timer load value" to "timer counter register"
+			setBit(m_ttgr, 1);
+			break;
+	}
+	
+	setOneMsOverflowCounter();
+	setOneMsOverflowCompareValue();
+	selectSourceClock(true);
+}
+
 void TimerClass::disableInterrupt() {
 	*(m_tier) &= 0; // set 0
 }
@@ -118,10 +169,38 @@ void TimerClass::setOptionalFeatures() {
 	// Set 0 before setting optional features
 	*(m_tclr) &= 0; // set 0
 	
+	setBit(m_tclr, GPT_TCLR_TRG_OVF_MAT);
 	setBit(m_tclr, GPT_TCLR_COMPARE);
 	setBit(m_tclr, GPT_TCLR_AUTORELOAD);
 }
 
 void TimerClass::startTimer() {
 	setBit(m_tclr, GPT_TCLR_START);
+}
+
+void TimerClass::setIncrementRegisters() {
+	// Set up 1ms 
+	int overflow_ticks = 1;
+	int freqMultOverflow = CLK_FREQUENCE * overflow_ticks;
+  	int pos_inc = ((  ((int)(freqMultOverflow))+1)	* 1000000) - freqMultOverflow * 1000000;
+  	int neg_inc = ((   (int)(freqMultOverflow))		* 1000000) - freqMultOverflow * 1000000;
+  	
+  	*(m_tpir) = pos_inc;
+  	*(m_tnir) = neg_inc;	
+}
+
+void TimerClass::setOneMsOverflowCounter() {
+	*(m_tocr) = 0;
+}
+
+void TimerClass::setOneMsOverflowCompareValue() {
+	*(m_towr) = m_intervalValue;
+}
+
+void TimerClass::selectSourceClock(bool is32k) {
+	if (is32k) {
+		unsetBit(CM_CLKSEL_PER, m_id - 2);
+	} else {
+		setBit(CM_CLKSEL_PER, m_id - 2);
+	}
 }

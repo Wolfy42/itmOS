@@ -6,11 +6,17 @@
 
 class TimerClass {
 	private:
+		// Timer ID
+		Timer m_id;
+		
 		// Timer base address 
 		address m_baseAddress;
 		
 		// Interrupt Mode
 		GptInterruptMode m_mode;
+		
+		// Interval Value
+		int m_intervalValue;
 		
 		// Calculated from base address
 		address m_tier;
@@ -20,6 +26,10 @@ class TimerClass {
 		address m_tldr;
 		address m_ttgr;
 		address m_tmar;
+		address m_tpir;
+		address m_tnir;
+		address m_tocr;
+		address m_towr;
 		
 		void stopTimer();
 		void disableInterrupt();
@@ -29,9 +39,15 @@ class TimerClass {
 		void setInternalCounter(int counterValue);
 		void setTimerLoadValue(int timerLoadValue);
 		void setCompareValue(int compareValue);
+		void setIncrementRegisters();
+		void setOneMsOverflowCounter();
+		void setOneMsOverflowCompareValue();
+		void selectSourceClock(bool is32k); 
+		
+		void initOneMsTimer();
 		
 	public:
-		TimerClass(address baseAddress);
+		TimerClass(Timer id, address baseAddress);
 		virtual ~TimerClass();
 		
 		void init(GptInterruptMode mode, int intervalValue);
