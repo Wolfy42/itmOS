@@ -19,7 +19,7 @@ void initScheduler() {
 	srand_(time_());
 	hand.registerHandler(HalTimerDriver::irqNumberForTimer(GPTIMER2), ledOff);
 
-	HalTimerDriver::init(GPTIMER2, GPT_IRQMODE_OVERFLOW, 50000000);
+	HalTimerDriver::init(GPTIMER2, GPT_IRQMODE_OVERFLOW, 1000);
 	HalTimerDriver::start(GPTIMER2);
 
 }
@@ -29,7 +29,6 @@ void dummy()  {
 	initScheduler();
 	_enable_interrupts();
 	asm("\t CPS 0x10");
-	int i;
 	while(1)  {
 		HalLedDriver::ledOn(LED1);
 		HalLedDriver::ledOn(LED2);
@@ -39,7 +38,8 @@ void dummy()  {
 void task1function() {
 	
 	int i = 0;
-	for (i = 0; i < 10000000; i++) {
+	for (i = 0; i < 10000; i++) {
+
 		HalLedDriver::toggle(LED1);
 		for (int z = 0; z < 80000;) {
 			z++;
@@ -51,8 +51,7 @@ void task1function() {
 void task2function() {
 
 	int i = 0;
-	for (i = 0; i < 1000000; i++) {
-		HalLedDriver::toggle(LED2);
+	for (i = 0; i < 10000; i++) {
 		for (int z = 0; z < 80000;) {
 			z++;
 		}
@@ -74,20 +73,18 @@ void initShell() {
 	createTask("shell\0", 100, (int)shell);	
 }
 
-
-
-
-
 int main() {
 
 	// init few necessary tasks
 	initTasks();
 
-	createTask("task 1\0", 0, (int)dummy);
-	createTask("task 1\0", 20, (int)task1function);
-	createTask("task 2\0", 20, (int)task2function);
-
-
+	createTask("task 1\0", 70, (int)task1function);
+	createTask("task 2\0", 30, (int)task2function);
+	createTask("task 1\0", 40, (int)task1function);
+	createTask("task 2\0", 40, (int)task2function);
+	createTask("task 1\0", 10, (int)task1function);
+	createTask("task 2\0", 90, (int)task2function);
+	
 	dummy();
 
 	while(1) {
@@ -98,7 +95,7 @@ int main() {
 		}
 	}
 
-	return 0;
+	//return 0;
 }
 
 

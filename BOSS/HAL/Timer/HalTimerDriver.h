@@ -1,22 +1,8 @@
 #ifndef HALTIMERDRIVER_H_
 #define HALTIMERDRIVER_H_
 
-#include "TimerClass.h"
+#include "HAL/Timer/TimerClass.h"
 #include "HAL/gpt.h"
-
-enum Timer {
-	GPTIMER1 = 1,
-	GPTIMER2 = 2,
-	GPTIMER3 = 3,
-	GPTIMER4 = 4,
-	GPTIMER5 = 5,
-	GPTIMER6 = 6,
-	GPTIMER7 = 7,
-	GPTIMER8 = 8,
-	GPTIMER9 = 9,
-	GPTIMER10 = 10,
-	GPTIMER11 = 11
-};
 
 class HalTimerDriver {
 	private:		
