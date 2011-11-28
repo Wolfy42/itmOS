@@ -4,9 +4,9 @@
 #define MAX_TASKS 256
 
 #include "HAL/Timer/HalTimerDriver.h"
-#include "API/systemCalls.h"
-#include "Kernel/Lib/Rand.h"
-#include "Kernel/Lib/Time.h"
+#include "BOSSAPI/systemCalls.h"
+#include "Lib/Rand.h"
+#include "Lib/Time.h"
 #include <stdlib.h>
 #include <stdio.h>
 

@@ -1,23 +1,32 @@
 #ifndef SERVICE_H_
 #define SERVICE_H_
 
+#include <stdio.h>
+#include <string.h>
+
 #include "API/dataTypes.h"
 
+enum ServiceStatus {
+	SERVICE_FREE,
+	SERVICE_REQ,
+	SERVICE_RESP
+};
+
 class Service {
+
+	private:
+		int* _parameterAddress;
+
 	protected:
-        void registerService(int id);
-		virtual void start() = 0;
-		void writeResponse(byte command[]);
+		void writeResponse(int params[]);
+		virtual void execute(int params[]) = 0;
+
 	public:
 		Service();
 		virtual ~Service();
+		void run();
         
-        virtual void command(int params[]) = 0;
-		
-		bool run();
-		virtual bool stop() = 0;
-		bool restart();
-	
+		virtual int getServiceId() = 0;
 };
 
 #endif /*SERVICE_H_*/

@@ -1,7 +1,7 @@
 #ifndef SYSTEMCALLS_H_
 #define SYSTEMCALLS_H_
 
-#include "dataTypes.h"
+#include "API/dataTypes.h"
 
 #define EXIT                0x1
 #define KILL                0x2
@@ -9,9 +9,8 @@
 #define FORK                0x4
 #define YIELD               0x5
 
-#define REGISTER_SERVICE    0x6
-#define SERVICE_CALL        0x7
-#define SERVICE_RESPONSE    0x8
+#define SERVICE_CALL        0x6
+#define SERVICE_RESPONSE    0x7
 
 void performSyscall(int syscallId, int parameters[]);
 

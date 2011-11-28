@@ -3,7 +3,7 @@
 #define IRQHANDLER_H_
 
 #include "API/dataTypes.h"
-#include "Config.h"
+#include "HAL/IRQConfig.h"
 #include "HAL/Timer/TimerClass.h"
 #include "Kernel/TaskManagement/Tasks.h"
 #include "HAL/gpt.h"

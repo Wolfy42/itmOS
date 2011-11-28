@@ -1,6 +1,6 @@
 
 #include "TaskOperations.h"
-#include "API/systemCalls.h"
+#include "systemCalls.h"
 
 void yield() {
     performSyscall(YIELD, (int*)0x0);

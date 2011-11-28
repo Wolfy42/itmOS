@@ -1,43 +1,7 @@
-#include "API/dataTypes.h"
-#include "HAL/bitOperations.h"
-#include "API/systemCalls.h"
-#include "Service/Service.h"
-#include "Kernel/MMU/mmu.h"
-#include "Kernel/TaskManagement/Tasks.h"
+#include "Kernel/SoftwareInterrupts/swiHandler.h"
 
-#define MAX_SERVICES 25
-#define INIT 0x0
-
-int serviceIds[MAX_SERVICES];
-Service* services[MAX_SERVICES];
-int nrOfServices = 0;
-
-void init() {
-    mmu_initMemoryForTask(0);
-}
-
-void registerService(int params[]) {
-    serviceIds[nrOfServices] = params[0];
-    services[nrOfServices] = (Service*)params[1];
-    nrOfServices++;
-}
-void callService(int params[]) {
-    int serviceId = params[0];
-    int index = -1;
-    int currentIndex = 0;
-    while ((currentIndex < nrOfServices) && (index < 0)) {
-        if (serviceIds[currentIndex] == serviceId) {
-            index = currentIndex;
-        }
-        currentIndex++;
-    }
-    if (index >= 0) {
-        services[index]->command(params);
-    }
-
-}
-
-void endTask(TID_t id) {
+//TODO: this code should not be here
+/*void endTask(TID_t id) {
 	
 	deleteTask(id);
 	//yield();
@@ -46,6 +10,12 @@ void endTask(TID_t id) {
 	while (1) {
 		
 	}
+}*/
+
+static Kernel* _kernel;
+
+void swi_setKernel(Kernel* kernel)  {
+	_kernel = kernel;
 }
 
 // TODO: STOP PLENKING!!!
@@ -54,17 +24,10 @@ extern "C" void c_intSWI(int swiNumber, int* parameters)  {
 	
 	// TODO: STOP PLENKING!!!
     _disable_interrupts( ) ;
-    static byte initialized = 0;
 
     switch (swiNumber) {
-        case INIT:
-            if (initialized == 0) {
-                init();
-                initialized = 1;
-            }
-            break;
-        case EXIT:
-        	endTask(parameters[0]);
+         case EXIT:
+        	//endTask(parameters[0]);
             break;
         case KILL:
             break;
@@ -74,11 +37,8 @@ extern "C" void c_intSWI(int swiNumber, int* parameters)  {
             break;
         case YIELD:
             break;
-        case REGISTER_SERVICE:
-            registerService(parameters);
-            break;
         case SERVICE_CALL:
-            callService(parameters);
+        	_kernel->callService(parameters);
             break;
         case SERVICE_RESPONSE:
             break;

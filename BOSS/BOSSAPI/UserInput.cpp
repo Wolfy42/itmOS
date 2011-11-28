@@ -1,6 +1,6 @@
 
 #include "UserInput.h"
-#include "API/serviceCalls.h"
+#include "serviceCalls.h"
 
 int waitForInput() {
     int params[] = {BUTTON_SERVICE_CALL};

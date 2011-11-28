@@ -5,7 +5,7 @@
  *      Author: stefan
  */
 
-#include "Kernel/Lib/Rand.h"
+#include "Rand.h"
 
 /* This is not meant to be a good seed, just one that initialises a guaranteed sequence */
 void srand_(unsigned int seed) {
