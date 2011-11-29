@@ -8,15 +8,17 @@ class ServiceCall {
 
 private:
 
-	Service* _service;
+	int _serviceId;
+	int _paramsLength;
 	int* _params;
 
 public:
 
-	ServiceCall(Service* service, int* params);
+	ServiceCall(int* serviceCallParams);
 	virtual ~ServiceCall();
 
-	Service* getService();
+	int getServiceId();
+	int getParamsLength();
 	int* getParams();
 };
 

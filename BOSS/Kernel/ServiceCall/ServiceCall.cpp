@@ -1,18 +1,28 @@
 
 #include "ServiceCall.h"
 
-ServiceCall::ServiceCall(Service* service, int* params) {
-	_service = service;
-	_params = params;
+ServiceCall::ServiceCall(int* serviceCallParams) {
+
+	_serviceId = serviceCallParams[0];
+	_paramsLength = serviceCallParams[1];
+
+	// copy service-parameters into _params
+	_params = new int[_paramsLength];
+	memcpy(_params, &serviceCallParams[2], _paramsLength * sizeof(int));
 }
 
-ServiceCall::~ServiceCall() {}
+ServiceCall::~ServiceCall() {
+	delete _params;
+}
 
-Service* ServiceCall::getService()  {
-	return _service;
+int ServiceCall::getServiceId()  {
+	return _serviceId;
+}
+
+int ServiceCall::getParamsLength()  {
+	return _paramsLength;
 }
 
 int* ServiceCall::getParams()  {
 	return _params;
 }
-
