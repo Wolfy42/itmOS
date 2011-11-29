@@ -2,7 +2,7 @@
 #ifndef SERVICECALL_H_
 #define SERVICECALL_H_
 
-#include "Service/Service.h"
+#include <string.h>
 
 class ServiceCall {
 
@@ -21,6 +21,5 @@ public:
 	int getParamsLength();
 	int* getParams();
 };
-
 
 #endif /* SERVICECALL_H_ */
