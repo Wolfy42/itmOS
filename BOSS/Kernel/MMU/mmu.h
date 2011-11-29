@@ -12,7 +12,7 @@
 void mmu_initMemoryForTask(int taskId);
 void mmu_loadPage(int pageNumber);
 
-void mmu_prepagePagesFor(Service* service);
-address mmu_parameterAddressFor(Service* service);
+void mmu_prepagePagesFor(int serviceId);
+address mmu_parameterAddressFor(int serviceId);
 
 #endif /*MMU_H_*/

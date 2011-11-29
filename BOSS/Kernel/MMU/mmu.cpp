@@ -57,11 +57,11 @@ void mmu_loadPage(int pageNumber) {
     //TODO
 }
 
-void mmu_prepagePagesFor(Service* service)  {
+void mmu_prepagePagesFor(int serviceId)  {
 	//TODO: to be implemented
 }
 
-address mmu_parameterAddressFor(Service* service)  {
+address mmu_parameterAddressFor(int serviceId)  {
 	//TODO: to be implemented
 	return (address)0x820F0000;
 }
