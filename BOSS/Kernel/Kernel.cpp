@@ -5,42 +5,46 @@ Kernel::Kernel() {}
 Kernel::~Kernel() {}
 
 void Kernel::startService(Service* service)  {
+
+	//TODO: refactor: What should the Kernel know about the service?
 	_serviceMapping.insert(std::pair<int, Service*>(service->getServiceId(), service));
-	mmu_prepagePagesFor(service);
+	mmu_prepagePagesFor(service->getServiceId());
 }
 
 void Kernel::callService(int params[])  {
 
-	Service* service = _serviceMapping.find(params[0])->second;
-
-	//TODO: determine size of array...
-	int length = 3;
-	int* servicePara = new int[length];
-	memcpy(servicePara, params, length * sizeof(int));
-	servicePara[0] = SERVICE_REQ;
-
-	ServiceCall* serviceCall = new ServiceCall(service, servicePara);
-	_serviceCalls.push(serviceCall);
+	_serviceCalls.push_back(new ServiceCall(params));
 }
 
 void Kernel::executeServiceCalls()  {
 
-	//TODO:  iterate over all service calls
-	ServiceCall* serviceCall = _serviceCalls.front();
-	Service* service = serviceCall->getService();
-	address parameterAddress = mmu_parameterAddressFor(service);
+	// iterate over all pending service calls
+	ServiceCall* serviceCall;
+	std::list<ServiceCall*>::iterator it;
+	//TODO: iterator broken ?
+	//for(it=_serviceCalls.begin(); it != _serviceCalls.end(); ++it)  {
+		//serviceCall = *it;
+		serviceCall = _serviceCalls.front();
 
-	//copy parameters to Service
-	int* params = serviceCall->getParams();
-	int length = 3;
-	memcpy((int*)parameterAddress, params, length * sizeof(int));
+		int serviceId = serviceCall->getServiceId();
+		address parameterAddress = mmu_parameterAddressFor(serviceId);
+		ServiceStatus status = (ServiceStatus)parameterAddress[0];
 
-	//TODO:
-	// * check if parameters of service are free (service is not busy)
-	// * if free: write parameters to address
-	// * if not free: save parameters for servie
-	// * if service long time not responding: restart
-	// * high priority for service
-	// * FREE MEMORY!
+		if (status == SERVICE_FREE)  {
 
+			//copy parameters to Service
+			int* params = serviceCall->getParams();
+			int length = serviceCall->getParamsLength();
+			parameterAddress[0] = SERVICE_REQ;
+			memcpy((int*)&parameterAddress[1], params, length * sizeof(int));
+			//TODO: high priority for service
+
+		}  else if (status == SERVICE_RESP)  {
+
+			//TODO: respond to task which was calling
+			//TODO: free memory of serviceCall
+		}  else  {
+			//TODO: if long time not responding -> Restart service
+		}
+	//}
 }

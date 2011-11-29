@@ -22,5 +22,8 @@ int _main(int argc, char **argv) {
 
 	kernel->executeServiceCalls();
 
+	// TODO: should be called by a scheduler
+	ledService->run();
+
 	return 0;
 }

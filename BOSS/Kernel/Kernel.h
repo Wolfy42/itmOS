@@ -3,8 +3,8 @@
 #define KERNEL_H_
 
 #include <map>
-#include <queue>
-#include <stdio.h>
+#include <list>
+
 #include <string.h>
 
 #include "Kernel/MMU/mmu.h"
@@ -15,10 +15,11 @@ class Kernel {
 private:
 
 	// Mapping from service-id to service
+	// TODO: replace this map
 	std::map<int, Service*> _serviceMapping;
 
 	//Queue of pending service calls
-	std::queue<ServiceCall*> _serviceCalls;
+	std::list<ServiceCall*> _serviceCalls;
 
 public:
 	Kernel();
