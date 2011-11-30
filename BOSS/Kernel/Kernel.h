@@ -9,17 +9,16 @@
 
 #include "Kernel/MMU/mmu.h"
 #include "Service/Service.h"
-#include "Kernel/ServiceCall/ServiceCall.h"
 
 class Kernel {
 private:
 
 	// Mapping from service-id to service
 	// TODO: replace this map
-	std::map<int, Service*> _serviceMapping;
+	//std::map<int, Service*> _serviceMapping;
 
 	//Queue of pending service calls
-	std::list<ServiceCall*> _serviceCalls;
+	//std::list<ServiceCall*> _serviceCalls;
 
 public:
 	Kernel();

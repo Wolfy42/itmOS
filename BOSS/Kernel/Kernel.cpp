@@ -7,26 +7,26 @@ Kernel::~Kernel() {}
 void Kernel::startService(Service* service)  {
 
 	//TODO: refactor: What should the Kernel know about the service?
-	_serviceMapping.insert(std::pair<int, Service*>(service->getServiceId(), service));
+	//_serviceMapping.insert(std::pair<int, Service*>(service->getServiceId(), service));
 	mmu_prepagePagesFor(service->getServiceId());
 }
 
 void Kernel::callService(int params[])  {
 
-	_serviceCalls.push_back(new ServiceCall(params));
+	//_serviceCalls.push_back(new ServiceCall(params));
 }
 
 void Kernel::executeServiceCalls()  {
 
 	// iterate over all pending service calls
-	ServiceCall* serviceCall;
-	std::list<ServiceCall*>::iterator it;
+	//ServiceCall* serviceCall;
+	//std::list<ServiceCall*>::iterator it;
 	//TODO: iterator broken ?
 	//for(it=_serviceCalls.begin(); it != _serviceCalls.end(); ++it)  {
 		//serviceCall = *it;
-		serviceCall = _serviceCalls.front();
+	//	serviceCall = _serviceCalls.front();
 
-		int serviceId = serviceCall->getServiceId();
+	/*	int serviceId = serviceCall->getServiceId();
 		address parameterAddress = mmu_parameterAddressFor(serviceId);
 		ServiceStatus status = (ServiceStatus)parameterAddress[0];
 
@@ -46,5 +46,5 @@ void Kernel::executeServiceCalls()  {
 		}  else  {
 			//TODO: if long time not responding -> Restart service
 		}
-	//}
+	//}*/
 }
