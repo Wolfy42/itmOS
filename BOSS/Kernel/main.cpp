@@ -1,10 +1,8 @@
 #include "Kernel/Kernel.h"
 #include "Service/LED/LEDService.h"
 #include "API/LED.h"
-#include "Kernel/Interrupt/SWI/swiHandler.h"
-
-//#include "Kernel/SoftwareInterrupts/swiHandler.h"
-
+#include "Kernel/SoftwareInterrupts/SWIExecutor.h"
+#include "Kernel/Interrupt/swiHandler/swiHandler.h"
 
 int _main(int argc, char **argv) {
 
