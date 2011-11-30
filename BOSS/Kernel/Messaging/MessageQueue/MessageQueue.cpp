@@ -10,6 +10,9 @@ void MessageQueue::addMessage(Message* message)  {
 }
 
 Message* MessageQueue::getMessage()  {
+
+	//TODO: needs a semaphore, so that the task will wait here
+
 	_messages.back();
 	_messages.pop();
 }
