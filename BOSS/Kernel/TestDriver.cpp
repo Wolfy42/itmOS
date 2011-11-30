@@ -76,6 +76,8 @@ void initShell() {
 
 int main() {
 
+
+
 	// init few necessary tasks
 	initTasks();
 
