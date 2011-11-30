@@ -17,14 +17,14 @@ int _main(int argc, char **argv) {
 	swi_setSWIExecutor(swiExecutor);
 
 	LEDService* ledService = new LEDService();
-	kernel->startService(ledService);
+	//kernel->startService(ledService);
 
 	// up to user-mode
 	//asm("	CPS   0x10");
 
 	switchLEDOff(LED1);
 
-	kernel->executeServiceCalls();
+	//kernel->executeServiceCalls();
 
 	// TODO: should be called by a scheduler
 	ledService->run();

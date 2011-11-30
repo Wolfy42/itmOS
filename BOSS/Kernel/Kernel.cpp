@@ -4,19 +4,27 @@
 Kernel::Kernel() {}
 Kernel::~Kernel() {}
 
-void Kernel::startService(Service* service)  {
+void Kernel::write(int* parameters)  {
+
+	Message* message = new Message(parameters);
+	MessageQueue* messageQueue = _messageQueues.find(message->getTaskId())->second;
+
+	messageQueue->addMessage(message);
+}
+
+//void Kernel::startService(Service* service)  {
 
 	//TODO: refactor: What should the Kernel know about the service?
 	//_serviceMapping.insert(std::pair<int, Service*>(service->getServiceId(), service));
-	mmu_prepagePagesFor(service->getServiceId());
-}
+//	mmu_prepagePagesFor(service->getServiceId());
+//}
 
-void Kernel::callService(int params[])  {
+//void Kernel::callService(int params[])  {
 
 	//_serviceCalls.push_back(new ServiceCall(params));
-}
+//}
 
-void Kernel::executeServiceCalls()  {
+//void Kernel::executeServiceCalls()  {
 
 	// iterate over all pending service calls
 	//ServiceCall* serviceCall;
@@ -47,4 +55,4 @@ void Kernel::executeServiceCalls()  {
 			//TODO: if long time not responding -> Restart service
 		}
 	//}*/
-}
+//}
