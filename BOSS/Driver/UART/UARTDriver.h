@@ -7,15 +7,15 @@
 #include "HAL/UART/UART_HAL.h"
 
 
-class UARTDriver : public Driver 
+class UARTDriver
 {
 public:
 	UARTDriver();
 	virtual ~UARTDriver();
 	
     virtual void init();
-    virtual void write(byte value[]);
-    virtual byte* read(byte position[]);
+    virtual void write(int count, char* buffer);
+	int read(int count, char* buffer);
 };
 
 #endif /*UARTDRIVER_H_*/

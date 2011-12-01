@@ -13,6 +13,8 @@ public:
 	Task* getTaskFor(int taskId);
 	void block(int taskId);
 	void unblock(int taskId);
+	
+	void killTask(int taskId);
 };
 
 #endif /* TASKMANAGER_H_ */

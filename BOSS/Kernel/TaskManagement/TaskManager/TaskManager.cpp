@@ -18,3 +18,8 @@ void TaskManager::block(int taskId)  {
 void TaskManager::unblock(int taskId)  {
 
 }
+
+void TaskManager::killTask(int taskId) {
+	
+	_tasks[taskId]->status = Dead;
+}

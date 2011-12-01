@@ -1,8 +1,9 @@
 
 #include "SWIExecutor.h"
 
-SWIExecutor::SWIExecutor(Kernel* kernel) {
+SWIExecutor::SWIExecutor(Kernel* kernel, TaskManager* taskmanager) {
 	_kernel = kernel;
+	_taskmanager = taskmanager;
 }
 SWIExecutor::~SWIExecutor() {}
 
@@ -16,6 +17,7 @@ void SWIExecutor::executeSWI(int swiNumber, int* parameters)  {
     		break;
 
          case EXIT:
+         	_taskmanager->killTask(parameters[0]);
         	//endTask(parameters[0]);
             break;
         case KILL:
