@@ -6,7 +6,7 @@ Kernel::~Kernel() {}
 
 void Kernel::startService(Service* service)  {
 	_serviceMapping.insert(std::pair<int, Service*>(service->getServiceId(), service));
-	mmu_prepagePagesFor(service);
+	MMU::getInstance()->prepagePagesFor(service);
 }
 
 void Kernel::callService(int params[])  {
@@ -28,7 +28,7 @@ void Kernel::executeServiceCalls()  {
 	//TODO:  iterate over all service calls
 	ServiceCall* serviceCall = _serviceCalls.front();
 	Service* service = serviceCall->getService();
-	address parameterAddress = mmu_parameterAddressFor(service);
+	address parameterAddress = MMU::getInstance()->parameterAddressFor(service);
 
 	//copy parameters to Service
 	int* params = serviceCall->getParams();
