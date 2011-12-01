@@ -159,11 +159,11 @@ void MMU::loadPage(int pageNumber) {
     //TODO
 }
 
-void MMU::prepagePagesFor(Service* service)  {
+void MMU::prepagePagesFor(int serviceId)  {
 	//TODO: to be implemented
 }
 
-address MMU::parameterAddressFor(Service* service)  {
+address MMU::parameterAddressFor(int serviceId)  {
 	//TODO: to be implemented
 	return (address)0x820F0000;
 }

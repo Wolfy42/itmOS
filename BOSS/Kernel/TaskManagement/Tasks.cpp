@@ -1,7 +1,7 @@
 #include "Tasks.h"
 
 Task* _tasks[MAX_TASKS];
-int activeTask = -1;
+int activeTask = 0;
 
 // create Task
 TID_t createTask(char* name, int priority, int initAddress) {
@@ -11,7 +11,7 @@ TID_t createTask(char* name, int priority, int initAddress) {
 	if (nextTask != -1) {
 
 		// init task
-		Task* t = (Task*) malloc(sizeof(Task));
+		Task* t = new Task();
 		t->id = nextTask;
 		t->name = name;
 
@@ -24,11 +24,26 @@ TID_t createTask(char* name, int priority, int initAddress) {
 			t->priority = priority;
 		}
 
-		t->initAddr = initAddress;
-		t->hasBeenStarted = false;
+		t->tcb.restartAddress = initAddress;
+		t->tcb.R13 = 0x820E0000 + (nextTask + 1) * 0x00010000;
+		t->tcb.CPSR = 0x80000110;
+		t->tcb.R0 = 0;
+		t->tcb.R1 = 0;
+		t->tcb.R2 = 0;
+		t->tcb.R3 = 0;
+		t->tcb.R4 = 0;
+		t->tcb.R5 = 0;
+		t->tcb.R6 = 0;
+		t->tcb.R7 = 0;
+		t->tcb.R8 = 0;
+		t->tcb.R9 = 0;
+		t->tcb.R10 = 0;
+		t->tcb.R11 = 0;
+		t->tcb.R12 = 0;
+		t->tcb.R14 = 0;
+
 		t->status = Ready;
-		t->stackPointer = 0x8200A000 + (nextTask + 1) * 0x00010000;
-	
+
 		// add Task
 		_tasks[nextTask] = t;
 

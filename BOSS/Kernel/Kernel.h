@@ -3,31 +3,21 @@
 #define KERNEL_H_
 
 #include <map>
-#include <queue>
-#include <stdio.h>
-#include <string.h>
 
-#include "Kernel/MMU/mmu.h"
-#include "Service/Service.h"
-#include "Kernel/ServiceCall/ServiceCall.h"
+#include "Messaging/Message/Message.h"
+#include "Messaging/MessageQueue/MessageQueue.h"
 
 class Kernel {
 private:
 
-	// Mapping from service-id to service
-	std::map<int, Service*> _serviceMapping;
-
-	//Queue of pending service calls
-	std::queue<ServiceCall*> _serviceCalls;
+	std::map<int, MessageQueue*> _messageQueues;
 
 public:
 	Kernel();
 	virtual ~Kernel();
 
-	void startService(Service* service);
-	void callService(int params[]);
+	void write(int* parameters);
 
-	void executeServiceCalls();
 };
 
 #endif /* KERNEL_H_ */

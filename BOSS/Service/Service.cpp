@@ -3,6 +3,7 @@
 Service::Service() {
 	//TODO: this address will need a semaphore
 	_parameterAddress = (int*)0x820F0000;
+	_parameterAddress[0] = SERVICE_FREE;
 }
 Service::~Service() {}
 

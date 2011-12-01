@@ -10,6 +10,7 @@
 #include "Service/Service.h"
 #include "API/dataTypes.h"
 
+<<<<<<< HEAD
 class MMU {
     private:
         static MMU INSTANCE;
@@ -33,8 +34,9 @@ class MMU {
         void initMemoryForTask(int taskId);
         void loadPage(int pageNumber);
         
-        void prepagePagesFor(Service* service);
-        address parameterAddressFor(Service* service);
+        void prepagePagesFor(int serviceId);
+        address parameterAddressFor(int serviceId);
         
 };
+
 #endif /*MMU_H_*/
