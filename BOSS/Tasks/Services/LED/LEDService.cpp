@@ -5,7 +5,7 @@ LEDService::LEDService(): UserModeTask()  {}
 LEDService::~LEDService()  {}
 
 MessageQueue* LEDService::getQueue()  {
-	return (MessageQueue*)0x820F0000;
+	return *(MessageQueue**)0x820F0000;
 }
 
 void LEDService::executeMessage(Message* message)  {

@@ -80,7 +80,7 @@ int main() {
 	para[0] = 0;
 	para[1] = 2;
 	para[2] = 0;
-	para[3] = 2;
+	para[3] = 1;
 	MessageQueue* queue = new MessageQueue();
 	Message* message = new Message(para);
 	queue->addMessage(message);
