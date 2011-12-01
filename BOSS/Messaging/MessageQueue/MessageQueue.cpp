@@ -13,6 +13,7 @@ Message* MessageQueue::getMessage()  {
 
 	//TODO: needs a semaphore, so that the task will wait here
 
-	_messages.back();
+	Message* message = _messages.back();
 	_messages.pop();
+	return message;
 }

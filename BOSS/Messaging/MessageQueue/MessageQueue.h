@@ -4,7 +4,7 @@
 
 #include <queue>
 
-#include "Kernel/Messaging/Message/Message.h"
+#include "Messaging/Message/Message.h"
 
 class MessageQueue {
 

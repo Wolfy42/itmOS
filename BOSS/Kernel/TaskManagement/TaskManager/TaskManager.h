@@ -10,7 +10,9 @@ public:
 	TaskManager();
 	virtual ~TaskManager();
 
-	Task* getTaskFor(int TaskId);
+	Task* getTaskFor(int taskId);
+	void block(int taskId);
+	void unblock(int taskId);
 };
 
 #endif /* TASKMANAGER_H_ */

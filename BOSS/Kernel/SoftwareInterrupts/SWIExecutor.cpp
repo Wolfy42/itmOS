@@ -9,8 +9,11 @@ SWIExecutor::~SWIExecutor() {}
 void SWIExecutor::executeSWI(int swiNumber, int* parameters)  {
 
     switch (swiNumber) {
+    	case READ:
+
     	case WRITE:
-    		//Message* message = new Message(parameters);
+    		_kernel->write(parameters);
+    		break;
 
          case EXIT:
         	//endTask(parameters[0]);
