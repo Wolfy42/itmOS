@@ -7,7 +7,6 @@
 #define INT_RAM_START 0x40200000
 #define EXT_DDR_START 0x82000000
 
-#include "Service/Service.h"
 #include "API/dataTypes.h"
 
 class MMU {

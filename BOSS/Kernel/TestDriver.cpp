@@ -5,8 +5,8 @@
 #include "Kernel/Interrupt/IRQHandler.h"
 #include "Kernel/TaskManagement/Tasks.h"
 #include "HAL/LED/HalLedDriver.h"
-#include "Service/LED/main.h"
-
+#include "Tasks/Services/LED/LEDService.h"
+#include "Tasks/Services/LED/main.h"
 
 void ledOff(void) {
 
@@ -76,7 +76,15 @@ void initShell() {
 
 int main() {
 
-
+	int para[4];
+	para[0] = 0;
+	para[1] = 2;
+	para[2] = 0;
+	para[3] = 2;
+	MessageQueue* queue = new MessageQueue();
+	Message* message = new Message(para);
+	queue->addMessage(message);
+	*(address)0x820F0000 = (unsigned int)queue;
 
 	// init few necessary tasks
 	initTasks();

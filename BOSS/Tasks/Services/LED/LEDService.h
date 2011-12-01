@@ -2,15 +2,15 @@
 #define LEDSERVICE_H_
 
 #include "Driver/LED/LEDDriver.h"
-#include "Service/Service.h"
+#include "Tasks/UserModeTask.h"
 #include "BOSSAPI/serviceCalls.h"
 
-class LEDService : public Service {
+class LEDService : public UserModeTask {
 
 	private:
 		LEDDriver _driver;
 		
-		virtual void execute(int params[]);
+		virtual void executeMessage(Message* message);
 
 		void switchLEDOn(LED led);
 		void switchLEDOff(LED led);
@@ -20,8 +20,8 @@ class LEDService : public Service {
 	public:
 		LEDService();
 		virtual ~LEDService();
-		
-		virtual int getServiceId();
+
+		virtual MessageQueue* getQueue();
 };
 
 #endif /*LEDSERVICE_H_*/

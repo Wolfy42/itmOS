@@ -1,5 +1,5 @@
 #include "Kernel/Kernel.h"
-#include "Service/LED/LEDService.h"
+//#include "Service/LED/LEDService.h"
 #include "API/LED.h"
 #include "Kernel/SoftwareInterrupts/SWIExecutor.h"
 #include "Kernel/Interrupt/swiHandler/swiHandler.h"
@@ -14,7 +14,7 @@ int _main(int argc, char **argv) {
 
 	swi_setSWIExecutor(swiExecutor);
 
-	LEDService* ledService = new LEDService();
+	//LEDService* ledService = new LEDService();
 	//kernel->startService(ledService);
 
 	// up to user-mode
@@ -25,7 +25,7 @@ int _main(int argc, char **argv) {
 	//kernel->executeServiceCalls();
 
 	// TODO: should be called by a scheduler
-	ledService->run();
+	//ledService->run();
 
 	return 0;
 }
