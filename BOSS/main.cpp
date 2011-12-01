@@ -4,6 +4,7 @@
 #include "API/dataTypes.h"
 #include "BOSSAPI/systemCalls.h"
 #include "Kernel/Interrupt/IRQHandler.h"
+#include "Kernel/MMU/mmu.h"
 
 void led1Toggler(void)  {
 	HalTimerDriver::clearPendingInterrupts(GPTIMER2);
@@ -25,7 +26,7 @@ int main_()  {
 
 	//_enable_interrupts( ) ;
 	
-    performSyscall(0x0, NULL);
+    MMU::getInstance()->initMemoryForTask(0);
     
 	HalTimerDriver::init(GPTIMER2, GPT_IRQMODE_MATCH, 5000000);
 	HalTimerDriver::start(GPTIMER2);

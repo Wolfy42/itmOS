@@ -10,7 +10,6 @@
 #include "Service/Service.h"
 #include "API/dataTypes.h"
 
-<<<<<<< HEAD
 class MMU {
     private:
         static MMU INSTANCE;
