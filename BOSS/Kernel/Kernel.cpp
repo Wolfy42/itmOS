@@ -16,7 +16,7 @@ void Kernel::write(int* parameters)  {
 
 	//TODO: refactor: What should the Kernel know about the service?
 	//_serviceMapping.insert(std::pair<int, Service*>(service->getServiceId(), service));
-//	mmu_prepagePagesFor(service->getServiceId());
+//	MMU::getInstance()->prepagePagesFor(service->getServiceId());
 //}
 
 //void Kernel::callService(int params[])  {

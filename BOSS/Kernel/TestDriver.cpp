@@ -6,6 +6,7 @@
 #include "Kernel/Interrupt/IRQHandler.h"
 #include "Kernel/TaskManagement/Tasks.h"
 #include "HAL/LED/HalLedDriver.h"
+<<<<<<< HEAD
 #include "Service/LED/main.h"
 
 #include "Apps/Shell/Shell.h"
@@ -17,6 +18,10 @@
 #include "Kernel/SoftwareInterrupts/SWIExecutor.h"
 #include "Kernel/Interrupt/swiHandler/swiHandler.h"
 
+=======
+#include "Tasks/Services/LED/LEDService.h"
+#include "Tasks/Services/LED/main.h"
+>>>>>>> d4e7cef9d7f3d29be834e493fc764b66bbb56cda
 
 void ledOff(void) {
 
@@ -80,11 +85,23 @@ void initShell() {
 int main() {
 
 
+
 	Kernel* kernel = new Kernel();
 	TaskManager* taskmanager = new TaskManager();
 	SWIExecutor* swiExecutor = new SWIExecutor(kernel, taskmanager);
 
 	swi_setSWIExecutor(swiExecutor);
+
+	int para[4];
+	para[0] = 0;
+	para[1] = 2;
+	para[2] = 0;
+	para[3] = 1;
+	MessageQueue* queue = new MessageQueue();
+	Message* message = new Message(para);
+	queue->addMessage(message);
+	*(address)0x820F0000 = (unsigned int)queue;
+
 
 	// init few necessary tasks
 	initTasks();

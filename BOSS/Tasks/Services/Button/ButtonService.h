@@ -1,11 +1,12 @@
 #ifndef BUTTONSERVICE_H_
 #define BUTTONSERVICE_H_
 
-#include "Service/Service.h"
 #include "BOSSAPI/serviceCalls.h"
 #include "Driver/Button/ButtonDriver.h"
 
-class ButtonService : public Service {
+//TODO: This class needs a refactoring
+
+class ButtonService  {
     private:
         ButtonDriver m_buttonDriver;
         bool m_running;
