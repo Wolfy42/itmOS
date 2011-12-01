@@ -15,6 +15,7 @@ public:
 	void unblock(int taskId);
 	
 	void killTask(int taskId);
+	void suspendCurrentTask();
 };
 
 #endif /* TASKMANAGER_H_ */

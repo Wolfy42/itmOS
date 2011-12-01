@@ -5,6 +5,7 @@
 #include <queue>
 
 #include "Messaging/Message/Message.h"
+#include "BOSSAPI/systemCalls.h"
 
 class MessageQueue {
 

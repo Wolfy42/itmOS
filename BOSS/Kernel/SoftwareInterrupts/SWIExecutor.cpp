@@ -10,12 +10,15 @@ SWIExecutor::~SWIExecutor() {}
 void SWIExecutor::executeSWI(int swiNumber, int* parameters)  {
 
     switch (swiNumber) {
-    	case READ:
 
+    	case SUSPEND:
+        	_taskmanager->suspendCurrentTask();
+        	break;
     	case WRITE:
     		_kernel->write(parameters);
     		break;
 
+    		break;
          case EXIT:
          	_taskmanager->killTask(parameters[0]);
         	//endTask(parameters[0]);

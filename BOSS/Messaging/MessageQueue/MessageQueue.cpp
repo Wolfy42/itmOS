@@ -11,7 +11,13 @@ void MessageQueue::addMessage(Message* message)  {
 
 Message* MessageQueue::getMessage()  {
 
-	//TODO: needs a semaphore, so that the task will wait here
+	if (_messages.empty())  {
+		performSyscall(SUSPEND, NULL);
+	}
+
+	while(_messages.empty())  {
+		// The Kernel can insert messages into the queue
+	}
 
 	Message* message = _messages.back();
 	_messages.pop();

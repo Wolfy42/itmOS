@@ -10,9 +10,10 @@
 #define YIELD               0x5
 #define WRITE				0x6
 #define READ				0x7
+#define SUSPEND	            0x8
 
-#define SERVICE_CALL        0x8
-#define SERVICE_RESPONSE    0x9
+#define SERVICE_CALL        0x9
+#define SERVICE_RESPONSE    0x10
 
 void performSyscall(int syscallId, int parameters[]);
 

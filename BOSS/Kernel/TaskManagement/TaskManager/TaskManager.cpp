@@ -23,3 +23,7 @@ void TaskManager::killTask(int taskId) {
 	
 	_tasks[taskId]->status = Dead;
 }
+
+void TaskManager::suspendCurrentTask()  {
+	_tasks[activeTask]->priority = 0;
+}
