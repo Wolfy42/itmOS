@@ -6,22 +6,18 @@
 #include "Kernel/Interrupt/IRQHandler.h"
 #include "Kernel/TaskManagement/Tasks.h"
 #include "HAL/LED/HalLedDriver.h"
-<<<<<<< HEAD
-#include "Service/LED/main.h"
 
 #include "Apps/Shell/Shell.h"
 
-
 #include "Kernel/Kernel.h"
-#include "Service/LED/LEDService.h"
+
 #include "API/LED.h"
 #include "Kernel/SoftwareInterrupts/SWIExecutor.h"
 #include "Kernel/Interrupt/swiHandler/swiHandler.h"
 
-=======
 #include "Tasks/Services/LED/LEDService.h"
 #include "Tasks/Services/LED/main.h"
->>>>>>> d4e7cef9d7f3d29be834e493fc764b66bbb56cda
+
 
 void ledOff(void) {
 
