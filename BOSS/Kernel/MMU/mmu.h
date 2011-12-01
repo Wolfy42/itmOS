@@ -4,7 +4,6 @@
 #define MAX_MMU_TABLES 10
 #define MAX_PAGES_IN_MEMORY 8192 // 32MB mapped to 4KB pages
 
-#include "Service/Service.h"
 #include "API/dataTypes.h"
 
 //TODO: create MMU-Object? (Kernel is also an object)
