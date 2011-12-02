@@ -5,20 +5,6 @@ TaskManager::TaskManager() {}
 
 TaskManager::~TaskManager() {}
 
-Task* TaskManager::getTaskFor(int taskId)  {
-
-	//TODO: return a task
-	return NULL;
-}
-
-void TaskManager::block(int taskId)  {
-
-}
-
-void TaskManager::unblock(int taskId)  {
-
-}
-
 void TaskManager::killTask(int taskId) {
 	
 	_tasks[taskId]->status = Dead;
@@ -26,4 +12,15 @@ void TaskManager::killTask(int taskId) {
 
 void TaskManager::suspendCurrentTask()  {
 	_tasks[activeTask]->priority = 0;
+}
+
+void TaskManager::highPriorityForTask(int taskId)  {
+
+	//TODO: change this
+	for (int i = 0; i < MAX_TASKS; i++)  {
+
+		if (_tasks[i] != NULL)  {
+			_tasks[i]->priority = 50;
+		}
+	}
 }

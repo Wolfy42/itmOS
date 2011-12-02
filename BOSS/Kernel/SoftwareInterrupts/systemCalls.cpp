@@ -4,7 +4,7 @@
 #include "softwareInterrupt.h"
 
 void performServiceCall(int params[]) {
-    performSyscall(SERVICE_CALL, params);
+    performSyscall(WRITE, params);
 }
 
 void performSyscall(int syscallId, int parameters[]) {

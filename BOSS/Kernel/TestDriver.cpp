@@ -16,8 +16,9 @@
 #include "Kernel/Interrupt/swiHandler/swiHandler.h"
 
 #include "Tasks/Services/LED/LEDService.h"
-#include "Tasks/Services/LED/main.h"
-
+#include "Tasks/Services/LED/ledMain.h"
+#include "Tasks/UserTasks/TestTask.h"
+#include "Tasks/UserTasks/testTaskMain.h"
 
 void ledOff(void) {
 
@@ -41,9 +42,11 @@ void dummy()  {
 	initScheduler();
 	_enable_interrupts();
 	asm("\t CPS 0x10");
+	int i;
 	while(1)  {
-		HalLedDriver::ledOn(LED1);
-		HalLedDriver::ledOn(LED2);
+		//HalLedDriver::ledOn(LED1);
+		//HalLedDriver::ledOn(LED2);
+		i++;
 	}
 }
 
@@ -88,34 +91,36 @@ int main() {
 
 	swi_setSWIExecutor(swiExecutor);
 
-	int para[4];
-	para[0] = 0;
-	para[1] = 2;
-	para[2] = 0;
-	para[3] = 1;
-	MessageQueue* queue = new MessageQueue();
-	Message* message = new Message(para);
-	queue->addMessage(message);
-	*(address)0x820F0000 = (unsigned int)queue;
+//	int para[4];
+//	para[0] = 0;
+//	para[1] = 2;
+//	para[2] = 0;
+//	para[3] = 1;
+//	MessageQueue* queue = new MessageQueue();
+//	Message* message = new Message(para);
+//	queue->addMessage(message);
+//	*(address)0x820F0000 = (unsigned int)queue;
+	kernel->registerService(LED_SERVICE_CALL);
 
 
 	// init few necessary tasks
 	initTasks();
 
 	createTask("dummy\0", 0, (int)dummy);
-	createTask("task 1\0", 70, (int)task1function);
-	createTask("task 2\0", 30, (int)task2function);
+//	createTask("task 1\0", 70, (int)task1function);
+//	createTask("task 2\0", 30, (int)task2function);
 //	createTask("task 1\0", 40, (int)task1function);
 //	createTask("task 2\0", 40, (int)task2function);
 //	createTask("task 1\0", 10, (int)task1function);
 //	createTask("task 2\0", 90, (int)task2function);
 	createTask("LED-Service\0", 80, (int)led_main);
-	createTask("shell\0", 100, (int)shell);	
+	createTask("User-Test-Task\0", 100, (int)userTask_main);
+//	createTask("shell\0", 100, (int)shell);
 	dummy();
 
 	while(1) {
-		HalLedDriver::toggle(LED1);
-		HalLedDriver::toggle(LED2);
+		//HalLedDriver::toggle(LED1);
+		//HalLedDriver::toggle(LED2);
 		for (int z = 0; z < 80000;) {
 			z++;
 		}

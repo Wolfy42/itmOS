@@ -16,6 +16,7 @@ public:
 	Kernel();
 	virtual ~Kernel();
 
+	void registerService(int serviceId);
 	void write(int* parameters);
 
 };

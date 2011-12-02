@@ -10,12 +10,9 @@ public:
 	TaskManager();
 	virtual ~TaskManager();
 
-	Task* getTaskFor(int taskId);
-	void block(int taskId);
-	void unblock(int taskId);
-	
 	void killTask(int taskId);
 	void suspendCurrentTask();
+	void highPriorityForTask(int taskId);
 };
 
 #endif /* TASKMANAGER_H_ */

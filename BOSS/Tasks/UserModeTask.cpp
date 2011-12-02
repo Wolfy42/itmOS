@@ -10,5 +10,6 @@ void UserModeTask::run()  {
 	while(1)  {
 		Message* message = queue->getMessage();
 		executeMessage(message);
+		delete message;
 	}
 }

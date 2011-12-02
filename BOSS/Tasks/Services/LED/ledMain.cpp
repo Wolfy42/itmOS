@@ -1,6 +1,5 @@
 
-#include "LEDService.h"
-#include "main.h"
+#include "ledMain.h"
 
 void led_main(void) {
 	LEDService service;
