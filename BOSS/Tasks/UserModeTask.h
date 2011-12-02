@@ -7,6 +7,9 @@
 
 class UserModeTask {
 
+protected:
+	void writeResponse(int* response);
+
 public:
 
 	UserModeTask();

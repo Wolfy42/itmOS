@@ -7,14 +7,16 @@
 #include "Kernel/MMU/mmu.h"
 
 void led1Toggler(void)  {
+	HalLedDriver driver;
 	HalTimerDriver::clearPendingInterrupts(GPTIMER2);
-	HalLedDriver::toggle(LED1);
+	driver.toggle(LED1);
 	HalTimerDriver::resetInternalCounter(GPTIMER2);
 }
 
 void led2Toggler(void)  {
+	HalLedDriver driver;
 	HalTimerDriver::clearPendingInterrupts(GPTIMER3);
-	HalLedDriver::toggle(LED2);
+	driver.toggle(LED2);
 }
 
 

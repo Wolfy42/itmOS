@@ -32,12 +32,10 @@ void UARTDriver::init() {
 
 
 
-void UARTDriver::write(byte value[]) {
+void UARTDriver::write(int count, char* buffer) {
 	
 	mem_address_t* uart = (mem_address_t*) UART3;
 	int i = 0;
-	int count = value[0];
-	char* buffer = (char*)value[1];
 	
 	for (; i < count; i++, buffer++) {
 	// block while queue is full
@@ -50,17 +48,20 @@ void UARTDriver::write(byte value[]) {
 }
 
 
-byte* UARTDriver::read(byte position[]) {
-     mem_address_t* uart = (mem_address_t*)UART3;
-    int i = 0;
-	int count = position[0];
-	char* buffer = (char*)position[1];
-
-  for (; i < count; i++, buffer++) {
-    // block while waiting for data
-    while (uart_is_empty_read_queue(uart))
-      ;
-    uart_read(uart, buffer);
-  }
-  return (byte*)position[1];
+int UARTDriver::read(int count, char* buffer) {
+	
+	  mem_address_t* uart = (mem_address_t*)UART3;
+	  int i = 0;
+	
+	  for (; i < count; i++) {
+	    // block while waiting for data
+	    while (uart_is_empty_read_queue(uart))
+	      ;
+	    uart_read(uart, &buffer[i]);
+	
+	    // stop reading when receiving a return
+	    // TODO: just one char - change func?
+	    //if(buffer[i] == '\r')  break;
+	  }
+	  return i;
 }

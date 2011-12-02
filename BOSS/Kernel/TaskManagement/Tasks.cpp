@@ -40,7 +40,7 @@ TID_t createTask(char* name, int priority, int initAddress) {
 		t->tcb.R10 = 0;
 		t->tcb.R11 = 0;
 		t->tcb.R12 = 0;
-		t->tcb.R14 = 0;
+		t->tcb.R14 = (int)exitTask;
 
 		t->status = Ready;
 
@@ -57,7 +57,7 @@ TID_t createTask(char* name, int priority, int initAddress) {
 // delete Task
 void deleteTask(TID_t taskId) {
 
-	free(_tasks[taskId]);
+	delete _tasks[taskId];
 	_tasks[taskId] = NULL;
 }
 
@@ -92,8 +92,16 @@ void scheduleNextTask() {
 
 		if (_tasks[i] != NULL) {
 
-			prioritySum += _tasks[i]->priority;
-			taskSum++;
+			// delete dead tasks
+			if (_tasks[i]->status == Dead) {
+				
+				deleteTask(i);
+			
+			// otherwise sum up the priorities
+			} else {
+				prioritySum += _tasks[i]->priority;
+				taskSum++;
+			}
 		}
 	}
 
@@ -136,6 +144,7 @@ void initTasks() {
 void exitTask() {
 	
 	performSyscall(EXIT, &activeTask);
+	while(1);
 }
 
 int getNextTaskId() {

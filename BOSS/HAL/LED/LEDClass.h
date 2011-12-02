@@ -6,7 +6,7 @@
 
 class LEDClass {
 	private:
-        HalGpioDriver m_gpio;    
+        HalGpioDriver _gpio;
 	
 	public:
 		LEDClass(int gpioNumber);

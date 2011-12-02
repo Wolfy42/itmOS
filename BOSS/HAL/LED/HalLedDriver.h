@@ -6,22 +6,20 @@
 
 class HalLedDriver {
 	private:
-		static HalLedDriver LED_DRIVER;
-		
+		LEDClass _led1;
+		LEDClass _led2;
+
+		LEDClass ledClassForEnum(LED ledEnum);
+
+	public:
 		HalLedDriver();
 		virtual ~HalLedDriver();
 		
-		LEDClass m_led1;
-		LEDClass m_led2;
-		
-		LEDClass ledClassForEnum(LED ledEnum);
-		
-	public:		
-		static void init();
-		static void ledOn(LED led);
-		static void ledOff(LED led);
-		static void toggle(LED led);
-		static bool isOn(LED led);
+		void init();
+		void ledOn(LED led);
+		void ledOff(LED led);
+		void toggle(LED led);
+		bool isOn(LED led);
 };
 
 #endif /*HALLEDDRIVER_H_*/

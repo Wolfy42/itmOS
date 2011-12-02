@@ -11,7 +11,7 @@
 #include <stdio.h>
 
 typedef int TID_t;
-enum Status { Ready, Running, Blocked };
+enum Status { Ready, Running, Blocked, Dead };
 
 struct TCB {
 	int CPSR;

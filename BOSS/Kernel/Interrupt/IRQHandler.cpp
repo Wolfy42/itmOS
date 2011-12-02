@@ -20,14 +20,15 @@ extern "C" void c_intIRQ()  {
 	// This will be called before enterint the function
 	// SUB             R13, R13, #4
 
+	asm("	ADD		R13, R13, #4");
 	asm("	SUB 	R14, R14, #4				; Put return address of the interrupted task into R14 ");
 	asm("   STMFD 	R13!, {R0-R3, R12, R14}		; Save Task-Registers ");
 
 	// Determine Nr. of IRQ (e.g. GPTIMER2 is IRQ_38 --> irqNr = 38)
-	int irqNr = *(INTCPS_SIR_IRQ);
+	//int irqNr = *(INTCPS_SIR_IRQ);
 
 	// Call Global IRQ-Handler
-	globalIRQHandler->callHandlerFor(irqNr);
+	globalIRQHandler->callHandlerFor(*(INTCPS_SIR_IRQ));
 
 	// Reset IRQ output and enable new IRQ generation.
 	*(INTCPS_CONTROL) |= 0x1;
@@ -63,7 +64,7 @@ extern "C" void c_intIRQ()  {
 
 	// !! The next line is a added to the code in the ARM-book, because
 	//    normally this would be called at the end of the function, but we don't reach that
-	asm("	ADD     R13, R13, #4 ");
+	//asm("	ADD     R13, R13, #4 ");
 
 	asm("	MOVS 	PC, R14						; Return to address in R14_irq, with SPSR_irq -> CPSR transfer" );
 }

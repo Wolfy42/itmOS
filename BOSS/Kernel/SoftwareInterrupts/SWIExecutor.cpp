@@ -1,22 +1,28 @@
 
 #include "SWIExecutor.h"
 
-SWIExecutor::SWIExecutor(Kernel* kernel) {
+SWIExecutor::SWIExecutor(Kernel* kernel, TaskManager* taskmanager) {
 	_kernel = kernel;
+	_taskmanager = taskmanager;
 }
 SWIExecutor::~SWIExecutor() {}
 
 void SWIExecutor::executeSWI(int swiNumber, int* parameters)  {
 
     switch (swiNumber) {
-    	case READ:
 
+    	case SUSPEND:
+        	_taskmanager->suspendCurrentTask();
+        	break;
     	case WRITE:
     		_kernel->write(parameters);
+
+    		//TODO: should work with service-id
+    		_taskmanager->highPriorityForTask(0);
     		break;
 
          case EXIT:
-        	//endTask(parameters[0]);
+         	_taskmanager->killTask(parameters[0]);
             break;
         case KILL:
             break;
@@ -25,11 +31,6 @@ void SWIExecutor::executeSWI(int swiNumber, int* parameters)  {
         case FORK:
             break;
         case YIELD:
-            break;
-        case SERVICE_CALL:
-        	//_kernel->callService(parameters);
-            break;
-        case SERVICE_RESPONSE:
             break;
         default:
             break;

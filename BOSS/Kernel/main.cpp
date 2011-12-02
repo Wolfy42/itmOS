@@ -10,7 +10,8 @@ int _main(int argc, char **argv) {
 	asm("	CPS   0x13");
 
 	Kernel* kernel = new Kernel();
-	SWIExecutor* swiExecutor = new SWIExecutor(kernel);
+	TaskManager* taskmanager = new TaskManager();
+	SWIExecutor* swiExecutor = new SWIExecutor(kernel, taskmanager);
 
 	swi_setSWIExecutor(swiExecutor);
 
