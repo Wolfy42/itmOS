@@ -14,6 +14,10 @@ void TestTask::start()  {
 		for (int z = 0; z < 80000;) {
 			z++;
 		}
+		toggleLED(LED2);
+		for (int z = 0; z < 80000;) {
+			z++;
+		}
 	}
 }
 
