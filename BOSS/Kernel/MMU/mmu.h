@@ -9,20 +9,33 @@
 
 #include "API/dataTypes.h"
 
+enum MemoryType {
+    INT_RAM, EXT_DDR
+};
+
 class MMU {
     private:
         static MMU INSTANCE;
-        address taskMasterTableAddresses[MAX_MMU_TABLES];
-        address firstFreeInIntRam;
-        address firstFreeInExtDDR;
-        bool occupiedPagesIntRam[MAX_PAGES_IN_INT_RAM];
-        bool occupiedPagesExtDDR[MAX_PAGES_IN_EXT_DDR];
+        address m_taskMasterTableAddresses[MAX_MMU_TABLES];
+        int m_currentTask;
+        
+        address m_firstFreeInIntRam;
+        address m_firstFreeInExtDDR;
+        
+        bool m_occupiedPagesIntRam[MAX_PAGES_IN_INT_RAM];
+        bool m_occupiedPagesExtDDR[MAX_PAGES_IN_EXT_DDR];
         
         void enableMMU();
         void initDomainAccess();
-        void clearTLB();
         void setMasterTablePointerTo(address tableAddress);
-        address findFreeMemory(int nrOfPages, bool align);
+        
+        void mapOneToOne(address masterTableAddress, unsigned int startAddress, unsigned int length);
+        
+        void clearTLB();
+        void lockFirstTLBEntry();
+        
+        void reservePages(MemoryType mem, int firstPageNumber, int nrOfPages);
+        address findFreeMemory(int nrOfPages, bool align, bool reserve);
         
         MMU();
     public:
@@ -31,10 +44,11 @@ class MMU {
         static MMU* getInstance();
         void initMemoryForTask(int taskId);
         void loadPage(int pageNumber);
-        
+
         void prepagePagesFor(int serviceId);
         address parameterAddressFor(int serviceId);
-        
+
+        void handlePageFault();        
 };
 
 #endif /*MMU_H_*/
