@@ -23,8 +23,9 @@
 
 void ledOff(void) {
 
-	HalLedDriver::ledOff(LED1);
-	HalLedDriver::ledOff(LED2);
+	HalLedDriver driver;
+	driver.ledOff(LED1);
+	driver.ledOff(LED2);
 }
 
 void initScheduler() {
@@ -55,8 +56,8 @@ void task1function() {
 	
 	int i = 0;
 	for (i = 0; i < 10000; i++) {
-
-		HalLedDriver::toggle(LED1);
+		HalLedDriver driver;
+		driver.toggle(LED1);
 		for (int z = 0; z < 80000;) {
 			z++;
 		}
@@ -68,8 +69,8 @@ void task2function() {
 
 	int i = 0;
 	for (i = 0; i < 10000; i++) {
-		
-		HalLedDriver::toggle(LED2);
+		HalLedDriver driver;
+		driver.toggle(LED2);
 		for (int z = 0; z < 80000;) {
 			z++;
 		}
