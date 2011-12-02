@@ -16,12 +16,13 @@ void SWIExecutor::executeSWI(int swiNumber, int* parameters)  {
         	break;
     	case WRITE:
     		_kernel->write(parameters);
+
+    		//TODO: should work with service-id
+    		_taskmanager->highPriorityForTask(0);
     		break;
 
-    		break;
          case EXIT:
          	_taskmanager->killTask(parameters[0]);
-        	//endTask(parameters[0]);
             break;
         case KILL:
             break;
@@ -30,11 +31,6 @@ void SWIExecutor::executeSWI(int swiNumber, int* parameters)  {
         case FORK:
             break;
         case YIELD:
-            break;
-        case SERVICE_CALL:
-        	//_kernel->callService(parameters);
-            break;
-        case SERVICE_RESPONSE:
             break;
         default:
             break;

@@ -10,5 +10,10 @@ void UserModeTask::run()  {
 	while(1)  {
 		Message* message = queue->getMessage();
 		executeMessage(message);
+		delete message;
 	}
+}
+
+void UserModeTask::writeResponse(int* response)  {
+	//TODO: generate a syscall
 }

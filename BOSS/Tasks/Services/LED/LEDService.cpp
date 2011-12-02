@@ -17,39 +17,19 @@ void LEDService::executeMessage(Message* message)  {
 
 	switch (command) {
 	        case SERVICE_SWITCH_LED_OFF:
-	            switchLEDOff(led);
+	        	HalLedDriver::ledOff(led);
 	            break;
 	        case SERVICE_SWITCH_LED_ON:
-	            switchLEDOn(led);
+	        	HalLedDriver::ledOn(led);
 	            break;
 	        case SERVICE_TOGGLE_LED:
-	            toggleLED(led);
+	        	HalLedDriver::toggle(led);
 	            break;
 	        case SERVICE_GET_LED_STATUS:
-	            LEDState state = getLEDState(led);
-	            int result[2];
-	            result[0] = led;
-	            result[1] = state;
-	            //TODO: write back the result
+	            int response[2];
+	            response[0] = params[2]; // write Back caller-Id
+	            response[1] = HalLedDriver::isOn(led);
+	            writeResponse(response);
 	            break;
 	    }
-}
-
-void LEDService::switchLEDOn(LED led) {
-	byte value[] = {led, SWITCH_LED_ON};
-	_driver.write(value);
-}
-
-void LEDService::switchLEDOff(LED led) {
-	byte value[] = {led, SWITCH_LED_OFF};
-	_driver.write(value);
-}
-void LEDService::toggleLED(LED led) {
-	byte value[] = {led, TOGGLE_LED};
-	_driver.write(value);
-}
-
-LEDState LEDService::getLEDState(LED led) {
-	byte position[] = {led};
-	return (LEDState)_driver.read(position)[0];
 }
