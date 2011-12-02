@@ -16,9 +16,7 @@
 #include "Kernel/Interrupt/swiHandler/swiHandler.h"
 
 #include "Tasks/Services/LED/LEDService.h"
-#include "Tasks/Services/LED/ledMain.h"
 #include "Tasks/UserTasks/TestTask.h"
-#include "Tasks/UserTasks/testTaskMain.h"
 
 void ledOff(void) {
 

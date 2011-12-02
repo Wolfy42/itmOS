@@ -1,6 +1,12 @@
 #include <stdio.h>
 #include "LEDService.h"
 
+void led_main(void) {
+	LEDService service;
+	service.run();
+}
+
+
 LEDService::LEDService(): UserModeTask()  {}
 LEDService::~LEDService()  {}
 

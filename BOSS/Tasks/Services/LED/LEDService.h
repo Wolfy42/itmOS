@@ -5,6 +5,8 @@
 #include "Tasks/UserModeTask.h"
 #include "BOSSAPI/serviceCalls.h"
 
+void led_main(void);
+
 class LEDService : public UserModeTask {
 
 	private:
