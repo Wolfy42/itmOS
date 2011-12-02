@@ -12,6 +12,7 @@
 #include "Kernel/Kernel.h"
 
 #include "API/LED.h"
+#include "BOSSAPI/serviceCalls.h"
 #include "Kernel/SoftwareInterrupts/SWIExecutor.h"
 #include "Kernel/Interrupt/swiHandler/swiHandler.h"
 
