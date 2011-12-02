@@ -13,3 +13,7 @@ void UserModeTask::run()  {
 		delete message;
 	}
 }
+
+void UserModeTask::writeResponse(int* response)  {
+	//TODO: generate a syscall
+}

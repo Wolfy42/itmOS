@@ -2,8 +2,6 @@
 #define UARTDRIVER_H_
 
 
-#include "Driver/Driver.h"
-
 #include "HAL/UART/UART_HAL.h"
 
 

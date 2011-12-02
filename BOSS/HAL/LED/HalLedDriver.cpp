@@ -5,9 +5,7 @@
 #define LED1_REG 21
 #define LED2_REG 22
 
-HalLedDriver HalLedDriver::LED_DRIVER = HalLedDriver();
-
-HalLedDriver::HalLedDriver(): m_led1(149), m_led2(150) {
+HalLedDriver::HalLedDriver(): _led1(149), _led2(150) {
 }
 
 HalLedDriver::~HalLedDriver() {
@@ -16,11 +14,11 @@ HalLedDriver::~HalLedDriver() {
 LEDClass HalLedDriver::ledClassForEnum(LED ledEnum) {
 	switch (ledEnum) {
 		case LED1:
-			return m_led1;
+			return _led1;
 		case LED2:
-			return m_led2;
+			return _led2;
 		default:
-			return m_led1;
+			return _led1;
 	}
 }
 
@@ -29,15 +27,15 @@ void HalLedDriver::init() {
 }
 
 void HalLedDriver::ledOn(LED led) {
-	HalLedDriver::LED_DRIVER.ledClassForEnum(led).switchOn();
+	ledClassForEnum(led).switchOn();
 }
 
 void HalLedDriver::ledOff(LED led) {
-	HalLedDriver::LED_DRIVER.ledClassForEnum(led).switchOff();
+	ledClassForEnum(led).switchOff();
 }
 void HalLedDriver::toggle(LED led) {
-	HalLedDriver::LED_DRIVER.ledClassForEnum(led).toggle();
+	ledClassForEnum(led).toggle();
 }
 bool HalLedDriver::isOn(LED led) {
-	return HalLedDriver::LED_DRIVER.ledClassForEnum(led).isOn();
+	return ledClassForEnum(led).isOn();
 }
