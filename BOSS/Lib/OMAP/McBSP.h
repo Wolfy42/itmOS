@@ -3,12 +3,19 @@
  *
  *  Created on: Dec 1, 2011
  *      Author: stefan
+ *
+ *  Reference-Doc: AM35x ARM Microprocessor Technical Reference Manual
+ *  Multi-Channel Buffered Serial Port
  */
 
 #ifndef MCBSP_H_
 #define MCBSP_H_
 
-/* McBSP Base Addresses */
+/* Registers
+ *
+ * page 2077-ff.
+ *
+ * McBSP Base Addresses */
 #define MCBSP1_BASE				0x48074000
 #define MCBSP2_BASE				0x49022000
 #define MCBSP3_BASE				0x49024000
