@@ -13,6 +13,7 @@ extern unsigned int globalVariable;
 extern volatile unsigned int kernelMasterTable;
 extern volatile unsigned int intRamStart;
 extern volatile unsigned int extDDRStart;
+extern volatile unsigned int intvecsStart;
 
 MMU MMU::INSTANCE = MMU();
 
@@ -89,38 +90,73 @@ void MMU::setMasterTablePointerTo(address tableAddress) {
     clearTLB();
 }
 
-void MMU::mapOneToOne(address masterTableAddress, unsigned int startAddress, unsigned int length) {
+address MMU::createMasterTable() {
+    address masterTableAddress = findFreeMemory(4, true, true);
+    std::memset((void*)masterTableAddress, 0x0000, 4096 * 4);
+    return masterTableAddress;
+}
+address MMU::createOrGetL2Table(address masterTableAddress, int masterTableEntryNumber) {
+    address result = 0x0;
+    if (masterTableEntryNumber < 4096) {
+        if (*(masterTableAddress + masterTableEntryNumber) == 0x0) {
+            result = findFreeMemory(1, true, true);
+            
+            unsigned int tableEntry = (unsigned int)result | 0x00000011;
+            *(masterTableAddress + masterTableEntryNumber) = tableEntry;
+            
+            std::memset((void*)result, 0x0, 1024); // 256 entries * 4 bytes per entry = 1024 bytes
+        } else {
+            result = (address)((*(masterTableAddress + masterTableEntryNumber) >> 10) << 10);
+        }
+    }
+    return result;
+}
+void MMU::createMappedPage(address masterTableAddress, address virtualAddress) {
+    unsigned int masterTableEntryNumber = (unsigned int)virtualAddress >> 20;
+    address l2TableAddress = createOrGetL2Table(masterTableAddress, masterTableEntryNumber);
+    
+    address newPage = findFreeMemory(1, true, true);
+    std::memset((void*)newPage, 0x0, 4096);
+    
+    unsigned int l2TableEntryNumber = ((unsigned int)virtualAddress >> 12) - (((unsigned int)virtualAddress >> 12) & 0xFFF00);
+    unsigned int tableEntry = (unsigned int)newPage | 0x2;
+    *(l2TableAddress + l2TableEntryNumber) = tableEntry;
+}
+
+void MMU::mapOneToOne(address masterTableAddress, address startAddress, unsigned int length) {
     int nrOfMasterTableEntries = (length / 1048576) + 1;
     
-    int firstEntryNumber = (startAddress >> 12) - ((startAddress >> 12) & 0xFFF00);
+    int firstEntryNumber = ((unsigned int)startAddress >> 12) - (((unsigned int)startAddress >> 12) & 0xFFF00);
     int lastEntryNumber = firstEntryNumber + (length / 4096);
     
-    unsigned int firstL2Entry = (startAddress >> 20) << 20;
+    unsigned int firstL2Entry = ((unsigned int)startAddress >> 20) << 20;
     for (int i = 0; i < nrOfMasterTableEntries; i++) {
-        unsigned int masterTableEntryNumber = startAddress >> 20;
-        address freeForL2Table = 0x0;
-        if (*(masterTableAddress + masterTableEntryNumber) == 0x0) {
-            if (i % 4 == 0) { // 4 L2 tables fit into one 4KB page
-                freeForL2Table = findFreeMemory(1, true, true);
-            } else {
-                freeForL2Table += 256;
-            }
-            unsigned int tableEntry = (unsigned int)freeForL2Table | 0x00000011;
-            *(masterTableAddress + masterTableEntryNumber) = tableEntry;
-            std::memset((void*)freeForL2Table, 0x0, 1024); // 256 entries * 4 bytes per entry = 1024 bytes
-        } else {
-            freeForL2Table = (address)((*(masterTableAddress + masterTableEntryNumber) >> 10) << 10);
-        }
         
-        for (int j = firstEntryNumber; (j < 256) && (j <= lastEntryNumber); ++j) {
-            unsigned int tableEntry = firstL2Entry + ((i * 256) + j) * 4096;
-            tableEntry |= 0x2;
-            *(freeForL2Table + j) = tableEntry;
-            firstEntryNumber = j;
+        unsigned int masterTableEntryNumber = (unsigned int)startAddress >> 20;
+        address freeForL2Table = createOrGetL2Table(masterTableAddress, masterTableEntryNumber);
+        
+        if (freeForL2Table > 0x0) {
+            for (int j = firstEntryNumber; (j < 256) && (j <= lastEntryNumber); ++j) {
+                unsigned int tableEntry = firstL2Entry + ((i * 256) + j) * 4096;
+                tableEntry |= 0x2;
+                *(freeForL2Table + j) = tableEntry;
+                firstEntryNumber = j;
+            }
+        } else {
+            // TODO Handle full memory
         }
     }
 }
 
+address MMU::addressOfPage(MemoryType mem, int pageNumberInMemory) {
+    address result = 0x0;
+    if (mem == INT_RAM) {
+        result = (address)(INT_RAM_START + (pageNumberInMemory * 4096));
+    } else if (mem == EXT_DDR) {
+        result = (address)(EXT_DDR_START + (pageNumberInMemory * 4096));
+    }
+    return result;
+}
 void MMU::reservePages(MemoryType mem, int firstPageNumber, int nrOfPages) {
     for (int i = firstPageNumber; i < (firstPageNumber + nrOfPages); i++) {
         if (mem == INT_RAM) {
@@ -130,6 +166,17 @@ void MMU::reservePages(MemoryType mem, int firstPageNumber, int nrOfPages) {
         }
     }
 }
+void MMU::releasePages(MemoryType mem, int firstPageNumber, int nrOfPages) {
+    for (int i = firstPageNumber; i < (firstPageNumber + nrOfPages); ++i) {
+        if (mem == INT_RAM) {
+            m_occupiedPagesIntRam[i] = false;
+        } else if (mem == EXT_DDR) {
+            m_occupiedPagesExtDDR[i] = false;
+        }
+        std::memset((void*)addressOfPage(mem, i), 0x0, 4096);
+    }
+}
+
 address MMU::findFreeMemory(int nrOfPages, bool align, bool reserve) {
     address result = 0x0;
     int freePages = 0;
@@ -137,7 +184,7 @@ address MMU::findFreeMemory(int nrOfPages, bool align, bool reserve) {
         if ((!m_occupiedPagesIntRam[i]) && ((align) && ((freePages > 0) || ((i % nrOfPages) == 0)))) {
             freePages++;
             if (freePages == nrOfPages) {
-                result = (address)(INT_RAM_START + (((i - nrOfPages) + 1) * 4096));
+                result = addressOfPage(INT_RAM, (i - nrOfPages) + 1);
                 if (reserve) {
                     reservePages(INT_RAM, (i - nrOfPages) + 1, nrOfPages);
                 }
@@ -151,7 +198,7 @@ address MMU::findFreeMemory(int nrOfPages, bool align, bool reserve) {
         if (!m_occupiedPagesExtDDR[i]) {
             freePages++;
             if (freePages == nrOfPages) {
-                result = (address)(EXT_DDR_START + (((i - nrOfPages) + 1) * 4096));
+                result = addressOfPage(EXT_DDR, (i - nrOfPages) + 1);
                 if (reserve) {
                     reservePages(EXT_DDR, (i - nrOfPages) + 1, nrOfPages);
                 }
@@ -200,22 +247,19 @@ void MMU::initMemoryForTask(int taskId) {
             enableMMU();
             //lockFirstTLBEntry();
         } else {
-            address masterTableAddress = findFreeMemory(4, true, true);
-            address tableAddress = masterTableAddress;
+            taskMasterTableAddress = createMasterTable();
             
-            std::memset((void*)tableAddress, 0x0000, 4096 * 4);
+            mapOneToOne(taskMasterTableAddress, (address)ROM_INTERRUPT_ENTRIES, 0x1C);
+            mapOneToOne(taskMasterTableAddress, (address)INT_RAM_START, (unsigned int)m_firstFreeInIntRam - INT_RAM_START);
+            mapOneToOne(taskMasterTableAddress, &intvecsStart, 0x3B);
+            mapOneToOne(taskMasterTableAddress, (address)EXT_DDR_START, (unsigned int)m_firstFreeInExtDDR - EXT_DDR_START);
             
-            mapOneToOne(masterTableAddress, 0x14000, 0x1C);
-            mapOneToOne(masterTableAddress, INT_RAM_START, (unsigned int)m_firstFreeInIntRam - INT_RAM_START);
-            mapOneToOne(masterTableAddress, 0x4020FFC4, 0x3B);
-            mapOneToOne(masterTableAddress, EXT_DDR_START, (unsigned int)m_firstFreeInExtDDR - EXT_DDR_START);
-            
-            setMasterTablePointerTo(masterTableAddress);
+            setMasterTablePointerTo(taskMasterTableAddress);
         }
+        m_taskMasterTableAddresses[taskId] = taskMasterTableAddress;
     } else {
         setMasterTablePointerTo(savedTableAddress);
     }
-    m_taskMasterTableAddresses[taskId] = taskMasterTableAddress;
     m_currentTask = taskId;
 }
 void MMU::loadPage(int pageNumber) {
@@ -231,8 +275,34 @@ address MMU::parameterAddressFor(int serviceId)  {
 	return (address)0x820F0000;
 }
 
-void MMU::handlePageFault() {
+void MMU::handlePrefetchAbort() {
     asm("\t MRC p15, #0, r0, c6, c0, #2\n"); // Read instruction fault address register
     asm("\t LDR r1, globalVariable\n");
     asm("\t STR r0, [r1]\n");
+    
+    // TODO check for execute permissions
+    if ((globalVariable % 0x4 == 0x0) && (globalVariable >= PROCESS_MEMORY_START) && (globalVariable < PROCESS_MEMORY_END)) {
+        int currentTask = m_currentTask;
+        initMemoryForTask(0);
+        createMappedPage(m_taskMasterTableAddresses[currentTask], (address)globalVariable);
+        // TODO load needed instructions into new page
+        initMemoryForTask(currentTask);
+    } else {
+        // TODO invalid access
+    }
+}
+
+void MMU::handleDataAbort() {
+    asm("\t MRC p15, #0, r0, c6, c0, #0\n"); // Read data foult address register
+    asm("\t LDR r1, globalVariable\n");
+    asm("\t STR r0, [r1]\n");
+    // TODO check for read / write permissions
+    if ((globalVariable % 0x4 == 0x0) && (globalVariable >= PROCESS_MEMORY_START) && (globalVariable < PROCESS_MEMORY_END)) {
+        int currentTask = m_currentTask;
+        initMemoryForTask(0);
+        createMappedPage(m_taskMasterTableAddresses[currentTask], (address)globalVariable);
+        initMemoryForTask(currentTask);
+    } else {
+        // TODO invalid access
+    }
 }

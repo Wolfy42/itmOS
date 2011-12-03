@@ -20,7 +20,10 @@ MEMORY
 SECTIONS
 {
 ///////////////////////////// int_ram //////////////////////////////
-   .intvecs    > int_vecs
+   .intvecs    > int_vecs {
+   		_intvecsStart = .;
+   		*(.intvecs)
+   	}
 
    .kernelMasterTable > kernel_master_table {
        _kernelMasterTable = . ;
@@ -36,7 +39,7 @@ SECTIONS
    
    .switch     > int_ram
    .text2      > int_ram {
-       pabtHandler.obj
+       abortHandler.obj
    }
    .pinit      > int_ram {
        *(.pinit)
