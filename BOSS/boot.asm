@@ -20,6 +20,7 @@
 
     .global irqStack
     .global kernelStack
+    .global abortStack
     .global systemStack
 
 ;***************************************************************
@@ -28,6 +29,7 @@
 
 c_r13_irq       .long    irqStack
 c_r13_kernel    .long    kernelStack
+c_r13_abt       .long    abortStack
 c_r13_system    .long    systemStack
 
 ;***************************************************************
@@ -44,6 +46,10 @@ _c_int00: .asmfunc
     CPS   0x13
     LDR   sp, c_r13_kernel
 
+	; SET ABT-Stack
+	CPS   0x17
+	LDR   sp, c_r13_abt
+	
     ; SET System-Stack
     CPS   0x1F
     LDR   sp, c_r13_system
