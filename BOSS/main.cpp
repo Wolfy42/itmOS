@@ -3,7 +3,7 @@
 #include "HAL/LED/HalLedDriver.h"
 #include "API/dataTypes.h"
 #include "BOSSAPI/systemCalls.h"
-#include "Kernel/Interrupt/IRQHandler.h"
+#include "Kernel/Interrupt/Handler/IRQHandler.h"
 #include "Kernel/MMU/mmu.h"
 
 void led1Toggler(void)  {
