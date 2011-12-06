@@ -16,7 +16,7 @@ SystemCallExec::~SystemCallExec()
  */
 bool SystemCallExec::execute(int swiNumber, int* parameters)  {
     switch (swiNumber) {
-    	case READ:
+ //   	case READ:
 
     	case WRITE:
     		_kernel->write(parameters);
@@ -35,10 +35,10 @@ bool SystemCallExec::execute(int swiNumber, int* parameters)  {
             break;
         case YIELD:
             break;
-        case SERVICE_CALL:
+ //       case SERVICE_CALL:
         	//_kernel->callService(parameters);
             break;
-        case SERVICE_RESPONSE:
+ //       case SERVICE_RESPONSE:
             break;
         default:
             break;

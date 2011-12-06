@@ -3,9 +3,12 @@
 #include <string.h>
 
 #include "HAL/Timer/HalTimerDriver.h"
-#include "Kernel/Interrupt/IRQHandler.h"
-#include "Kernel/TaskManagement/Tasks.h"
+#include "Kernel/Task/TaskManager.h"
+#include "Kernel/Interrupt/Handler/IRQHandler.h"
 #include "HAL/LED/HalLedDriver.h"
+
+#include "Lib/Rand.h"
+#include "Lib/Time.h"
 
 #include "Apps/Shell/Shell.h"
 
@@ -13,8 +16,6 @@
 
 #include "API/LED.h"
 #include "BOSSAPI/serviceCalls.h"
-#include "Kernel/SoftwareInterrupts/SWIExecutor.h"
-#include "Kernel/Interrupt/swiHandler/swiHandler.h"
 
 #include "Tasks/Services/LED/LEDService.h"
 #include "Tasks/Services/LED/ledMain.h"

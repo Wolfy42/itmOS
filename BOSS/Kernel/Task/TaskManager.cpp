@@ -64,7 +64,7 @@ Task** TaskManager::getTaskList() {
  * 	- priority (0 - 100)
  * 	- initial Address Point
  */
-TID_t TaskManager::create(char* name, int priority, int initAddress) {
+TID_t TaskManager::create(char* name, int priority, int initAddress, bool blockParent) {
 
 	int nextTask = getNextFreeSlot();
 
@@ -78,6 +78,14 @@ TID_t TaskManager::create(char* name, int priority, int initAddress) {
 	t->id = nextTask;
 	t->name = name;
 	t->status = Ready;
+	t->child = NULL;
+	t->parent = NULL;
+	
+	if (blockParent == true) {
+	
+		t->parent = getActiveTask();
+		getActiveTask()->child = t;	
+	}
 
 	// to ensure a valid priority
 	if (priority < 0) {
@@ -121,6 +129,21 @@ TID_t TaskManager::create(char* name, int priority, int initAddress) {
  * 	- deletes Task now instantly
  */
 void TaskManager::kill(int taskId) {
+	
+	// release parent
+	if (_tasks[taskId]->parent != NULL) {
+	
+		if (_tasks[taskId]->parent->status == Blocked) {
+		
+			_tasks[taskId]->parent->status = Ready;
+		}
+	}
+	
+	// kill child
+	if (_tasks[taskId]->child != NULL) {
+	
+		kill(_tasks[taskId]->child->id);
+	}
 	
 	delete _tasks[taskId];
 	_tasks[taskId] = NULL;

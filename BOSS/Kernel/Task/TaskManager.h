@@ -10,7 +10,7 @@
  *	Typedefs for TaskManagement
  */
 typedef int TID_t;
-enum Status { Ready, Running, Blocked }; 
+enum Status { Ready, Running, Blocked, Wait }; 
 
 /*
  *	This struct is a solid Task - everyone is solid @ Task Library
@@ -39,7 +39,8 @@ struct TCB {
 	int R14;
 };
 
-typedef struct {
+struct Task;
+struct Task {
 	
 	// id of task
 	TID_t id;
@@ -51,8 +52,12 @@ typedef struct {
 	int priority;
 	// registers
 	TCB tcb;
+	
+	// parent/child
+	Task* parent;
+	Task* child;
 
-} Task;
+};
 
 
 
@@ -75,7 +80,7 @@ public:
 	Task* getTaskFor(int taskId);
 	
 	// create a new Task
-	TID_t create(char* name, int priority, int initAddress);
+	TID_t create(char* name, int priority, int initAddress, bool blockParent);
 	
 	// delete a Task by TaskID (TID_t)
 	void kill(int taskId);
