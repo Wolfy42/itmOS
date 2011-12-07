@@ -16,7 +16,10 @@
 // System Control Module and its register CONTROL_DEVCONF0[6]
 #define CONTROL_GENERAL_BASE 	0x48002270
 
-// DEVCONF0 of GENERAL BASE -> page 692
-#define CONTROL_DEVCONF0		0x04
+// DEVCONF0 of GENERAL BASE -> page 691
+#define CONTROL_DEVCONF0		0x00000004
+
+// CLKS
+#define CONTROL_MCBSP2_CLKS 	(1<<6)
 
 #endif /* SYSTEM_H_ */

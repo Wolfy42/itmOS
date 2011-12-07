@@ -23,7 +23,7 @@ SECTIONS
    .intvecs    > int_vecs
 
    .kernelMasterTable > kernel_master_table {
-       _kernelMasterTable = . ;
+       kernelMasterTable = . ;
        . = . + (16 * 1024);
    }
    .cinit      > int_ram
@@ -36,7 +36,7 @@ SECTIONS
    .switch     > int_ram
    .pinit      > int_ram {
    		*(.pinit)
-   		_intRamStart = .;
+   		intRamStart = .;
    	}
 
 
@@ -53,6 +53,6 @@ SECTIONS
        . = . + (4 * 1024);
        systemStack = .;
        . = . + (4 * 1024);
-       _extDDRStart = .;
+       extDDRStart = .;
    }
 }

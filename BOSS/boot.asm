@@ -10,7 +10,7 @@
 ;* TI includes
 ;***************************************************************
 
-    .asg    __args_main,   ARGS_MAIN_RTN
+    .asg    _args_main,   ARGS_MAIN_RTN
     .global ARGS_MAIN_RTN
     .global __TI_auto_init
 
