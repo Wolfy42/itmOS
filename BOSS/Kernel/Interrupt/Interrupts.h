@@ -5,6 +5,9 @@
 #include "Handler/SWIHandler.h"
 #include "Kernel/Task/TaskManager.h"
 
+// Forward-declaration
+class SWIHandler;
+
 // init all used Handlers
 void initInterruptHandler(IRQHandler* irq, SWIHandler* swi, TaskManager* tm);
 

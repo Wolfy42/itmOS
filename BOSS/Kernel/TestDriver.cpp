@@ -9,8 +9,6 @@
 #include "Kernel/SystemCalls/SystemCallExec.h"
 #include "HAL/LED/HalLedDriver.h"
 
-#include "Kernel/Interrupt/Interrupts.h"
-
 #include "Apps/Shell/Shell.h"
 
 #include "Lib/Rand.h"
@@ -95,13 +93,6 @@ void shell_test() {
 void tasks_test() {
 	TaskManager* taskmanager = kernel->getTaskManager();
 	
-	IRQHandler* irq = new IRQHandler();
-	SystemCallExec* exec = new SystemCallExec(kernel, taskmanager);
-	SWIHandler* swi = new SWIHandler(exec);
-	
-	initInterruptHandler(irq, swi, taskmanager);
-
-	
 	// Register and start LED Service
 	kernel->startService(LED_SERVICE);
 
@@ -115,7 +106,7 @@ void tasks_test() {
 	// Shell-Tests
 	shell_test();
 	
-	dummy(irq);
+	dummy(kernel->getHandlerManager()->getIrqHandler());
 }
 
 int main() {

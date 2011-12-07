@@ -3,6 +3,13 @@
 Kernel::Kernel() {
 	_taskManager = new TaskManager();
 	_serviceManager = new ServiceManager(this);
+	_handlerManager = new HandlerManager(this);
+	_executor = new SystemCallExec(this, _taskManager);
+
+	initInterruptHandler(
+			_handlerManager->getIrqHandler(), 
+			_handlerManager->getSwiHandler(), 
+			_taskManager);
 }
 
 Kernel::~Kernel() {
@@ -33,4 +40,16 @@ void Kernel::write(int* parameters)  {
 
 TaskManager* Kernel::getTaskManager(void) {
 	return _taskManager;
+}
+
+ServiceManager* Kernel::getServiceManager(void) {
+	return _serviceManager;
+}
+
+HandlerManager* Kernel::getHandlerManager(void) {
+	return _handlerManager;
+}
+
+SystemCallExec* Kernel::getExecutor(void) {
+	return _executor;
 }
