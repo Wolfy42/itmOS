@@ -1,13 +1,19 @@
 #include <stdio.h>
 #include "LEDService.h"
 
-void led_main(void) {
+
+// ~~~~~~~~~~~~~~~~~~~~ CONFIG & STARTUP ~~~~~~~~~~~~~~~~~~~~
+LEDConfig LEDService::CONFIG = LEDConfig();
+
+// Static main method for this service
+void LEDService::main(void) {
 	LEDService service;
 	service.run();
 }
+// ~~~~~~~~~~~~~~~~~~~~ CONFIG & STARTUP ~~~~~~~~~~~~~~~~~~~~
 
 
-LEDService::LEDService(): UserModeTask()  {}
+LEDService::LEDService(): Service()  {}
 LEDService::~LEDService()  {}
 
 MessageQueue* LEDService::getQueue()  {

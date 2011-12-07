@@ -82,9 +82,6 @@ void initShell() {
 }
 
 int main() {
-
-
-
 	Kernel* kernel = new Kernel();
 	TaskManager* taskmanager = new TaskManager();
 	SWIExecutor* swiExecutor = new SWIExecutor(kernel, taskmanager);
@@ -100,21 +97,29 @@ int main() {
 //	Message* message = new Message(para);
 //	queue->addMessage(message);
 //	*(address)0x820F0000 = (unsigned int)queue;
-	kernel->registerService(LED_SERVICE_CALL);
+
 
 
 	// init few necessary tasks
 	initTasks();
 
+	// Start Dummy-Task
 	createTask("dummy\0", 0, (int)dummy);
+
+	// Register and start LED Service
+	kernel->startService(LED_SERVICE_CALL);
+
+	// Start User-Test-Task
+	createTask("User-Test-Task\0", 100, (int)userTask_main);
+
+
 //	createTask("task 1\0", 70, (int)task1function);
 //	createTask("task 2\0", 30, (int)task2function);
 //	createTask("task 1\0", 40, (int)task1function);
 //	createTask("task 2\0", 40, (int)task2function);
 //	createTask("task 1\0", 10, (int)task1function);
 //	createTask("task 2\0", 90, (int)task2function);
-	createTask("LED-Service\0", 80, (int)led_main);
-	createTask("User-Test-Task\0", 100, (int)userTask_main);
+//	createTask("LED-Service\0", 80, (int)led_main);
 //	createTask("shell\0", 100, (int)shell);
 	dummy();
 

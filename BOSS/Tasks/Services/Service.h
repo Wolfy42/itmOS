@@ -1,14 +1,16 @@
 #ifndef SERVICE_H_
 #define SERVICE_H_
 
-class Service
+#include "Tasks/UserModeTask.h"
+
+class Service : public UserModeTask
 {
-	private:
+	protected:
 		Service();
 		virtual ~Service();
 		
 	public:
-		void main();
+		// Service Config
 };
 
 #endif /*SERVICE_H_*/

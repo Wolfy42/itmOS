@@ -1,9 +1,5 @@
 #include "Service.h"
 
-Service::Service()
-{
-}
+Service::Service() : UserModeTask() {}
 
-Service::~Service()
-{
-}
+Service::~Service() {}
