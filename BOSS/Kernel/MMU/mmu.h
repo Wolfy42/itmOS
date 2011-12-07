@@ -6,6 +6,7 @@
 #define MAX_PAGES_IN_EXT_DDR 65536
 
 #define ROM_INTERRUPT_ENTRIES 0x14000
+#define ROM_INTERRUPT_LENGTH 0x1C
 #define INT_RAM_START 0x40200000
 #define EXT_DDR_START 0x82000000
 
@@ -42,6 +43,8 @@ class MMU {
         void clearTLB();
         void lockFirstTLBEntry();
         
+        bool isTaskPage(address pageAddress);
+        int pageForAddress(MemoryType& type, unsigned int memAddress);
         address addressOfPage(MemoryType mem, int pageNumberInMemory);
         void reservePages(MemoryType mem, int firstPageNumber, int nrOfPages);
         void releasePages(MemoryType mem, int firstPageNumber, int nrOfPages);
@@ -53,13 +56,15 @@ class MMU {
         
         static MMU* getInstance();
         void initMemoryForTask(int taskId);
+        void deleteTaskMemory(int taskId);
+        
         void loadPage(int pageNumber);
 
         void prepagePagesFor(int serviceId);
         address parameterAddressFor(int serviceId);
 
         void handlePrefetchAbort();  
-        void handleDataAbort();      
+        void handleDataAbort();
 };
 
 #endif /*MMU_H_*/

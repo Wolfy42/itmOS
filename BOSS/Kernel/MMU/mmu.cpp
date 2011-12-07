@@ -148,6 +148,25 @@ void MMU::mapOneToOne(address masterTableAddress, address startAddress, unsigned
     }
 }
 
+bool MMU::isTaskPage(address pageAddress) {
+    address intVecsPageStart = (address)((((unsigned int)&intvecsStart) >> 12) << 12);
+    return !(((pageAddress >= (address)INT_RAM_START) && (pageAddress < m_firstFreeInIntRam))
+        || ((pageAddress >= (address)EXT_DDR_START) && (pageAddress < m_firstFreeInExtDDR))
+        || ((pageAddress >= (address)ROM_INTERRUPT_ENTRIES) && (pageAddress < (address)ROM_INTERRUPT_ENTRIES + ROM_INTERRUPT_LENGTH))
+        || (pageAddress >= intVecsPageStart));
+}
+int MMU::pageForAddress(MemoryType& type, unsigned int memAddress) {
+    int result = -1;
+    if ((memAddress - INT_RAM_START) < 0x10000) {
+        result = (memAddress - INT_RAM_START) / 4096;
+        type = INT_RAM;
+    } else if ((memAddress - EXT_DDR_START) < 0x10000000) {
+        result = (memAddress - EXT_DDR_START) / 4096;
+        type = EXT_DDR;
+    }
+    return result;
+}
+
 address MMU::addressOfPage(MemoryType mem, int pageNumberInMemory) {
     address result = 0x0;
     if (mem == INT_RAM) {
@@ -245,11 +264,10 @@ void MMU::initMemoryForTask(int taskId) {
             *tableAddress = 0xFFF00C12;
             
             enableMMU();
-            //lockFirstTLBEntry();
         } else {
             taskMasterTableAddress = createMasterTable();
             
-            mapOneToOne(taskMasterTableAddress, (address)ROM_INTERRUPT_ENTRIES, 0x1C);
+            mapOneToOne(taskMasterTableAddress, (address)ROM_INTERRUPT_ENTRIES, ROM_INTERRUPT_LENGTH);
             mapOneToOne(taskMasterTableAddress, (address)INT_RAM_START, (unsigned int)m_firstFreeInIntRam - INT_RAM_START);
             mapOneToOne(taskMasterTableAddress, &intvecsStart, 0x3B);
             mapOneToOne(taskMasterTableAddress, (address)EXT_DDR_START, (unsigned int)m_firstFreeInExtDDR - EXT_DDR_START);
@@ -262,6 +280,32 @@ void MMU::initMemoryForTask(int taskId) {
     }
     m_currentTask = taskId;
 }
+
+void MMU::deleteTaskMemory(int taskId) {
+    if (taskId != 0) {
+        address masterTableAddress = m_taskMasterTableAddresses[taskId];
+        if (masterTableAddress != 0x0) {
+            
+            for (unsigned int masterTableEntry = 0; masterTableEntry < 4096; masterTableEntry++) {
+                address l2TableAddress = (address)(((*(masterTableAddress + masterTableEntry)) >> 10) << 10);
+                if (l2TableAddress != 0x0) {
+                    for (unsigned int l2TableEntry = 0; l2TableEntry < 256; l2TableEntry++) {
+                        address pageAddress = (address)(((*(l2TableAddress + l2TableEntry)) >> 12) << 12);
+                        if ((pageAddress != 0x0) && (isTaskPage(pageAddress))) {
+                            MemoryType type;
+                            int pageNumber = pageForAddress(type, (unsigned int)pageAddress);
+                            releasePages(type, pageNumber, 1);
+                        }
+                        *(l2TableAddress + l2TableEntry) = 0x0;
+                    }
+                    *(masterTableAddress + masterTableEntry) = 0x0;
+                }
+            }
+        }
+        m_taskMasterTableAddresses[taskId] = 0x0;
+    }
+}
+
 void MMU::loadPage(int pageNumber) {
     //TODO
 }
@@ -304,5 +348,8 @@ void MMU::handleDataAbort() {
         initMemoryForTask(currentTask);
     } else {
         // TODO invalid access
+        int currentTask = m_currentTask;
+        initMemoryForTask(0);
+        deleteTaskMemory(currentTask);
     }
 }
