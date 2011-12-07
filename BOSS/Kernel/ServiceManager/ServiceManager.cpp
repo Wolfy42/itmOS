@@ -1,16 +1,18 @@
 #include "ServiceManager.h"
 
-#include "Kernel/TaskManagement/Tasks.h"
+#include "Kernel/Kernel.h"
+
+#include "Kernel/Task/TaskManager.h"
 #include "Tasks/Services/LED/LEDService.h"
 
-ServiceManager::ServiceManager() {}
+ServiceManager::ServiceManager(Kernel* kernel) : _kernel(kernel) {}
 
 ServiceManager::~ServiceManager() {}
 
 void ServiceManager::startService(int service) {    
 	switch (service) {
-		case LED_SERVICE_CALL:
-			createTask(LEDService::CONFIG.getServiceName(), 100, LEDService::CONFIG.getInitAddress());
+		case LED_SERVICE:
+			_kernel->getTaskManager()->create(LEDService::CONFIG.getServiceName(), 100, LEDService::CONFIG.getInitAddress(), false);
 			break;
 			
 		default:

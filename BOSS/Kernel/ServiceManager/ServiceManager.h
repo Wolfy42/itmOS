@@ -7,10 +7,16 @@
 #include "Messaging/Message/Message.h"
 #include "BOSSAPI/serviceCalls.h"
 
+// Forward-declaration
+class Kernel;
+
 class ServiceManager
 {	
+	private:
+		Kernel* _kernel;
+	
 	public:
-		ServiceManager();
+		ServiceManager(Kernel* kernel);
 		virtual ~ServiceManager();
 		
 		void startService(int service); 

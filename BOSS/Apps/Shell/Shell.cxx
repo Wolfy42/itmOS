@@ -3,9 +3,19 @@
 #include "Driver/UART/UARTDriver.h"
 #include <string.h>
 
-void shell() {
+#include "BOSSAPI/systemCalls.h"
+#include "ShellApps/Task.h"
+
+static TaskManager* _tm;
+
+void ts() {
+
+	showTasks(_tm);	
+}
+
+void shell(TaskManager* tm) {
 	
-	char* display_text;
+	_tm = tm;
 	char buffer[1];
 	char command[1024];
 	int i = 0;
@@ -14,23 +24,21 @@ void shell() {
 	uart.init();
 
 	
-	display_text = "\r\n\r\n*** Shell de BOSS ***\r\n";
-	uart.write(std::strlen(display_text), display_text);
+	echo("\r\n\r\n*** Shell de BOSS ***\r\n");
+
 
 	while (1) {
 	
 		// reset buffer
 		buffer[0] = ' ';
 	
-		display_text = "\r\nBOSS # ";
-		uart.write(std::strlen(display_text), display_text);
+		echo("\r\nBOSS # ");
+		
 		
 		// get command
 		for (i = 0; buffer[0] != '\r'; i++) {
 			uart.read(1, buffer);
 			
-			// write it again to shell
-			uart.write(1, &buffer[0]);
 			
 			// add next letter to command
 			command[i] = buffer[0];
@@ -41,9 +49,15 @@ void shell() {
 		
 		
 		if(std::strcmp("exit", command) == 0) {
-			display_text = "\r\nBye Bye (wave)\r\n";
-			uart.write(std::strlen(display_text), display_text);
+			echo("Bye Bye\n");
 			break;
+    	}
+    	
+    	if(std::strcmp("ts", command) == 0) {
+			
+			tm->create("ts", 100, (int)ts, true);
+			performSyscall(YIELD, NULL);
     	}
   	}
 }
+

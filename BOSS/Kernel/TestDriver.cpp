@@ -3,9 +3,18 @@
 #include <string.h>
 
 #include "HAL/Timer/HalTimerDriver.h"
-#include "Kernel/Interrupt/IRQHandler.h"
-#include "Kernel/TaskManagement/Tasks.h"
+#include "Kernel/Task/TaskManager.h"
+#include "Kernel/Interrupt/Handler/IRQHandler.h"
+#include "Kernel/Interrupt/Handler/SWIHandler.h"
+#include "Kernel/SystemCalls/SystemCallExec.h"
 #include "HAL/LED/HalLedDriver.h"
+
+#include "Kernel/Interrupt/Interrupts.h"
+
+#include "Apps/Shell/Shell.h"
+
+#include "Lib/Rand.h"
+#include "Lib/Time.h"
 
 #include "Apps/Shell/Shell.h"
 
@@ -13,45 +22,37 @@
 
 #include "API/LED.h"
 #include "BOSSAPI/serviceCalls.h"
-#include "Kernel/SoftwareInterrupts/SWIExecutor.h"
-#include "Kernel/Interrupt/swiHandler/swiHandler.h"
 
 #include "Tasks/Services/LED/LEDService.h"
 #include "Tasks/UserTasks/TestTask.h"
 
-void ledOff(void) {
+#include "Lib/OMAP/McBSP2.h"
 
+Kernel* kernel;
+
+void ledOff(void) {
 	HalLedDriver driver;
 	driver.ledOff(LED1);
 	driver.ledOff(LED2);
 }
 
-void initScheduler() {
-
-	IRQHandler hand;
+void initScheduler(IRQHandler* hand) {
 	srand_(time_());
-	hand.registerHandler(HalTimerDriver::irqNumberForTimer(GPTIMER2), ledOff);
+	hand->registerHandler(HalTimerDriver::irqNumberForTimer(GPTIMER2), ledOff);
 
 	HalTimerDriver::init(GPTIMER2, GPT_IRQMODE_OVERFLOW, 100);
 	HalTimerDriver::start(GPTIMER2);
 
 }
 
-void dummy()  {
-
-	initScheduler();
+void dummy(IRQHandler* hand)  {
+	initScheduler(hand);
 	_enable_interrupts();
 	asm("\t CPS 0x10");
-	int i;
-	while(1)  {
-		//HalLedDriver::ledOn(LED1);
-		//HalLedDriver::ledOn(LED2);
-		i++;
-	}
+	while(1);
 }
 
 void task1function() {
-	
 	int i = 0;
 	for (i = 0; i < 10000; i++) {
 		HalLedDriver driver;
@@ -60,79 +61,77 @@ void task1function() {
 			z++;
 		}
 	}
-	while(1);
 }
 
 void task2function() {
-
 	int i = 0;
-	for (i = 0; i < 10000; i++) {
+	for (i = 0; i < 100; i++) {
 		HalLedDriver driver;
 		driver.toggle(LED2);
 		for (int z = 0; z < 80000;) {
 			z++;
 		}
 	}	
-	while(1);
 }
 
-void initShell() {
+void shellstart() {
+	shell(kernel->getTaskManager());
+}
 
-	createTask("shell\0", 100, (int)shell);	
+void init_kernel() {
+	kernel = new Kernel();
+}
+
+void audio_test() {
+	McBSP2* mcbsp2 = new McBSP2();
+	mcbsp2->init_mcbsp2();
+}
+
+void shell_test() {
+	TaskManager* taskmanager = kernel->getTaskManager();
+	taskmanager->create("shell\0", 100, (int)shellstart, false);
+}
+
+void tasks_test() {
+	TaskManager* taskmanager = kernel->getTaskManager();
+	
+	IRQHandler* irq = new IRQHandler();
+	SystemCallExec* exec = new SystemCallExec(kernel, taskmanager);
+	SWIHandler* swi = new SWIHandler(exec);
+	
+	initInterruptHandler(irq, swi, taskmanager);
+
+	
+	// Register and start LED Service
+	kernel->startService(LED_SERVICE);
+
+	taskmanager->create("dummy\0", 0, (int)dummy, false);
+	taskmanager->create("led 1\0", 70, (int)task1function, false);
+	taskmanager->create("led 2\0", 30, (int)task2function, false);
+	
+	// Start User-Test-Task
+	taskmanager->create("User-Test-Task\0", 100, (int)userTask_main, false);
+	
+	// Shell-Tests
+	shell_test();
+	
+	dummy(irq);
 }
 
 int main() {
-	Kernel* kernel = new Kernel();
-	TaskManager* taskmanager = new TaskManager();
-	SWIExecutor* swiExecutor = new SWIExecutor(kernel, taskmanager);
+	// Init the kernel
+	init_kernel();
+	
+	// Stefans Audio-Tests
+	audio_test();
 
-	swi_setSWIExecutor(swiExecutor);
-
-//	int para[4];
-//	para[0] = 0;
-//	para[1] = 2;
-//	para[2] = 0;
-//	para[3] = 1;
-//	MessageQueue* queue = new MessageQueue();
-//	Message* message = new Message(para);
-//	queue->addMessage(message);
-//	*(address)0x820F0000 = (unsigned int)queue;
-
-
-
-	// init few necessary tasks
-	initTasks();
-
-	// Start Dummy-Task
-	createTask("dummy\0", 0, (int)dummy);
-
-	// Register and start LED Service
-	kernel->startService(LED_SERVICE_CALL);
-
-	// Start User-Test-Task
-	createTask("User-Test-Task\0", 100, (int)userTask_main);
-
-
-//	createTask("task 1\0", 70, (int)task1function);
-//	createTask("task 2\0", 30, (int)task2function);
-//	createTask("task 1\0", 40, (int)task1function);
-//	createTask("task 2\0", 40, (int)task2function);
-//	createTask("task 1\0", 10, (int)task1function);
-//	createTask("task 2\0", 90, (int)task2function);
-//	createTask("LED-Service\0", 80, (int)led_main);
-//	createTask("shell\0", 100, (int)shell);
-	dummy();
+	// Task-Tests
+	tasks_test();
 
 	while(1) {
-		//HalLedDriver::toggle(LED1);
-		//HalLedDriver::toggle(LED2);
 		for (int z = 0; z < 80000;) {
 			z++;
 		}
 	}
-
 	//return 0;
 }
-
-
-

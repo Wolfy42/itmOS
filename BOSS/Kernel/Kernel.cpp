@@ -1,11 +1,12 @@
-
 #include "Kernel.h"
 
 Kernel::Kernel() {
-	_serviceManager = new ServiceManager();
+	_taskManager = new TaskManager();
+	_serviceManager = new ServiceManager(this);
 }
 
 Kernel::~Kernel() {
+	delete _taskManager;
 	delete _serviceManager;
 }
 
@@ -28,4 +29,8 @@ void Kernel::write(int* parameters)  {
 	Message* message = new Message(parameters);
 	MessageQueue* messageQueue = _messageQueues.find(message->getTaskId())->second;
 	messageQueue->addMessage(message);
+}
+
+TaskManager* Kernel::getTaskManager(void) {
+	return _taskManager;
 }
