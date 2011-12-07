@@ -1,10 +1,10 @@
 
 #include "BOSSAPI/systemCalls.h"
 #include "BOSSAPI/serviceCalls.h"
-#include "softwareInterrupt.h"
+#include "SoftwareInterrupt.h"
 
 void performServiceCall(int params[]) {
-    performSyscall(WRITE, params);
+  //  performSyscall(SERVICE_CALL, params);
 }
 
 void performSyscall(int syscallId, int parameters[]) {

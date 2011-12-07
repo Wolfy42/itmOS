@@ -7,6 +7,7 @@
 class LEDService : public UserModeTask {
 
 	private:
+		HalLedDriver _driver;
 		virtual void executeMessage(Message* message);
 
 	public:
