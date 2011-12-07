@@ -28,6 +28,7 @@
 #include "Tasks/UserTasks/TestTask.h"
 #include "Tasks/UserTasks/testTaskMain.h"
 
+#include "Lib/OMAP/McBSP2.h"
 
 TaskManager* taskmanager;
 
@@ -89,6 +90,9 @@ void shellstart() {
 
 int main() {
 
+
+	McBSP2* mcbsp2 = new McBSP2();
+	mcbsp2->init_mcbsp2();
 
 
 	Kernel* kernel = new Kernel();

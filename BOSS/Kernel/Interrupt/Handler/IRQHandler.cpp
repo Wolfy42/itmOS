@@ -1,6 +1,6 @@
 #include "IRQHandler.h"
 
-#include "HAL/Timer/HALTimerDriver.h"
+#include "HAL/Timer/HalTimerDriver.h"
 #include "Kernel/Task/TaskManager.h"
 #include "HAL/gpt.h"
 #include "API/dataTypes.h"

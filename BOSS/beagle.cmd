@@ -26,7 +26,7 @@ SECTIONS
    	}
 
    .kernelMasterTable > kernel_master_table {
-       _kernelMasterTable = . ;
+       kernelMasterTable = . ;
        . = . + (16 * 1024);
    }
    ORDER

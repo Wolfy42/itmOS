@@ -3,12 +3,19 @@
  *
  *  Created on: Dec 1, 2011
  *      Author: stefan
+ *
+ *  Reference-Doc: AM35x ARM Microprocessor Technical Reference Manual
+ *  Multi-Channel Buffered Serial Port
  */
 
 #ifndef MCBSP_H_
 #define MCBSP_H_
 
-/* McBSP Base Addresses */
+/* Registers
+ *
+ * page 2077-ff.
+ *
+ * McBSP Base Addresses */
 #define MCBSP1_BASE				0x48074000
 #define MCBSP2_BASE				0x49022000
 #define MCBSP3_BASE				0x49024000
@@ -63,5 +70,34 @@
 #define MCBSPLP_RBUFFSTAT_REG 	0x000000B8
 #define MCBSPLP_SSELCR_REG 		0x000000BC
 #define MCBSPLP_STATUS_REG 		0x000000C0
+
+// MCBSPLP_SPCR2
+#define MCBSP_FREE_BIT			9
+#define MCBSP_FRST_BIT			7
+#define MCBSP_XRST_BIT			0
+
+// MCBSPLB_SPCR1
+#define MCBSP_RRST_BIT			0
+
+// MCBSPLP_RCR2
+#define RPHASE_DUAL_BIT			15
+#define RDATDLY_ONE_BIT			0
+#define RFRLEN2_BIT				8
+#define MCBSP_WDLEN_16_BIT		6
+
+// MCBSPLP_XCCR
+#define XDISABLE_BIT			0
+
+// MCBSPLP_PCR
+#define MCBSP_CLKRP_BIT			0
+#define MCBSP_CLKXP_BIT			1
+
+// Wordlength
+#define MCBSP_WDLEN_8 			0
+#define MCBSP_WDLEN_12 			1
+#define MCBSP_WDLEN_16 			2
+#define MCBSP_WDLEN_20 			3
+#define MCBSP_WDLEN_24 			4
+#define MCBSP_WDLEN_32 			5
 
 #endif /* MCBSP_H_ */
