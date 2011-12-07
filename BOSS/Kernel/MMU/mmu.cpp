@@ -348,8 +348,5 @@ void MMU::handleDataAbort() {
         initMemoryForTask(currentTask);
     } else {
         // TODO invalid access
-        int currentTask = m_currentTask;
-        initMemoryForTask(0);
-        deleteTaskMemory(currentTask);
     }
 }
