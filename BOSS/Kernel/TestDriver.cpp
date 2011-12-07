@@ -11,6 +11,8 @@
 
 #include "Kernel/Interrupt/Interrupts.h"
 
+#include "Apps/Shell/Shell.h"
+
 #include "Lib/Rand.h"
 #include "Lib/Time.h"
 
@@ -26,6 +28,9 @@
 #include "Tasks/UserTasks/TestTask.h"
 #include "Tasks/UserTasks/testTaskMain.h"
 
+
+TaskManager* taskmanager;
+
 void ledOff(void) {
 
 	HalLedDriver driver;
@@ -33,28 +38,22 @@ void ledOff(void) {
 	driver.ledOff(LED2);
 }
 
-void initScheduler() {
+void initScheduler(IRQHandler* hand) {
 
-	IRQHandler hand;
 	srand_(time_());
-	hand.registerHandler(HalTimerDriver::irqNumberForTimer(GPTIMER2), ledOff);
+	hand->registerHandler(HalTimerDriver::irqNumberForTimer(GPTIMER2), ledOff);
 
 	HalTimerDriver::init(GPTIMER2, GPT_IRQMODE_OVERFLOW, 100);
 	HalTimerDriver::start(GPTIMER2);
 
 }
 
-void dummy()  {
+void dummy(IRQHandler* hand)  {
 
-	initScheduler();
+	initScheduler(hand);
 	_enable_interrupts();
 	asm("\t CPS 0x10");
-	int i;
-	while(1)  {
-		//HalLedDriver::ledOn(LED1);
-		//HalLedDriver::ledOn(LED2);
-		i++;
-	}
+	while(1);
 }
 
 void task1function() {
@@ -67,30 +66,33 @@ void task1function() {
 			z++;
 		}
 	}
-	while(1);
+
 }
 
 void task2function() {
 
 	int i = 0;
-	for (i = 0; i < 10000; i++) {
+	for (i = 0; i < 100; i++) {
 		HalLedDriver driver;
 		driver.toggle(LED2);
 		for (int z = 0; z < 80000;) {
 			z++;
 		}
 	}	
-	while(1);
+
 }
 
-
+void shellstart() {
+	
+	shell(taskmanager);
+}
 
 int main() {
 
 
 
 	Kernel* kernel = new Kernel();
-	TaskManager* taskmanager = new TaskManager();
+	taskmanager = new TaskManager();
 	IRQHandler* irq = new IRQHandler();
 	SystemCallExec* exec = new SystemCallExec(kernel, taskmanager);
 	SWIHandler* swi = new SWIHandler(exec);
@@ -111,16 +113,16 @@ int main() {
 
 
 	taskmanager->create("dummy\0", 0, (int)dummy, false);
-//	createTask("task 1\0", 70, (int)task1function);
-//	createTask("task 2\0", 30, (int)task2function);
+	taskmanager->create("led 1\0", 70, (int)task1function, false);
+	taskmanager->create("led 2\0", 30, (int)task2function, false);
 //	createTask("task 1\0", 40, (int)task1function);
 //	createTask("task 2\0", 40, (int)task2function);
 //	createTask("task 1\0", 10, (int)task1function);
 //	createTask("task 2\0", 90, (int)task2function);
-	taskmanager->create("LED-Service\0", 80, (int)led_main, false);
-	taskmanager->create("User-Test-Task\0", 100, (int)userTask_main, false);
-//	createTask("shell\0", 100, (int)shell);
-	dummy();
+//	taskmanager->create("LED-Service\0", 80, (int)led_main, false);
+//	taskmanager->create("User-Test-Task\0", 100, (int)userTask_main, false);
+	taskmanager->create("shell\0", 100, (int)shellstart, false);
+	dummy(irq);
 
 	while(1) {
 		//HalLedDriver::toggle(LED1);

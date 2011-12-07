@@ -34,7 +34,8 @@ bool SystemCallExec::execute(int swiNumber, int* parameters)  {
         case FORK:
             break;
         case YIELD:
-            break;
+        	// just context switch
+        	return true;
  //       case SERVICE_CALL:
         	//_kernel->callService(parameters);
             break;

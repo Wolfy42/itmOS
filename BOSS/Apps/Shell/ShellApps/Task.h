@@ -12,14 +12,14 @@
 void showTasks(TaskManager* tm) {
 
 	
-	echo("Id \t\tName \t\tPrio \t\tStatus\r\n");
+	echo("\r\nId \t\tName \t\tPrio \t\tStatus\r\n");
 
 	int i = 0;
 	char* buffer;
 	for (i = 0; i < MAX_TASKS; i++) {
 	
 		if (tm->getTaskList()[i] != NULL) {
-		
+			
 			buffer = "";
 			sprintf(buffer, "%d", tm->getTaskList()[i]->id);
 			echo(buffer);

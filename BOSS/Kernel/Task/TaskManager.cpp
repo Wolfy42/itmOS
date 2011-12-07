@@ -84,7 +84,8 @@ TID_t TaskManager::create(char* name, int priority, int initAddress, bool blockP
 	if (blockParent == true) {
 	
 		t->parent = getActiveTask();
-		getActiveTask()->child = t;	
+		getActiveTask()->child = t;
+		t->parent->status = Blocked;
 	}
 
 	// to ensure a valid priority

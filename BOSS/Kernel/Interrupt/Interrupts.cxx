@@ -80,7 +80,11 @@ void contextSwitch() {
 	
 	
 	// Get the TCB's of the processes to switch the context
-	tcb1 = (int)&_TaskManager->getActiveTask()->tcb.CPSR;
+	if (_TaskManager->getActiveTask() != NULL) {
+		tcb1 = (int)&_TaskManager->getActiveTask()->tcb.CPSR;
+	} else {
+		tcb1 = NULL;
+	}
 	_TaskManager->schedule();
 	tcb2 = (int)&_TaskManager->getActiveTask()->tcb.CPSR;
 
@@ -93,15 +97,15 @@ void contextSwitch() {
 	asm("	LDR 	R1, [R1], #0 ;" );
 
 	// First store the old precess's User mode state to the PCB pointed to by R0."
-
-	asm("	MRS 	R12, SPSR					; Get CPSR of interrupted process" );
-	asm("	STR 	R12, [R0], #8				; Store CPSR to PCB, point R0 at PCB location for R0 value" );
-	asm("	LDMFD	R13!, {R2, R3}				; Reload R0/R1 of interrupted process from stack" );
-	asm("	STMIA 	R0!, {R2, R3}				; Store R0/R1 values to PCB, point R0 at PCB location for R2 value" );
-	asm("   LDMFD   R13!, {R2-R12, R14}	; Reload remaining stacked values" );
-	asm("	STR 	R14, [R0, #-12]				; Store R14_irq, the interrupted process's restart address" );
-	asm("	STMIA 	R0, {R2-R14}^				; Store user R2-R14 ");
-
+	if (tcb1 != NULL) {
+		asm("	MRS 	R12, SPSR					; Get CPSR of interrupted process" );
+		asm("	STR 	R12, [R0], #8				; Store CPSR to PCB, point R0 at PCB location for R0 value" );
+		asm("	LDMFD	R13!, {R2, R3}				; Reload R0/R1 of interrupted process from stack" );
+		asm("	STMIA 	R0!, {R2, R3}				; Store R0/R1 values to PCB, point R0 at PCB location for R2 value" );
+		asm("   LDMFD   R13!, {R2-R12, R14}	; Reload remaining stacked values" );
+		asm("	STR 	R14, [R0, #-12]				; Store R14_irq, the interrupted process's restart address" );
+		asm("	STMIA 	R0, {R2-R14}^				; Store user R2-R14 ");
+	}
 	// Then load the new process's User mode state and return to it.");
 
 	asm("	LDMIA 	R1!, {R12, R14}  			; Put interrupted process's CPSR" );
@@ -150,7 +154,6 @@ extern "C" void c_intIRQ()  {
  * 	- Software Interrupt Handler functions should return true
  * 		if a context switch is needed
  */
-#pragma INTERRUPT (SWI)
 #pragma TASK
 extern "C" void c_intSWI(int swiNumber, int* parameters)  {
 
