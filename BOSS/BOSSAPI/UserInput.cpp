@@ -3,7 +3,7 @@
 #include "serviceCalls.h"
 
 int waitForInput() {
-    int params[] = {BUTTON_SERVICE_CALL};
+    int params[] = {BUTTON_SERVICE};
     performServiceCall(params);
     return 1;
 }

@@ -1,5 +1,10 @@
 #include "TestTask.h"
 
+void userTask_main(void) {
+	TestTask task;
+	task.start();
+}
+
 TestTask::TestTask() : UserModeTask()  {}
 
 TestTask::~TestTask()  {}

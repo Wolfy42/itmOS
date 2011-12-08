@@ -6,17 +6,17 @@
 
 class SystemCallExec
 {
-private:
-	Kernel* _kernel;
-	TaskManager* _taskmanager;
-	
-public:
-	SystemCallExec(Kernel* kernel, TaskManager* taskmanager);
-	virtual ~SystemCallExec();
-	
-	// returns true if context switch is needed
-	// does SystemCall Action
-	bool execute(int swiNumber, int* parameters);
+	private:
+		Kernel* _kernel;
+		TaskManager* _taskmanager;
+		
+	public:
+		SystemCallExec(Kernel* kernel, TaskManager* taskmanager);
+		virtual ~SystemCallExec();
+		
+		// returns true if context switch is needed
+		// does SystemCall Action
+		bool execute(int swiNumber, int* parameters);
 };
 
 #endif /*SYSTEMCALLEXEC_H_*/
