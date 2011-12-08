@@ -18,6 +18,8 @@ struct MemoryHeader  {
 	int size;
 };
 
+#define MAX_MESSAGES 42;
+
 class MemoryManager {
 
 private:
