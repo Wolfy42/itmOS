@@ -12,7 +12,7 @@ class Message {
 
 public:
 
-	Message(int* swiParameter);
+	Message(int taskId, int paramsLength, int* params);
 	virtual ~Message();
 
 	int getTaskId();
