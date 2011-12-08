@@ -59,7 +59,7 @@ void initInterruptHandler(IRQHandler* irq, SWIHandler* swi, TaskManager* tm) {
 	asm("   STMFD 	R13!, {R0-R12, R14}		; Save Task-Registers "); \
 	asm(" LDR     R0, stack_pointer_saved_context"); \
 	asm(" STR     R13, [R0], #0"); \
-	//stack_pointer_original = stack_pointer_saved_context + SAVED_REGISTERS_SPACE;
+	stack_pointer_original = stack_pointer_saved_context + SAVED_REGISTERS_SPACE;
 	
 #define SAVECONTEXT_SWI \
 	asm(" STMFD   R13!, {R0-R12, R14} ; Save Process-Registers "); \
@@ -98,6 +98,7 @@ void contextSwitch() {
 
 	// First store the old precess's User mode state to the PCB pointed to by R0."
 	if (tcb1 != NULL) {
+		
 		asm("	MRS 	R12, SPSR					; Get CPSR of interrupted process" );
 		asm("	STR 	R12, [R0], #8				; Store CPSR to PCB, point R0 at PCB location for R0 value" );
 		asm("	LDMFD	R13!, {R2, R3}				; Reload R0/R1 of interrupted process from stack" );
@@ -105,6 +106,10 @@ void contextSwitch() {
 		asm("   LDMFD   R13!, {R2-R12, R14}	; Reload remaining stacked values" );
 		asm("	STR 	R14, [R0, #-12]				; Store R14_irq, the interrupted process's restart address" );
 		asm("	STMIA 	R0, {R2-R14}^				; Store user R2-R14 ");
+	} else {
+	
+		asm("	LDR     R13, stack_pointer_original");
+    	asm("	LDR     R13, [R13], #0");
 	}
 	// Then load the new process's User mode state and return to it.");
 

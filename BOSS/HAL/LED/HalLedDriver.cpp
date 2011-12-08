@@ -39,3 +39,4 @@ void HalLedDriver::toggle(LED led) {
 bool HalLedDriver::isOn(LED led) {
 	return ledClassForEnum(led).isOn();
 }
+
