@@ -31,9 +31,9 @@
 Kernel* kernel;
 
 void ledOff(void) {
-	HalLedDriver driver;
-	driver.ledOff(LED1);
-	driver.ledOff(LED2);
+//	HalLedDriver driver;
+//	driver.ledOff(LED1);
+//	driver.ledOff(LED2);
 }
 
 void initScheduler(IRQHandler* hand) {

@@ -2,6 +2,7 @@
 #define TASKMANAGER_H_
 
 #include "Task.h"
+#include "Kernel/MMU/mmu.h"
 /*
  * Change if you wanna hav mor fun (tasks)
  */
@@ -20,11 +21,12 @@ class TaskManager {
 private:
 	Task* _tasks[MAX_TASKS];
 	int _activeTask;
+    MMU* _mmu;
 	
 	int getNextFreeSlot();
 
 public:
-	TaskManager();
+	TaskManager(MMU* mmu);
 	virtual ~TaskManager();
 
 	// get a Task Struct/Object by TaskID (TID_t)

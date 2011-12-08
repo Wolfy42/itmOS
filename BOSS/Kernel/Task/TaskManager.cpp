@@ -11,7 +11,7 @@
 /*
  * 	Constructor inits member variables and TaskRoutines
  */
-TaskManager::TaskManager() {
+TaskManager::TaskManager(MMU* mmu): _mmu(mmu) {
 
 	// init TaskRoutines
 	initTaskRoutines(this);
@@ -80,6 +80,7 @@ TID_t TaskManager::create(char* name, int priority, int initAddress, bool blockP
 	t->status = Ready;
 	t->child = NULL;
 	t->parent = NULL;
+    t->codeLocation = (address)initAddress;
 	
 	if (blockParent == true) {
 	
@@ -98,8 +99,8 @@ TID_t TaskManager::create(char* name, int priority, int initAddress, bool blockP
 	}
 
 	// init Task Control Block
-	t->tcb.restartAddress = initAddress;
-	t->tcb.R13 = 0x820E0000 + (nextTask + 1) * 0x00010000;
+	t->tcb.restartAddress = TASK_MEMORY_START;
+	t->tcb.R13 = 0x00500000;
 	t->tcb.CPSR = 0x80000110;
 	t->tcb.R0 = 0;
 	t->tcb.R1 = 0;
@@ -146,6 +147,7 @@ void TaskManager::kill(int taskId) {
 		kill(_tasks[taskId]->child->id);
 	}
 	
+    _mmu->deleteTaskMemory(_tasks[taskId]);
 	delete _tasks[taskId];
 	_tasks[taskId] = NULL;
 }

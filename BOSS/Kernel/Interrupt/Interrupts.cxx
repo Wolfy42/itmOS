@@ -7,7 +7,6 @@
 #define WEIRD_EXTRA_SPACE (1 * 4)
 #define SWI_PARAMETERS_SPACE (2 * 4)
 
-
 /*
  * 	static Handlers for the Interrupts
  */
@@ -88,6 +87,7 @@ void contextSwitch() {
 		tcb1 = NULL;
 	}
 	_TaskManager->schedule();
+    _mmu->initMemoryForTask(_TaskManager->getActiveTask());
 	tcb2 = (int)&_TaskManager->getActiveTask()->tcb.CPSR;
 
 
@@ -134,7 +134,7 @@ extern "C" void c_intIRQ()  {
 	// This will be called before enterint the function
 	// SUB             R14, R14, #4
 	SAVECONTEXT_IRQ
-
+    _mmu->switchToKernelMMU();
 
 	// Determine Nr. of IRQ (e.g. GPTIMER2 is IRQ_38 --> irqNr = 38)
 	//int irqNr = *(INTCPS_SIR_IRQ);
@@ -162,6 +162,7 @@ extern "C" void c_intSWI(int swiNumber, int* parameters)  {
 	// save context
 	SAVECONTEXT_SWI
 
+    _mmu->switchToKernelMMU();
 	// if cs is true a context switch is gonna happen
     bool cs = _SWIHandler->handle(swiNumber, parameters);
     
@@ -170,7 +171,7 @@ extern "C" void c_intSWI(int swiNumber, int* parameters)  {
     	// perform a context switch
     	contextSwitch();
     } 
-    
+    _mmu->initMemoryForTask(_TaskManager->getActiveTask());
 	// restore stackpointer of swi
 	asm(" LDMFD   R13!, {R0-R12, PC}^");
 }

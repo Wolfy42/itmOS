@@ -63,7 +63,6 @@ ORDER
 	   systemStack = .;
 	   . = . + (4 * 1024);
 	   abortStack = .;
-	   . = . + (4 * 1024);
 	   _extDDRStart = .;
    }
 }

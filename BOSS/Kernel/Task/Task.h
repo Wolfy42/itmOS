@@ -49,6 +49,8 @@ class Task {
         // registers
         TCB tcb;
         
+        address codeLocation;
+        
         // parent/child
         Task* parent;
         Task* child;

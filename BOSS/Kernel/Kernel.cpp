@@ -1,11 +1,12 @@
 #include "Kernel.h"
 
 Kernel::Kernel() {
-	_taskManager = new TaskManager();
+    _mmu = new MMU();
+	_taskManager = new TaskManager(_mmu);
 	_serviceManager = new ServiceManager(this, _taskManager);
 	_handlerManager = new HandlerManager(this);
 	_executor = new SystemCallExec(this, _taskManager);
-    _mmu = new MMU();
+    
 	initInterruptHandler(
 			_handlerManager->getIrqHandler(), 
 			_handlerManager->getSwiHandler(), 

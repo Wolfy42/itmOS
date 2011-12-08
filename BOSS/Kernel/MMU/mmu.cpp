@@ -257,7 +257,7 @@ address MMU::findFreeMemory(int nrOfPages, bool align, bool reserve) {
     }
     freePages = 0;
     for (int i = 0; (i < MAX_PAGES_IN_EXT_DDR) && (result == 0x0); i++) {
-        if (!occupiedPagesExtDDR[i]) {
+        if ((!occupiedPagesExtDDR[i]) && ((!align) || ((freePages > 0) || ((i % nrOfPages) == 0)))) {
             freePages++;
             if (freePages == nrOfPages) {
                 result = addressOfPage(EXT_DDR, (i - nrOfPages) + 1);
@@ -340,12 +340,17 @@ void MMU::handlePrefetchAbort() {
     asm("\t LDR r1, tempVariableForAsmAndCpp\n");
     asm("\t STR r0, [r1]\n");
     
+    unsigned int accessedAddress = tempVariableForAsmAndCpp;
     // TODO check for execute permissions
-    if ((tempVariableForAsmAndCpp % 0x4 == 0x0) && (tempVariableForAsmAndCpp >= PROCESS_MEMORY_START) && (tempVariableForAsmAndCpp < PROCESS_MEMORY_END)) {
+    if ((accessedAddress % 0x4 == 0x0) && (accessedAddress >= TASK_MEMORY_START) && (accessedAddress < TASK_MEMORY_END)) {
         Task* currentTask = m_currentTask;
         switchToKernelMMU();
-        createMappedPage(currentTask->masterTableAddress, (address)tempVariableForAsmAndCpp);
-        // TODO load needed instructions into new page
+        // Create new Page
+        address newPage = createMappedPage(currentTask->masterTableAddress, (address)tempVariableForAsmAndCpp);
+        
+        // load needed instructions into new page
+        std::memcpy((void*)newPage, (void*)(currentTask->codeLocation + ((accessedAddress - TASK_MEMORY_START) / 4)), 4096);
+        
         initMemoryForTask(currentTask);
     } else {
         // TODO invalid access
@@ -357,7 +362,7 @@ void MMU::handleDataAbort() {
     asm("\t LDR r1, tempVariableForAsmAndCpp\n");
     asm("\t STR r0, [r1]\n");
     // TODO check for read / write permissions
-    if ((tempVariableForAsmAndCpp % 0x4 == 0x0) && (tempVariableForAsmAndCpp >= PROCESS_MEMORY_START) && (tempVariableForAsmAndCpp < PROCESS_MEMORY_END)) {
+    if ((tempVariableForAsmAndCpp % 0x4 == 0x0) && (tempVariableForAsmAndCpp >= TASK_MEMORY_START) && (tempVariableForAsmAndCpp < TASK_MEMORY_END)) {
         Task* currentTask = m_currentTask;
         switchToKernelMMU();
         createMappedPage(currentTask->masterTableAddress, (address)tempVariableForAsmAndCpp);
