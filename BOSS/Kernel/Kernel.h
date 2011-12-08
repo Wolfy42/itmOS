@@ -24,7 +24,6 @@ class Kernel {
 		SystemCallExec* _executor;
 	
 		std::map<int, MessageQueue*> _messageQueues;
-		void registerService(int serviceId);
 	
 	public:
 		Kernel();
@@ -33,10 +32,12 @@ class Kernel {
 		void startService(int serviceId);
 		void write(int* parameters);
 		
+		// Getters
 		TaskManager* getTaskManager(void);
 		ServiceManager* getServiceManager(void);
 		HandlerManager* getHandlerManager(void);
 		SystemCallExec* getExecutor(void);
+		std::map<int, MessageQueue*> getMessageQueues();
 };
 
 #endif /* KERNEL_H_ */

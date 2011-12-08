@@ -2,7 +2,7 @@
 
 Kernel::Kernel() {
 	_taskManager = new TaskManager();
-	_serviceManager = new ServiceManager(this);
+	_serviceManager = new ServiceManager(this, _taskManager);
 	_handlerManager = new HandlerManager(this);
 	_executor = new SystemCallExec(this, _taskManager);
 
@@ -17,16 +17,9 @@ Kernel::~Kernel() {
 	delete _serviceManager;
 }
 
-void Kernel::registerService(int serviceId)  {
-	//TODO: change this!
-	MessageQueue* queue = new MessageQueue();
-	*(address)0x820F0000 = (unsigned int)queue;
-	_messageQueues.insert(std::pair<int, MessageQueue*>(serviceId, queue));
-}
-
 void Kernel::startService(int serviceId) {
 	// Register the service first
-	registerService(serviceId);
+	_serviceManager->registerService(serviceId);
 	
 	// Start the Service
 	_serviceManager->startService(serviceId);
@@ -52,4 +45,8 @@ HandlerManager* Kernel::getHandlerManager(void) {
 
 SystemCallExec* Kernel::getExecutor(void) {
 	return _executor;
+}
+
+std::map<int, MessageQueue*> Kernel::getMessageQueues() {
+	return _messageQueues;
 }
