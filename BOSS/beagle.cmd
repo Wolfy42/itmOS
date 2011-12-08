@@ -66,4 +66,8 @@ ORDER
 	   . = . + (4 * 1024);
 	   _extDDRStart = .;
    }
+   .sharedObjects > ext_ddr  {
+   	   MessageQueue.obj
+   	   Message.obj
+   }  
 }
