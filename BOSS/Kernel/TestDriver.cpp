@@ -30,6 +30,9 @@
 
 #include "Lib/OMAP/McBSP2.h"
 
+#include "Kernel/Task/Task.h"
+#include "MMU/mmu.h"
+
 TaskManager* taskmanager;
 
 void ledOff(void) {
@@ -90,7 +93,6 @@ void shellstart() {
 
 int main() {
 
-
 	McBSP2* mcbsp2 = new McBSP2();
 	mcbsp2->init_mcbsp2();
 
@@ -100,8 +102,9 @@ int main() {
 	IRQHandler* irq = new IRQHandler();
 	SystemCallExec* exec = new SystemCallExec(kernel, taskmanager);
 	SWIHandler* swi = new SWIHandler(exec);
+    MMU* mmu = new MMU();
 	
-	initInterruptHandler(irq, swi, taskmanager);
+	initInterruptHandler(irq, swi, taskmanager, mmu);
 
 
 //	int para[4];
