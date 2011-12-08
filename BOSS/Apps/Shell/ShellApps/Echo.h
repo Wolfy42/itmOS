@@ -6,10 +6,10 @@
 
 void echo(char* output) {
 
-	UARTDriver uart = UARTDriver();
+	SerialService uart = SerialService();
 	uart.init();
 	
-	uart.write(std::strlen(output), output);
+	uart.write(std::strlen(output), &output);
 }
 
 #endif /*ECHO_H_*/

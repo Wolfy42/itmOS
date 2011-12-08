@@ -6,6 +6,7 @@
 #define TIMER_SERVICE 0x60
 #define BUTTON_SERVICE 0xB
 #define LED_SERVICE 0xED
+#define SERIAL_SERVICE 0x11
 
 void performServiceCall(int params[]);
 
