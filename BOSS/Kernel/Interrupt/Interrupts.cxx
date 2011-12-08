@@ -14,6 +14,7 @@
 static IRQHandler* _IRQHandler;
 static SWIHandler* _SWIHandler;
 static TaskManager* _TaskManager;
+static MMU* _mmu;
 
 /*
  *	Global Variables for Context Switch
@@ -42,11 +43,12 @@ extern int stack_pointer_original;
 /*
  *	Init function for the Interrupt handlers
  */
-void initInterruptHandler(IRQHandler* irq, SWIHandler* swi, TaskManager* tm) {
+void initInterruptHandler(IRQHandler* irq, SWIHandler* swi, TaskManager* tm, MMU* mmu) {
 
 	_IRQHandler = irq;
 	_SWIHandler = swi;
 	_TaskManager = tm;
+    _mmu = mmu;
 }
 
 
@@ -176,4 +178,20 @@ extern "C" void c_intSWI(int swiNumber, int* parameters)  {
     
 	// restore stackpointer of swi
 	asm(" LDMFD   R13!, {R0-R12, PC}^");
+}
+
+#pragma INTERRUPT (PABT)
+extern "C" void c_intPABT() {
+//    SAVECONTEXT_IRQ
+    
+    _mmu->handlePrefetchAbort();
+//    contextSwitch();
+}
+
+#pragma INTERRUPT (DABT)
+extern "C" void c_intDABT() {
+//    SAVECONTEXT_IRQ
+    
+    _mmu->handleDataAbort();
+//    contextSwitch();
 }

@@ -1,4 +1,3 @@
-
 #include <stdio.h>
 #include <string.h>
 
@@ -24,6 +23,9 @@
 #include "Tasks/UserTasks/TestTask.h"
 
 #include "Lib/OMAP/McBSP2.h"
+
+#include "Kernel/Task/Task.h"
+#include "MMU/mmu.h"
 
 Kernel* kernel;
 

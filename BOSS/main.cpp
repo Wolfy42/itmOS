@@ -27,8 +27,6 @@ int main_()  {
 	hand.registerHandler(HalTimerDriver::irqNumberForTimer(GPTIMER3), led2Toggler);
 
 	//_enable_interrupts( ) ;
-	
-    MMU::getInstance()->initMemoryForTask(0);
     
 	HalTimerDriver::init(GPTIMER2, GPT_IRQMODE_MATCH, 5000000);
 	HalTimerDriver::start(GPTIMER2);

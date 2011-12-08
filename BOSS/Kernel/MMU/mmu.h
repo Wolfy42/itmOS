@@ -13,7 +13,10 @@
 #define PROCESS_MEMORY_START 0x1000
 #define PROCESS_MEMORY_END 0x1000000
 
+#define MESSAGE_QUEUE_VIRTUAL_ADDRESS 0x20000000
+
 #include "API/dataTypes.h"
+#include "Kernel/Task/Task.h"
 
 enum MemoryType {
     INT_RAM, EXT_DDR
@@ -21,15 +24,14 @@ enum MemoryType {
 
 class MMU {
     private:
-        static MMU INSTANCE;
-        address m_taskMasterTableAddresses[MAX_MMU_TABLES];
-        int m_currentTask;
+        Task m_kernelTask;
+        Task* m_tasks[MAX_MMU_TABLES];
+        Task* m_currentTask;
         
         address m_firstFreeInIntRam;
         address m_firstFreeInExtDDR;
         
-        bool m_occupiedPagesIntRam[MAX_PAGES_IN_INT_RAM];
-        bool m_occupiedPagesExtDDR[MAX_PAGES_IN_EXT_DDR];
+        void initKernelMMU();
         
         void enableMMU();
         void initDomainAccess();
@@ -37,7 +39,8 @@ class MMU {
         
         address createMasterTable();
         address createOrGetL2Table(address masterTableAddress, int masterTableEntryNumber);
-        void createMappedPage(address masterTableAddress, address virtualAddress);
+        address createMappedPage(address masterTableAddress, address virtualAddress);
+        void mapDirectly(address masterTableAddress, address virtualAddress, address physicalAddress);
         void mapOneToOne(address masterTableAddress, address startAddress, unsigned int length);
         
         void clearTLB();
@@ -50,13 +53,13 @@ class MMU {
         void releasePages(MemoryType mem, int firstPageNumber, int nrOfPages);
         address findFreeMemory(int nrOfPages, bool align, bool reserve);
         
-        MMU();
     public:
+        MMU();
         virtual ~MMU();
         
-        static MMU* getInstance();
-        void initMemoryForTask(int taskId);
-        void deleteTaskMemory(int taskId);
+        void switchToKernelMMU();
+        void initMemoryForTask(Task* task);
+        void deleteTaskMemory(Task* task);
         
         void loadPage(int pageNumber);
 

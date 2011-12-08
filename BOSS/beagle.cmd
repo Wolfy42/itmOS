@@ -39,7 +39,7 @@ SECTIONS
    
    .switch     > int_ram
    .text2      > int_ram {
-       abortHandler.obj
+       Interrupts.obj
    }
    .pinit      > int_ram {
        *(.pinit)

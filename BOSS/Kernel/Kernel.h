@@ -8,6 +8,7 @@
 #include "Kernel/Interrupt/HandlerManager.h"
 #include "Kernel/SystemCalls/SystemCallExec.h"
 #include "Kernel/Interrupt/Interrupts.h"
+#include "Kernel/MMU/mmu.h"
 
 #include "Messaging/Message/Message.h"
 #include "Messaging/MessageQueue/MessageQueue.h"
@@ -22,9 +23,9 @@ class Kernel {
 		ServiceManager* _serviceManager;
 		HandlerManager* _handlerManager;
 		SystemCallExec* _executor;
+        MMU* _mmu;
 	
 		std::map<int, MessageQueue*> _messageQueues;
-		void registerService(int serviceId);
 	
 	public:
 		Kernel();
@@ -33,10 +34,12 @@ class Kernel {
 		void startService(int serviceId);
 		void write(int* parameters);
 		
+		// Getters
 		TaskManager* getTaskManager(void);
 		ServiceManager* getServiceManager(void);
 		HandlerManager* getHandlerManager(void);
 		SystemCallExec* getExecutor(void);
+		std::map<int, MessageQueue*> getMessageQueues();
 };
 
 #endif /* KERNEL_H_ */
