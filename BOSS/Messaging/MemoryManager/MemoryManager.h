@@ -6,6 +6,7 @@
 
 #include "API/dataTypes.h"
 #include "Messaging/Message/Message.h"
+#include "Messaging/MessageQueue/MessageQueue.h"
 
 enum MemoryState  {
 	BOSS_MEMORY_FREE,
@@ -22,7 +23,6 @@ class MemoryManager {
 private:
 
 	address _memoryStartAddress;
-	int _size;
 
 	address getNextFreeAddressWith(int size);
 
@@ -31,9 +31,10 @@ private:
 
 public:
 
-	MemoryManager(address memoryStartAddress, int size);
+	MemoryManager(address memoryStartAddress);
 	virtual ~MemoryManager();
 
+	MessageQueue* createMessageQueue();
 	Message* createMessage(int taskId, int paramSize, int* messageParams);
 
 };

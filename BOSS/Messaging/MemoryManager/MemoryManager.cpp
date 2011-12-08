@@ -1,12 +1,8 @@
 
 #include "MemoryManager.h"
 
-MemoryManager::MemoryManager(address memoryStartAddress, int size)  {
+MemoryManager::MemoryManager(address memoryStartAddress)  {
 	_memoryStartAddress = memoryStartAddress;
-	_size = size;
-
-	//TODO: malloc?
-//	new (_memoryStartAddress);
 
 	MemoryHeader *mh = new ((void*)_memoryStartAddress) MemoryHeader();
 	mh->memoryState = BOSS_MEMORY_FREE;
@@ -14,6 +10,10 @@ MemoryManager::MemoryManager(address memoryStartAddress, int size)  {
 }
 
 MemoryManager::~MemoryManager()  {}
+
+MessageQueue* MemoryManager::createMessageQueue()  {
+
+}
 
 Message* MemoryManager::createMessage(int taskId, int paramSize, int* messageParams)  {
 
