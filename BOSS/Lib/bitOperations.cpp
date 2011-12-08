@@ -15,3 +15,7 @@ void toggleBit(address number, int bitOffset) {
 bool readBit(address number, int bitOffset) {
     return (*(number) & (1 << bitOffset));
 }
+
+void reg32w(address base, address reg, int value) {
+
+}

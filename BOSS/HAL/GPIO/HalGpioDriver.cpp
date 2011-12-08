@@ -1,5 +1,4 @@
 #include "HAL/gpio.h"
-#include "HAL/control.h"
 #include "Lib/bitOperations.h"
 #include "HalGpioDriver.h"
 

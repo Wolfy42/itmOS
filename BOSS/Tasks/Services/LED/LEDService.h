@@ -1,20 +1,30 @@
 #ifndef LEDSERVICE_H_
 #define LEDSERVICE_H_
 
+#include "Tasks/Services/LED/LEDConfig.h"
 #include "HAL/LED/HalLedDriver.h"
-#include "Tasks/UserModeTask.h"
+#include "Tasks/Services/Service.h"
 
-class LEDService : public UserModeTask {
+class LEDService : public Service {
 
-	private:
+	private:	
 		HalLedDriver _driver;
 		virtual void executeMessage(Message* message);
 
-	public:
+	public:	
 		LEDService();
 		virtual ~LEDService();
 
 		virtual MessageQueue* getQueue();
+		
+		
+		// ~~~~~~~~~~~~~~~~~~~~ CONFIG & STARTUP ~~~~~~~~~~~~~~~~~~~~
+		// Service-Config
+		static LEDConfig CONFIG;
+		
+		// Service-Main
+		static void main(void);
+		// ~~~~~~~~~~~~~~~~~~~~ CONFIG & STARTUP ~~~~~~~~~~~~~~~~~~~~
 };
 
 #endif /*LEDSERVICE_H_*/

@@ -5,17 +5,17 @@
 #include "Tasks/UserModeTask.h"
 #include "API/LED.h"
 
+void userTask_main(void);
+
 class TestTask : public UserModeTask {
-
-public:
-
-	TestTask();
-	virtual ~TestTask();
-
-	virtual MessageQueue* getQueue();
-	virtual void executeMessage(Message* message);
-
-	void start();
+	public:
+		TestTask();
+		virtual ~TestTask();
+	
+		virtual MessageQueue* getQueue();
+		virtual void executeMessage(Message* message);
+	
+		void start();
 };
 
 #endif /* TESTTASK_H_ */

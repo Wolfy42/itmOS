@@ -9,8 +9,6 @@
 #include "Kernel/SystemCalls/SystemCallExec.h"
 #include "HAL/LED/HalLedDriver.h"
 
-#include "Kernel/Interrupt/Interrupts.h"
-
 #include "Apps/Shell/Shell.h"
 
 #include "Lib/Rand.h"
@@ -24,22 +22,19 @@
 #include "BOSSAPI/serviceCalls.h"
 
 #include "Tasks/Services/LED/LEDService.h"
-#include "Tasks/Services/LED/ledMain.h"
 #include "Tasks/UserTasks/TestTask.h"
-#include "Tasks/UserTasks/testTaskMain.h"
 
+#include "Lib/OMAP/McBSP2.h"
 
-TaskManager* taskmanager;
+Kernel* kernel;
 
 void ledOff(void) {
-
 	HalLedDriver driver;
 	driver.ledOff(LED1);
 	driver.ledOff(LED2);
 }
 
 void initScheduler(IRQHandler* hand) {
-
 	srand_(time_());
 	hand->registerHandler(HalTimerDriver::irqNumberForTimer(GPTIMER2), ledOff);
 
@@ -49,7 +44,6 @@ void initScheduler(IRQHandler* hand) {
 }
 
 void dummy(IRQHandler* hand)  {
-
 	initScheduler(hand);
 	_enable_interrupts();
 	asm("\t CPS 0x10");
@@ -57,7 +51,6 @@ void dummy(IRQHandler* hand)  {
 }
 
 void task1function() {
-	
 	int i = 0;
 	for (i = 0; i < 10000; i++) {
 		HalLedDriver driver;
@@ -66,11 +59,9 @@ void task1function() {
 			z++;
 		}
 	}
-
 }
 
 void task2function() {
-
 	int i = 0;
 	for (i = 0; i < 100; i++) {
 		HalLedDriver driver;
@@ -79,61 +70,59 @@ void task2function() {
 			z++;
 		}
 	}	
-
 }
 
 void shellstart() {
-	
-	shell(taskmanager);
+	shell(kernel->getTaskManager());
 }
 
-int main() {
+void init_kernel() {
+	kernel = new Kernel();
+}
 
+void audio_test() {
+	McBSP2* mcbsp2 = new McBSP2();
+	mcbsp2->init_mcbsp2();
+}
 
+void shell_test() {
+	TaskManager* taskmanager = kernel->getTaskManager();
+	taskmanager->create("shell\0", 100, (int)shellstart, false);
+}
 
-	Kernel* kernel = new Kernel();
-	taskmanager = new TaskManager();
-	IRQHandler* irq = new IRQHandler();
-	SystemCallExec* exec = new SystemCallExec(kernel, taskmanager);
-	SWIHandler* swi = new SWIHandler(exec);
+void tasks_test() {
+	TaskManager* taskmanager = kernel->getTaskManager();
 	
-	initInterruptHandler(irq, swi, taskmanager);
-
-
-//	int para[4];
-//	para[0] = 0;
-//	para[1] = 2;
-//	para[2] = 0;
-//	para[3] = 1;
-//	MessageQueue* queue = new MessageQueue();
-//	Message* message = new Message(para);
-//	queue->addMessage(message);
-//	*(address)0x820F0000 = (unsigned int)queue;
-	kernel->registerService(LED_SERVICE_CALL);
-
+	// Register and start LED Service
+	kernel->startService(LED_SERVICE);
 
 	taskmanager->create("dummy\0", 0, (int)dummy, false);
 	taskmanager->create("led 1\0", 70, (int)task1function, false);
 	taskmanager->create("led 2\0", 30, (int)task2function, false);
-//	createTask("task 1\0", 40, (int)task1function);
-//	createTask("task 2\0", 40, (int)task2function);
-//	createTask("task 1\0", 10, (int)task1function);
-//	createTask("task 2\0", 90, (int)task2function);
-//	taskmanager->create("LED-Service\0", 80, (int)led_main, false);
-//	taskmanager->create("User-Test-Task\0", 100, (int)userTask_main, false);
-	taskmanager->create("shell\0", 100, (int)shellstart, false);
-	dummy(irq);
+	
+	// Start User-Test-Task
+	taskmanager->create("User-Test-Task\0", 100, (int)userTask_main, false);
+	
+	// Shell-Tests
+	shell_test();
+	
+	dummy(kernel->getHandlerManager()->getIrqHandler());
+}
+
+int main() {
+	// Init the kernel
+	init_kernel();
+	
+	// Stefans Audio-Tests
+	audio_test();
+
+	// Task-Tests
+	tasks_test();
 
 	while(1) {
-		//HalLedDriver::toggle(LED1);
-		//HalLedDriver::toggle(LED2);
 		for (int z = 0; z < 80000;) {
 			z++;
 		}
 	}
-
 	//return 0;
 }
-
-
-

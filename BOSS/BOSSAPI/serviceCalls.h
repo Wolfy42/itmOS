@@ -3,9 +3,9 @@
 
 #include "API/dataTypes.h"
 
-#define TIMER_SERVICE_CALL 0x60
-#define BUTTON_SERVICE_CALL 0xB
-#define LED_SERVICE_CALL 0xED
+#define TIMER_SERVICE 0x60
+#define BUTTON_SERVICE 0xB
+#define LED_SERVICE 0xED
 
 void performServiceCall(int params[]);
 
