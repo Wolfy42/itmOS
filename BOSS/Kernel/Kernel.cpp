@@ -5,11 +5,11 @@ Kernel::Kernel() {
 	_serviceManager = new ServiceManager(this, _taskManager);
 	_handlerManager = new HandlerManager(this);
 	_executor = new SystemCallExec(this, _taskManager);
-
+    _mmu = new MMU();
 	initInterruptHandler(
 			_handlerManager->getIrqHandler(), 
 			_handlerManager->getSwiHandler(), 
-			_taskManager);
+			_taskManager, _mmu);
 }
 
 Kernel::~Kernel() {
