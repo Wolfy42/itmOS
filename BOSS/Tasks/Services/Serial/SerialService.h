@@ -1,5 +1,5 @@
-#ifndef UARTDRIVER_H_
-#define UARTDRIVER_H_
+#ifndef SERIALSERVICE_H_
+#define SERIALSERVICE_H_
 
 #include "Tasks/Services/Service.h"
 #include "Tasks/Services/Serial/SerialConfig.h"
@@ -39,4 +39,4 @@ public:
 
 };
 
-#endif /*UARTDRIVER_H_*/
+#endif /*SERIALSERVICE_H_*/
