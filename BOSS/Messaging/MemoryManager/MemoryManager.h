@@ -17,8 +17,6 @@ struct MemoryHeader  {
 	int size;
 };
 
-#define MAX_MESSAGES 42
-
 // Forward-declaration
 class MessageQueue;
 

@@ -12,11 +12,8 @@ MemoryManager::MemoryManager(address memoryStartAddress)  {
 MemoryManager::~MemoryManager()  {}
 
 MessageQueue* MemoryManager::createMessageQueue()  {
-	int queueSize = sizeof(Message*)*MAX_MESSAGES;
-	address mm = (address)getNextFreeAddressWith(queueSize);
-
 	MessageQueue* mq = (MessageQueue*)getNextFreeAddressWith(sizeof(MessageQueue));
-	return new (mq) MessageQueue(mm);
+	return new (mq) MessageQueue();
 }
 
 Message* MemoryManager::createMessage(int taskId, int paramSize, int* messageParams)  {

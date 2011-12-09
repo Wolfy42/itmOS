@@ -2,9 +2,7 @@
 #include "MessageQueue.h"
 
 //	TODO: remove this
-MessageQueue::MessageQueue() {}
-
-MessageQueue::MessageQueue(address startAdress) : _startAddress(startAdress) {
+MessageQueue::MessageQueue() {
 	_capacity = MAX_MESSAGES;
 	_first = 0;
 	_last = 0; 
@@ -87,7 +85,7 @@ bool MessageQueue::isEmpty(void) {
 
 bool MessageQueue::isFull(void) {
 	// _first and _last index must be equal and this value must not be null -> FULL
-	if (_first == _last && _first != NULL) {
+	if (_first == _last && _queue[_first] != NULL) {
 		return true;
 	}	
 	return false;
