@@ -1,21 +1,23 @@
 
 #include "MessageQueue.h"
 
+//	TODO: remove this
 MessageQueue::MessageQueue() {}
 
-MessageQueue::MessageQueue(address startAdress, int queueSize) : _startAdress(startAdress), _queueSize(queueSize) {
-	_endAdress = (address)((int)_startAdress + _queueSize);
-	
-	// _first = _startAdress;
-	// _last = _first; 
+MessageQueue::MessageQueue(address startAdress) : _startAddress(startAdress) {
+	_capacity = MAX_MESSAGES;
+	_first = 0;
+	_last = 0; 
 }
 
 MessageQueue::~MessageQueue() {}
 
+//	TODO: remove this
 void MessageQueue::addMessage(Message* message)  {
 	_messages.push(message);
 }
 
+//	TODO: remove this
 Message* MessageQueue::getMessage()  {
 
 	if (_messages.empty())  {
@@ -31,37 +33,62 @@ Message* MessageQueue::getMessage()  {
 	return message;
 }
 
-void pushMessage(Message* message) {
-	// if isFull -> throw exception
+void MessageQueue::pushMessage(Message* message) {
+	// Throw exception if full
+	if (isFull()) {
+		// TODO: Throw Exception
+		return;
+	}
 	
-	// add message to _last
+	// Add message to position _last
+	_queue[_last] = message;
 	
-	// _last++
+	// Set index _first for next free position to push in queue
+	if (_last < _capacity) {
+		_last++;
+	} else {
+		_last = 0;
+	}
 }
 
-Message* popMessage(void) {
+Message* MessageQueue::popMessage(void) {
+	// Suspend, if Empty
+	if (isEmpty()) {
+		performSyscall(SUSPEND, NULL);
+	}
 	
-	// if isEmpty -> return null
+	while(isEmpty())  {
+		// The kernel can insert messages into the queue
+	}
 	
-	// Message* message = _first
+	// Get Message* at position _first
+	Message* message = _queue[_first];
 	
-	// _first++
+	// Remove message from the queue
+	_queue[_first] = NULL;
 	
-	// if isEmtpy -> SUSPEND?
+	// Set index _first for next element to pop in queue
+	if (_first < _capacity) {
+		_first++;
+	} else {
+		_first = 0;
+	}
 	
-	return NULL;
+	return message;
 }
 
-bool isEmpty(void) {
-	
-	// _first == _last && _first == null
-	
+bool MessageQueue::isEmpty(void) {
+	// _first and _last index must be equal and this value must be null -> EMPTY
+	if (_first == _last && _queue[_first] == NULL) {
+		return true;
+	}	
 	return false;
 }
 
-bool isFull(void) {
-	
-	// _first == _last && _first != null
-	
+bool MessageQueue::isFull(void) {
+	// _first and _last index must be equal and this value must not be null -> FULL
+	if (_first == _last && _first != NULL) {
+		return true;
+	}	
 	return false;
 }

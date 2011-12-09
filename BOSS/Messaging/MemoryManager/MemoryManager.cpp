@@ -1,5 +1,5 @@
-
 #include "MemoryManager.h"
+#include "Messaging/MessageQueue/MessageQueue.h"
 
 MemoryManager::MemoryManager(address memoryStartAddress)  {
 	_memoryStartAddress = memoryStartAddress;
@@ -16,7 +16,7 @@ MessageQueue* MemoryManager::createMessageQueue()  {
 	address mm = (address)getNextFreeAddressWith(queueSize);
 
 	MessageQueue* mq = (MessageQueue*)getNextFreeAddressWith(sizeof(MessageQueue));
-	return new (mq) MessageQueue(mm, queueSize);
+	return new (mq) MessageQueue(mm);
 }
 
 Message* MemoryManager::createMessage(int taskId, int paramSize, int* messageParams)  {
