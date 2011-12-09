@@ -8,6 +8,10 @@
 extern int init_uart_rs232_ = FALSE;
 
 
+
+
+
+
 // ~~~~~~~~~~~~~~~~~~~~ CONFIG & STARTUP ~~~~~~~~~~~~~~~~~~~~
 SerialConfig SerialService::CONFIG = SerialConfig();
 
