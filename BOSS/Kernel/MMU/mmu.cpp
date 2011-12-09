@@ -348,12 +348,15 @@ void MMU::handlePrefetchAbort() {
         // Create new Page
         address newPage = createMappedPage(currentTask->masterTableAddress, (address)tempVariableForAsmAndCpp);
         
+        address codeLocation = currentTask->codeLocation + ((accessedAddress - TASK_MEMORY_START) / 4);
         // load needed instructions into new page
-        std::memcpy((void*)newPage, (void*)(currentTask->codeLocation + ((accessedAddress - TASK_MEMORY_START) / 4)), 4096);
+        std::memcpy((void*)newPage, (void*)(codeLocation), 4096);
         
         initMemoryForTask(currentTask);
     } else {
-        // TODO invalid access
+//        Task* currentTask = m_currentTask;
+//        switchToKernelMMU();
+//        m_kernel->getTaskManager()->kill(currentTask->id);
     }
 }
 

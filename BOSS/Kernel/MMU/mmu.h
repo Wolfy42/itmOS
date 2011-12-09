@@ -18,12 +18,14 @@
 #include "API/dataTypes.h"
 #include "Kernel/Task/Task.h"
 
+
 enum MemoryType {
     INT_RAM, EXT_DDR
 };
 
 class MMU {
     private:
+        
         Task m_kernelTask;
         Task* m_tasks[MAX_MMU_TABLES];
         Task* m_currentTask;
