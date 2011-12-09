@@ -1,5 +1,5 @@
-#ifndef LEDCONFIG_H_
-#define LEDCONFIG_H_
+#ifndef SERIALCONFIG_H_
+#define SERIALCONFIG_H_
 
 #include <list>
 #include "HAL/gpio.h"
@@ -16,4 +16,4 @@ class SerialConfig : public ServiceConfig
 		virtual void initRegistersForMmuMapping(void);
 };
 
-#endif /*LEDCONFIG_H_*/
+#endif /*SERIALCONFIG_H_*/

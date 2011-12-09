@@ -20,7 +20,7 @@ void shell(TaskManager* tm) {
 	char command[1024];
 	int i = 0;
 	
-	SerialService uart = SerialService();
+	UARTDriver uart = UARTDriver();
 	uart.init();
 
 	
