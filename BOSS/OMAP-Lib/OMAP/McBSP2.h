@@ -8,8 +8,8 @@
 #ifndef MCBSP2_H_
 #define MCBSP2_H_
 
-#include "Lib/OMAP/McBSP.h"
-#include "Lib/OMAP/System.h"
+#include "OMAP-Lib/OMAP/McBSP.h"
+#include "OMAP-Lib/OMAP/System.h"
 
 class McBSP2 {
 private:

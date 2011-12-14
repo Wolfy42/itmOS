@@ -1,4 +1,3 @@
-#include "HAL/gpio.h"
 #include "HALButtonDriver.h"
 
 HalButtonDriver::HalButtonDriver(): m_userButton(7) {

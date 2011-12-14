@@ -65,8 +65,4 @@ ORDER
 	   abortStack = .;
 	   _extDDRStart = .;
    }
-   .sharedObjects > ext_ddr  {
-   	   MessageQueue.obj
-   	   Message.obj
-   }  
 }

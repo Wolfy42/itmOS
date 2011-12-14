@@ -1,6 +1,8 @@
 #ifndef LED_H_
 #define LED_H_
 
+#include "API/serviceCalls.h"
+
 enum LED {
     LED1,
     LED2

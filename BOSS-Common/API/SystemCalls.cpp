@@ -1,7 +1,7 @@
 
-#include "BOSSAPI/systemCalls.h"
-#include "BOSSAPI/serviceCalls.h"
-#include "SoftwareInterrupt.h"
+#include "API/systemCalls.h"
+#include "API/serviceCalls.h"
+#include "API/SoftwareInterrupt.h"
 
 void performServiceCall(int params[]) {
   //  performSyscall(SERVICE_CALL, params);

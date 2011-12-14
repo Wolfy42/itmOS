@@ -1,6 +1,5 @@
 
-#include "BOSSAPI/LED.h"
-#include "serviceCalls.h"
+#include "Service-API/LED/LED.h"
 
 void toggleLED(LED led) {
     int params[] = {LED_SERVICE, 2, led, SERVICE_TOGGLE_LED};

@@ -1,7 +1,6 @@
 ////////////////////////////////////////////////////////
-// Linker command file for BeagleBoard
 // 
-// Configuration of a Task for the BOSS-Kernel
+// Linker command file for a Task for the BOSS-Kernel
 //
 
 -stack           0x00002000
@@ -26,6 +25,7 @@ SECTIONS
    .far        > v_memory
    .data       > v_memory
    .switch     > v_memory
+   .init_array > v_memory
    .sysmem     > v_memory
    
    .stack      > stack_memory

@@ -4,8 +4,8 @@
  *  Created on: Dec 2, 2011
  *      Author: stefan
  */
-#include "Lib/OMAP/McBSP2.h"
-#include "Lib/OMAP/PRCM.h"
+#include "OMAP-Lib/OMAP/McBSP2.h"
+#include "OMAP-Lib/OMAP/PRCM.h"
 #include "Lib/bitOperations.h"
 
 McBSP2::McBSP2() {}
