@@ -18,6 +18,7 @@
 #include "API/dataTypes.h"
 #include "Kernel/Task/Task.h"
 
+class Kernel;
 
 enum MemoryType {
     INT_RAM, EXT_DDR
@@ -25,7 +26,7 @@ enum MemoryType {
 
 class MMU {
     private:
-        
+        Kernel* m_kernel;
         Task m_kernelTask;
         Task* m_tasks[MAX_MMU_TABLES];
         Task* m_currentTask;
@@ -56,7 +57,7 @@ class MMU {
         address findFreeMemory(int nrOfPages, bool align, bool reserve);
         
     public:
-        MMU();
+        MMU(Kernel* kernel);
         virtual ~MMU();
         
         void switchToKernelMMU();
@@ -68,8 +69,8 @@ class MMU {
         void prepagePagesFor(int serviceId);
         address parameterAddressFor(int serviceId);
 
-        void handlePrefetchAbort();  
-        void handleDataAbort();
+        bool handlePrefetchAbort();  
+        bool handleDataAbort();
 };
 
 #endif /*MMU_H_*/

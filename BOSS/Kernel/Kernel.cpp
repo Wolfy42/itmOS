@@ -1,7 +1,7 @@
 #include "Kernel.h"
 
 Kernel::Kernel() {
-    _mmu = new MMU();
+    _mmu = new MMU(this);
 	_taskManager = new TaskManager(_mmu);
 	_serviceManager = new ServiceManager(this, _taskManager);
 	_handlerManager = new HandlerManager(this);

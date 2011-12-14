@@ -1,5 +1,7 @@
 #include <string.h>
 #include "API/dataTypes.h"
+#include "Kernel/Task/TaskManager.h"
+#include "Kernel/Kernel.h"
 #include "mmu.h"
 
 asm("\t .bss _taskMasterTableAddress, 4\n" \
@@ -18,7 +20,8 @@ extern volatile unsigned int intvecsStart;
 bool occupiedPagesIntRam[MAX_PAGES_IN_INT_RAM];
 bool occupiedPagesExtDDR[MAX_PAGES_IN_EXT_DDR];
 
-MMU::MMU() {
+MMU::MMU(Kernel* kernel) {
+    m_kernel = kernel;
     m_currentTask = NULL;
     m_firstFreeInIntRam = &intRamStart;
     m_firstFreeInExtDDR = &extDDRStart;
@@ -290,6 +293,14 @@ void MMU::initMemoryForTask(Task* task) {
         
         task->messageQueueAddress = createMappedPage(task->masterTableAddress, (address)MESSAGE_QUEUE_VIRTUAL_ADDRESS);
         
+        // Fake loader
+        unsigned int startAddress = task->tcb.restartAddress;
+        address newPage = createMappedPage(task->masterTableAddress, (address)startAddress);
+        
+        address codeLocation = task->codeLocation + ((startAddress - TASK_MEMORY_START) / 4);
+        // load needed instructions into new page
+        std::memcpy((void*)newPage, (void*)(codeLocation), 4096);
+        
         setMasterTablePointerTo(task->masterTableAddress);
         
         m_tasks[task->id] = task;
@@ -335,42 +346,33 @@ address MMU::parameterAddressFor(int serviceId)  {
 	return (address)0x820F0000;
 }
 
-void MMU::handlePrefetchAbort() {
-    asm("\t MRC p15, #0, r0, c6, c0, #2\n"); // Read instruction fault address register
-    asm("\t LDR r1, tempVariableForAsmAndCpp\n");
-    asm("\t STR r0, [r1]\n");
-    
-    unsigned int accessedAddress = tempVariableForAsmAndCpp;
-    // TODO check for execute permissions
-    if ((accessedAddress % 0x4 == 0x0) && (accessedAddress >= TASK_MEMORY_START) && (accessedAddress < TASK_MEMORY_END)) {
-        Task* currentTask = m_currentTask;
-        switchToKernelMMU();
-        // Create new Page
-        address newPage = createMappedPage(currentTask->masterTableAddress, (address)tempVariableForAsmAndCpp);
-        
-        address codeLocation = currentTask->codeLocation + ((accessedAddress - TASK_MEMORY_START) / 4);
-        // load needed instructions into new page
-        std::memcpy((void*)newPage, (void*)(codeLocation), 4096);
-        
-        initMemoryForTask(currentTask);
-    } else {
-//        Task* currentTask = m_currentTask;
-//        switchToKernelMMU();
-//        m_kernel->getTaskManager()->kill(currentTask->id);
-    }
+bool MMU::handlePrefetchAbort() {
+    Task* currentTask = m_currentTask;
+    switchToKernelMMU();
+    m_kernel->getTaskManager()->kill(currentTask->id);
+    return true;
 }
 
-void MMU::handleDataAbort() {
+bool MMU::handleDataAbort() {
     asm("\t MRC p15, #0, r0, c6, c0, #0\n"); // Read data foult address register
     asm("\t LDR r1, tempVariableForAsmAndCpp\n");
     asm("\t STR r0, [r1]\n");
     // TODO check for read / write permissions
-    if ((tempVariableForAsmAndCpp % 0x4 == 0x0) && (tempVariableForAsmAndCpp >= TASK_MEMORY_START) && (tempVariableForAsmAndCpp < TASK_MEMORY_END)) {
+    
+    bool doContextSwitch = false;
+    unsigned int accessedAddress = tempVariableForAsmAndCpp;
+    
+    if ((accessedAddress % 0x4 == 0x0) && (accessedAddress >= TASK_MEMORY_START) && (accessedAddress < TASK_MEMORY_END)) {
         Task* currentTask = m_currentTask;
         switchToKernelMMU();
-        createMappedPage(currentTask->masterTableAddress, (address)tempVariableForAsmAndCpp);
+        createMappedPage(currentTask->masterTableAddress, (address)accessedAddress);
         initMemoryForTask(currentTask);
+        doContextSwitch = false;
     } else {
-        // TODO invalid access
+        Task* currentTask = m_currentTask;
+        switchToKernelMMU();
+        m_kernel->getTaskManager()->kill(currentTask->id);
+        doContextSwitch = true;
     }
+    return doContextSwitch;
 }
