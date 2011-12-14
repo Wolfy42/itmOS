@@ -20,3 +20,8 @@ BOSS-Task/.cproject
 
 BOSS-Common/Debug/*	
 BOSS-Common/.*
+
+BOSS/API
+BOSS/Lib
+BOSS/Messaging
+
