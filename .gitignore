@@ -24,4 +24,7 @@ BOSS-Common/.*
 BOSS/API
 BOSS/Lib
 BOSS/Messaging
+BOSS-Task/API
+BOSS-Task/Lib
+BOSS-Task/Messaging
 
