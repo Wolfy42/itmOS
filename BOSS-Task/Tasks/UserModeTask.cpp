@@ -9,6 +9,7 @@ void UserModeTask::run()  {
 	MessageQueue* queue = getQueue();
 	while(1)  {
 		Message* message = queue->getMessage();
+		// TODO: use this -> Message* message = queue->popMessage();
 		executeMessage(message);
 		delete message;
 	}

@@ -6,7 +6,6 @@
 #include "Kernel/Interrupt/Handler/IRQHandler.h"
 #include "Kernel/Interrupt/Handler/SWIHandler.h"
 #include "Kernel/SystemCalls/SystemCallExec.h"
-#include "HAL/LED/HalLedDriver.h"
 
 #include "Apps/Shell/Shell.h"
 
@@ -17,12 +16,9 @@
 
 #include "Kernel/Kernel.h"
 
-#include "BOSSAPI/serviceCalls.h"
+#include "API/serviceCalls.h"
 
-#include "Tasks/Services/LED/LEDService.h"
-#include "Tasks/UserTasks/TestTask.h"
-
-#include "Lib/OMAP/McBSP2.h"
+#include "OMAP-Lib/OMAP/McBSP2.h"
 
 #include "Kernel/Task/Task.h"
 #include "MMU/mmu.h"
@@ -54,8 +50,8 @@ void dummy(IRQHandler* hand)  {
 void task1function() {
 	int i = 0;
 	for (i = 0; i < 10000; i++) {
-		HalLedDriver driver;
-		driver.toggle(LED1);
+//		HalLedDriver driver;
+//		driver.toggle(LED1);
 		for (int z = 0; z < 80000;) {
 			z++;
 		}
@@ -65,8 +61,8 @@ void task1function() {
 void task2function() {
 	int i = 0;
 	for (i = 0; i < 100; i++) {
-		HalLedDriver driver;
-		driver.toggle(LED2);
+//		HalLedDriver driver;
+//		driver.toggle(LED2);
 		for (int z = 0; z < 80000;) {
 			z++;
 		}
@@ -102,7 +98,7 @@ void tasks_test() {
 	taskmanager->create("led 2\0", 30, (int)task2function, false);
 	
 	// Start User-Test-Task
-	taskmanager->create("User-Test-Task\0", 100, (int)userTask_main, false);
+//	taskmanager->create("User-Test-Task\0", 100, (int)userTask_main, false);
 	
 	// Shell-Tests
 	shell_test();

@@ -6,7 +6,6 @@
 
 #include "API/dataTypes.h"
 #include "Messaging/Message/Message.h"
-#include "Messaging/MessageQueue/MessageQueue.h"
 
 enum MemoryState  {
 	BOSS_MEMORY_FREE,
@@ -18,7 +17,8 @@ struct MemoryHeader  {
 	int size;
 };
 
-#define MAX_MESSAGES 42;
+// Forward-declaration
+class MessageQueue;
 
 class MemoryManager {
 

@@ -1,7 +1,6 @@
 #include "ServiceManager.h"
 
 #include "Kernel/Kernel.h"
-#include "Tasks/Services/LED/LEDService.h"
 
 ServiceManager::ServiceManager(Kernel* kernel, TaskManager* taskManager) : _kernel(kernel), _taskManager(taskManager) {}
 
@@ -19,7 +18,8 @@ void ServiceManager::startService(int service) {
 	  
 	switch (service) {
 		case LED_SERVICE:
-			taskId = _taskManager->create(LEDService::CONFIG.getServiceName(), 100, LEDService::CONFIG.getInitAddress(), false);
+			//TODO: LED-Service is a User-Task-Class
+//			taskId = _taskManager->create(LEDService::CONFIG.getServiceName(), 100, LEDService::CONFIG.getInitAddress(), false);
 			break;
 			
 		default:

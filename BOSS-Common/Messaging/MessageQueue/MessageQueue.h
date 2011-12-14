@@ -1,28 +1,31 @@
 #ifndef MESSAGEQUEUE_H_
 #define MESSAGEQUEUE_H_
 
+//	TODO: remove this
 #include <queue>
 
 #include "API/dataTypes.h"
 #include "Messaging/Message/Message.h"
-#include "BOSSAPI/systemCalls.h"
+#include "API/systemCalls.h"
+
+#define MAX_MESSAGES 42
 
 class MessageQueue {
 
 private:
+//	TODO: remove this
 	std::queue<Message*> _messages;
-	address _startAdress;
-	address _endAdress;
-	int _queueSize;
 	
-	Message* _first;
-	Message* _last;
+	Message* _queue[MAX_MESSAGES];
+	int _capacity;
+	int _first;
+	int _last;
 
 public:
 	MessageQueue();
-	MessageQueue(address startAdress, int queueSize);
 	virtual ~MessageQueue();
 
+//	TODO: remove this
 	void addMessage(Message* message);
 	Message* getMessage();
 	
