@@ -29,7 +29,7 @@ class Loader {
 		Loader(MMU* mmu);
 		virtual ~Loader();
 	
-		std::list<Code> parse(char hex[]);
+		std::list<Code*>* parse(char hex[]);
 };
 
 #endif /* LOADER_H_ */

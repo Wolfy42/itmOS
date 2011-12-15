@@ -34,62 +34,63 @@ void Loader::checkPageNumbers(char page) {
 	}
 }
 
-std::list<Code> Loader::parse(char hex[])  {
+std::list<Code*>* Loader::parse(char hex[])  {
 
-	std::list<Code> codeLines;
+	std::list<Code*>* codeLines = new std::list<Code*>;
 	int i = 0;
 	while (hex[i] != '\0') {
-		Code c;
-		codeLines.push_back(c);
+		Code* c = new Code();
+		codeLines->push_back(c);
 
 		// start code
 		i++;
 
 		// byte count
-		c.byteCount = 0;
-		c.byteCount = toInt(hex[i]);
+		c->byteCount = 0;
+		c->byteCount = toInt(hex[i]);
 		i++;
-		c.byteCount *= 16;
-		c.byteCount += toInt(hex[i]);
+		c->byteCount *= 16;
+		c->byteCount += toInt(hex[i]);
 		i++;
 
 		// address
-		c.addr = 0;
-		c.addr = toInt(hex[i]);
+		c->addr = 0;
+		c->addr = toInt(hex[i]);
 		i++;
-		c.addr *= 16;
-		c.addr += toInt(hex[i]);
+		c->addr *= 16;
+		c->addr += toInt(hex[i]);
 		i++;
-		c.addr *= 16;
-		c.addr += toInt(hex[i]);
+		c->addr *= 16;
+		c->addr += toInt(hex[i]);
 		i++;
-		c.addr *= 16;
-		c.addr += toInt(hex[i]);
+		c->addr *= 16;
+		c->addr += toInt(hex[i]);
 		i++;
 
 		// record type
-		c.recType = 0;
-		c.recType = toInt(hex[i]);
+		c->recType = 0;
+		c->recType = toInt(hex[i]);
 		i++;
-		c.recType *= 16;
-		c.recType += toInt(hex[i]);
+		c->recType *= 16;
+		c->recType += toInt(hex[i]);
 		i++;
 
-		if (c.recType != 0)  {
-			if (c.recType == 1)  {
+		if (c->recType != 0)  {
+			if (c->recType == 1)  {
 				return codeLines;
 			}  else  {
-				printf("Something bad happened! (Intel Hex-RecordType %i unknown", c.recType);
+				printf("Something bad happened! (Intel Hex-RecordType %i unknown", c->recType);
+				return NULL;
 			}
 		}
 
-		c.bytes = new byte[c.byteCount];
-		for (int j=0; j<c.byteCount; j++)  {
-			c.bytes[j] = 0;
-			c.bytes[j] = toInt(hex[i]);
+		c->bytes = new byte[c->byteCount];
+		for (int j=0; j<c->byteCount; j++)  {
+			c->bytes[j] = 0;
+			c->bytes[j] = toInt(hex[i]);
 			i++;
-			c.bytes[j] *= 16;
-			c.bytes[j] += toInt(hex[i]);
+			c->bytes[j] *= 16;
+			c->bytes[j] += toInt(hex[i]);
 			i++;
 		}
 
@@ -97,7 +98,7 @@ std::list<Code> Loader::parse(char hex[])  {
 		i++;
 		i++;
 
-		printf("line -> byteCount: %x, addr: %x type: %x \n", c.byteCount, c.addr, c.recType);
+		printf("line -> byteCount: %x, addr: %x type: %x \n", c->byteCount, c->addr, c->recType);
 	}
 	return codeLines;
 }
