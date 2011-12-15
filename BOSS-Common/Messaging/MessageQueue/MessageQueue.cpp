@@ -1,7 +1,6 @@
 
 #include "MessageQueue.h"
 
-//	TODO: remove this
 MessageQueue::MessageQueue() {
 	_capacity = MAX_MESSAGES;
 	_first = 0;
@@ -9,27 +8,6 @@ MessageQueue::MessageQueue() {
 }
 
 MessageQueue::~MessageQueue() {}
-
-//	TODO: remove this
-void MessageQueue::addMessage(Message* message)  {
-	_messages.push(message);
-}
-
-//	TODO: remove this
-Message* MessageQueue::getMessage()  {
-
-	if (_messages.empty())  {
-		performSyscall(SUSPEND, NULL);
-	}
-
-	while(_messages.empty())  {
-		// The Kernel can insert messages into the queue
-	}
-
-	Message* message = _messages.back();
-	_messages.pop();
-	return message;
-}
 
 void MessageQueue::pushMessage(Message* message) {
 	// Throw exception if full

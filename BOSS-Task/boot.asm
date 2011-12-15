@@ -15,10 +15,29 @@
     .global __TI_auto_init
 
 ;***************************************************************
+;* Included addresses from the linker
+;***************************************************************
+
+    .global systemStack
+
+;***************************************************************
+;* CONSTANTS USED BY THIS MODULE
+;***************************************************************
+
+c_r13_system    .long    systemStack
+
+;***************************************************************
 ;* FUNCTION DEF: _c_int00
 ;***************************************************************
 
 _c_int00: .asmfunc
+
+    ; SET System-Stack / User-Stack
+    CPS   0x1F
+    LDR   sp, c_r13_system
+
+    ; Back to User-Mode
+    CPS   0x10
 
     ; Perform all the required initilizations:
     ;  - Process BINIT Table

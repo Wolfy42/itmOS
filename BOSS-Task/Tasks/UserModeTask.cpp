@@ -1,17 +1,21 @@
 
 #include "UserModeTask.h"
 
-UserModeTask::UserModeTask()  {}
+extern volatile unsigned int messagesStart;
+
+UserModeTask::UserModeTask()  {
+	_memoryManager = (MemoryManager*)messagesStart;
+	_messagesQueue = _memoryManager->getMessageQueue();
+}
 
 UserModeTask::~UserModeTask()  {}
 
 void UserModeTask::run()  {
-	MessageQueue* queue = getQueue();
 	while(1)  {
-		Message* message = queue->getMessage();
-		// TODO: use this -> Message* message = queue->popMessage();
+		Message* message = _messagesQueue->popMessage();
 		executeMessage(message);
-		delete message;
+
+		_memoryManager->remove(message);
 	}
 }
 
