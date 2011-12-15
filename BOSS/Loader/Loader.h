@@ -1,6 +1,7 @@
 #ifndef LOADER_H_
 #define LOADER_H_
 
+#include <stdio.h>
 #include <list>
 
 #include "API/dataTypes.h"

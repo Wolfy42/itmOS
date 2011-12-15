@@ -1,4 +1,4 @@
-#include <stdio.h>
+
 #include "Loader.h"
 
 Loader::Loader(MMU* mmu) : _mmu(mmu)  {
