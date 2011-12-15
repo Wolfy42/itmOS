@@ -80,7 +80,7 @@ std::list<Code*>* Loader::parse(char hex[])  {
 				return codeLines;
 			}  else  {
 				printf("Something bad happened! (Intel Hex-RecordType %i unknown", c->recType);
-				return NULL;
+				return new std::list<Code*>;
 			}
 		}
 
