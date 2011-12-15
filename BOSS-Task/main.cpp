@@ -1,4 +1,10 @@
-int main(int argc, char **argv) {
+#include "Service-API/LED/LED.h"
+#include "HAL/LED/HalLedDriver.h"
 
-	return 1;
+int main() {
+
+	HalLedDriver dr;
+	dr.ledOff(LED1);
+
+	return 0;
 }
