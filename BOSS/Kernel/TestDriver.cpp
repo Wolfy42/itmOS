@@ -23,6 +23,11 @@
 #include "Kernel/Task/Task.h"
 #include "MMU/mmu.h"
 
+#include "Messaging/MemoryManager/MemoryManager.h"
+#include "Messaging/MessageQueue/MessageQueue.h"
+#include "Messaging/Message/Message.h"
+
+
 Kernel* kernel;
 
 void ledOff(void) {
@@ -107,6 +112,20 @@ void tasks_test() {
 }
 
 int main() {
+
+	int a[2];
+	a[0] = 1;
+	a[1] = 2;
+
+	address addr = (address)0x81000000;
+	MemoryManager* mm = MemoryManager::getInstanceAt(addr);
+	MessageQueue* mq = mm->getMessageQueue();
+	Message* m1 = mm->createMessage(1, 2, a);
+	Message* m2 = mm->createMessage(1, 2, a);
+
+	mm->remove(m1);
+	Message* m3 = mm->createMessage(1, 2, a);
+
 	// Init the kernel
 	init_kernel();
 	

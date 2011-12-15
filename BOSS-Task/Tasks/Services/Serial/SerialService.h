@@ -25,10 +25,6 @@ public:
 	SerialService();
 	virtual ~SerialService();
 
-
-	virtual MessageQueue* getQueue();
-	
-	
 	// ~~~~~~~~~~~~~~~~~~~~ CONFIG & STARTUP ~~~~~~~~~~~~~~~~~~~~
 	// Service-Config
 	static SerialConfig CONFIG;

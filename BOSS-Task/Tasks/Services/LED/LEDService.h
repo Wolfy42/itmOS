@@ -15,9 +15,6 @@ class LEDService : public Service {
 		LEDService();
 		virtual ~LEDService();
 
-		virtual MessageQueue* getQueue();
-		
-		
 		// ~~~~~~~~~~~~~~~~~~~~ CONFIG & STARTUP ~~~~~~~~~~~~~~~~~~~~
 		// Service-Config
 		static LEDConfig CONFIG;
