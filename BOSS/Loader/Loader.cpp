@@ -98,7 +98,6 @@ std::list<Code*>* Loader::parse(char hex[])  {
 		i++;
 		i++;
 
-		printf("line -> byteCount: %x, addr: %x type: %x \n", c->byteCount, c->addr, c->recType);
 	}
 	return codeLines;
 }
