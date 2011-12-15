@@ -23,6 +23,7 @@ public:
 	virtual ~Parser();
 
 	std::list<Code*>* parse(char hex[]);
+	void deleteParsedCode(std::list<Code*>* code);
 };
 
 #endif /* PARSER_H_ */

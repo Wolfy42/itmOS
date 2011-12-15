@@ -75,6 +75,15 @@ std::list<Code*>* Parser::parse(char hex[])  {
 	return codeLines;
 }
 
+void Parser::deleteParsedCode(std::list<Code*>* code)  {
+	std::list<Code*>::const_iterator iterator;
+	for(iterator=code->begin(); iterator!=code->end(); iterator++)  {
+		delete (*iterator)->bytes;
+		delete *iterator;
+	}
+	delete code;
+}
+
 int Parser::toInt(char hex)  {
 	if (hex == '0')  {
 		return 0;
