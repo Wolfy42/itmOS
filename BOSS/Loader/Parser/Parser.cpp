@@ -12,7 +12,6 @@ std::list<Code*>* Parser::parse(char hex[])  {
 	int recType;
 	while (hex[i] != '\0') {
 		Code* c = new Code();
-		codeLines->push_back(c);
 
 		// start code
 		i++;
@@ -71,6 +70,7 @@ std::list<Code*>* Parser::parse(char hex[])  {
 		i++;
 		i++;
 
+		codeLines->push_back(c);
 	}
 	return codeLines;
 }
