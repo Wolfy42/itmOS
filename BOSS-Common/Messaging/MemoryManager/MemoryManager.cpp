@@ -1,5 +1,12 @@
+
 #include "MemoryManager.h"
-#include "Messaging/MessageQueue/MessageQueue.h"
+
+MemoryManager* MemoryManager::getInstanceAt(address memoryStartAddress)  {
+
+	address freeMemory = address((int)memoryStartAddress + sizeof(MemoryManager));
+	MemoryManager* mm = new ((void*)memoryStartAddress) MemoryManager(freeMemory);
+	return mm;
+}
 
 MemoryManager::MemoryManager(address memoryStartAddress)  {
 	_memoryStartAddress = memoryStartAddress;
@@ -7,6 +14,8 @@ MemoryManager::MemoryManager(address memoryStartAddress)  {
 	MemoryHeader *mh = new ((void*)_memoryStartAddress) MemoryHeader();
 	mh->memoryState = BOSS_MEMORY_FREE;
 	mh->size = 0;
+
+	_messageQueue = createMessageQueue();
 }
 
 MemoryManager::~MemoryManager()  {}
@@ -16,6 +25,10 @@ MessageQueue* MemoryManager::createMessageQueue()  {
 	return new (mq) MessageQueue();
 }
 
+MessageQueue* MemoryManager::getMessageQueue()  {
+	return _messageQueue;
+}
+
 Message* MemoryManager::createMessage(int taskId, int paramSize, int* messageParams)  {
 
 	int* arr = (int*)getNextFreeAddressWith(paramSize*sizeof(int));
@@ -23,6 +36,15 @@ Message* MemoryManager::createMessage(int taskId, int paramSize, int* messagePar
 
 	Message* mes = (Message*)getNextFreeAddressWith(sizeof(Message));
 	return new (mes) Message(taskId, paramSize, arr);
+}
+
+void MemoryManager::remove(Message* message)  {
+
+	MemoryHeader* mh = getHeaderForObjectAt(message->getParams());
+	mh->memoryState = BOSS_MEMORY_FREE;
+
+	mh = getHeaderForObjectAt(message);
+	mh->memoryState = BOSS_MEMORY_FREE;
 }
 
 address MemoryManager::getNextFreeAddressWith(int size)  {
@@ -57,4 +79,7 @@ bool MemoryManager::hasEnoughSpaceFor(int size, MemoryHeader* mh)  {
 
 MemoryHeader* MemoryManager::getNextHeader(MemoryHeader* mh)  {
 	return (MemoryHeader*)((int)mh + mh->size + sizeof(MemoryHeader));
+}
+MemoryHeader* MemoryManager::getHeaderForObjectAt(void* address)  {
+	return (MemoryHeader*)((int)address - sizeof(MemoryHeader));
 }

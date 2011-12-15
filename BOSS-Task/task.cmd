@@ -16,7 +16,10 @@ MEMORY
 SECTIONS
 {
    ORDER
-   .text	   > virtual_memory
+   .text	   > virtual_memory  {
+      boot.obj
+      *(.text)
+   }
    .bss        > virtual_memory
    .const      > virtual_memory
    .cinit      > virtual_memory
@@ -29,9 +32,11 @@ SECTIONS
    .init_array > virtual_memory
    .sysmem     > virtual_memory
    
-   .stack      > stack_memory
+   .stack      > stack_memory  {
+      systemStack = .;
+   }
    
    .messages   > messages_memory  {
-   		_messagesStart = .;
+      _messagesStart = .;
    }
 }

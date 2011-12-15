@@ -2,10 +2,15 @@
 #ifndef USERMODETASK_H_
 #define USERMODETASK_H_
 
+#include "Messaging/MemoryManager/MemoryManager.h"
 #include "Messaging/MessageQueue/MessageQueue.h"
 #include "Messaging/Message/Message.h"
 
 class UserModeTask {
+
+private:
+	MemoryManager* _memoryManager;
+	MessageQueue* _messagesQueue;
 
 protected:
 	void writeResponse(int* response);
@@ -18,9 +23,6 @@ public:
 	virtual void executeMessage(Message* message) = 0;
 
 	void run();
-
-	//TODO: will chance after MMU exists
-	virtual MessageQueue* getQueue() = 0;
 };
 
 #endif /* USERMODETASK_H_ */

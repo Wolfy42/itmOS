@@ -16,10 +16,6 @@ void LEDService::main(void) {
 LEDService::LEDService(): Service()  {}
 LEDService::~LEDService()  {}
 
-MessageQueue* LEDService::getQueue()  {
-	return *(MessageQueue**)0x820F0000;
-}
-
 void LEDService::executeMessage(Message* message)  {
 
 	int* params = message->getParams();

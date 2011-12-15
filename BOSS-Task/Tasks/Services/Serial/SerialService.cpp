@@ -22,11 +22,6 @@ void SerialService::main(void) {
 }
 // ~~~~~~~~~~~~~~~~~~~~ CONFIG & STARTUP ~~~~~~~~~~~~~~~~~~~~
 
-
-MessageQueue* SerialService::getQueue()  {
-	return *(MessageQueue**)0x820F0000;
-}
-
 void SerialService::executeMessage(Message* message)  {
 
 	int* params = message->getParams();

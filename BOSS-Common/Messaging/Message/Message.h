@@ -2,8 +2,6 @@
 #ifndef MESSAGE_H_
 #define MESSAGE_H_
 
-#include <string.h>
-
 class Message {
 
 	int _taskId;
