@@ -51,7 +51,6 @@ class MMU {
         address addressOfPage(MemoryType mem, int pageNumberInMemory);
         void reservePages(MemoryType mem, int firstPageNumber, int nrOfPages);
         void releasePages(MemoryType mem, int firstPageNumber, int nrOfPages);
-        address findFreeMemory(int nrOfPages, bool align, bool reserve);
         
     public:
         MMU();
@@ -68,6 +67,8 @@ class MMU {
 
         void handlePrefetchAbort();  
         void handleDataAbort();
+        
+        address findFreeMemory(int nrOfPages, bool align, bool reserve);
 };
 
 #endif /*MMU_H_*/

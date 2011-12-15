@@ -9,6 +9,7 @@
 #include "Kernel/SystemCalls/SystemCallExec.h"
 #include "Kernel/Interrupt/Interrupts.h"
 #include "Kernel/MMU/mmu.h"
+#include "Loader/Loader.h"
 
 #include "Messaging/Message/Message.h"
 #include "Messaging/MessageQueue/MessageQueue.h"
@@ -24,6 +25,7 @@ class Kernel {
 		HandlerManager* _handlerManager;
 		SystemCallExec* _executor;
         MMU* _mmu;
+        Loader* _loader;
 	
 		std::map<int, MessageQueue*> _messageQueues;
 	
@@ -39,6 +41,8 @@ class Kernel {
 		ServiceManager* getServiceManager(void);
 		HandlerManager* getHandlerManager(void);
 		SystemCallExec* getExecutor(void);
+		Loader* getLoader(void);
+		
 		std::map<int, MessageQueue*> getMessageQueues();
 };
 

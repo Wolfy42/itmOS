@@ -2,6 +2,7 @@
 
 Kernel::Kernel() {
     _mmu = new MMU();
+    _loader = new Loader(_mmu);
 	_taskManager = new TaskManager(_mmu);
 	_serviceManager = new ServiceManager(this, _taskManager);
 	_handlerManager = new HandlerManager(this);
@@ -47,6 +48,10 @@ HandlerManager* Kernel::getHandlerManager(void) {
 
 SystemCallExec* Kernel::getExecutor(void) {
 	return _executor;
+}
+
+Loader* Kernel::getLoader(void) {
+	return _loader;
 }
 
 std::map<int, MessageQueue*> Kernel::getMessageQueues() {
