@@ -61,7 +61,14 @@ void initInterruptHandler(IRQHandler* irq, SWIHandler* swi, TaskManager* tm, MMU
 	asm(" LDR     R0, stack_pointer_saved_context"); \
 	asm(" STR     R13, [R0], #0"); \
 	stack_pointer_original = stack_pointer_saved_context + SAVED_REGISTERS_SPACE;
-	
+
+#define SAVECONTEXT_ABT \
+    asm("   SUB   R14, R14, #8\n"); \
+    asm("   STMFD R13!, {R0-R12, R14}\n"); \
+    asm("   LDR   R0, stack_pointer_saved_context\n"); \
+    asm(" STR     R13, [R0], #0"); \
+    stack_pointer_original = stack_pointer_saved_context + SAVED_REGISTERS_SPACE;
+    
 #define SAVECONTEXT_SWI \
 	asm(" STMFD   R13!, {R0-R12, R14} ; Save Process-Registers "); \
 	asm(" LDR     R0, stack_pointer_saved_context"); \
@@ -181,18 +188,22 @@ extern "C" void c_intSWI(int swiNumber, int* parameters)  {
 	asm(" LDMFD   R13!, {R0-R12, PC}^");
 }
 
-#pragma INTERRUPT (PABT)
+#pragma TASK
 extern "C" void c_intPABT() {
-//    SAVECONTEXT_IRQ
+    SAVECONTEXT_ABT
     
-    _mmu->handlePrefetchAbort();
-//    contextSwitch();
+    if (_mmu->handlePrefetchAbort()) {
+        contextSwitch();
+    }
+    asm("\t LDMFD R13!, {R0-R12, PC}^\n");
 }
 
-#pragma INTERRUPT (DABT)
+#pragma TASK
 extern "C" void c_intDABT() {
-//    SAVECONTEXT_IRQ
+    SAVECONTEXT_ABT
     
-    _mmu->handleDataAbort();
-//    contextSwitch();
+    if (_mmu->handleDataAbort()) {
+        contextSwitch();
+    }
+    asm("\t LDMFD R13!, {R0-R12, PC}^\n");
 }

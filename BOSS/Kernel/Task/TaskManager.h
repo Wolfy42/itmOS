@@ -2,14 +2,12 @@
 #define TASKMANAGER_H_
 
 #include "Task.h"
-#include "Kernel/MMU/mmu.h"
 /*
  * Change if you wanna hav mor fun (tasks)
  */
 #define MAX_TASKS 256
 
-
-struct Task;
+class MMU;
 
 
 

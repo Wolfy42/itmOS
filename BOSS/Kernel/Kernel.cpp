@@ -1,8 +1,10 @@
 #include "Kernel.h"
 
 Kernel::Kernel() {
-    _mmu = new MMU();
+    _mmu = new MMU(this);
     _loader = new Loader(_mmu);
+    _ramManager = new RAMManager();
+    _mmu = new MMU(this);
 	_taskManager = new TaskManager(_mmu);
 	_serviceManager = new ServiceManager(this, _taskManager);
 	_handlerManager = new HandlerManager(this);
@@ -52,6 +54,10 @@ SystemCallExec* Kernel::getExecutor(void) {
 
 Loader* Kernel::getLoader(void) {
 	return _loader;
+}
+
+RAMManager* Kernel::getRAMManager(void) {
+    return _ramManager;
 }
 
 std::map<int, MessageQueue*> Kernel::getMessageQueues() {

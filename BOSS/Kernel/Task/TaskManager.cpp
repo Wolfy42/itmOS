@@ -2,6 +2,7 @@
 
 #include "Lib/Rand.h"
 #include "TaskRoutines.h"
+#include "Kernel/MMU/mmu.h"
 
 // needed for NULL :P
 #include <stdio.h>

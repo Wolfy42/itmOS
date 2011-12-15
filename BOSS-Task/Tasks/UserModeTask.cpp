@@ -4,7 +4,7 @@
 extern volatile unsigned int messagesStart;
 
 UserModeTask::UserModeTask()  {
-	_memoryManager = (MemoryManager*)messagesStart;
+	_memoryManager = (MemoryManager*)&messagesStart;
 	_messagesQueue = _memoryManager->getMessageQueue();
 }
 
