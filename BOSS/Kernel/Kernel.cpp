@@ -1,6 +1,7 @@
 #include "Kernel.h"
 
 Kernel::Kernel() {
+    _ramManager = new RAMManager();
     _mmu = new MMU(this);
 	_taskManager = new TaskManager(_mmu);
 	_serviceManager = new ServiceManager(this, _taskManager);
@@ -47,6 +48,10 @@ HandlerManager* Kernel::getHandlerManager(void) {
 
 SystemCallExec* Kernel::getExecutor(void) {
 	return _executor;
+}
+
+RAMManager* Kernel::getRAMManager(void) {
+    return _ramManager;
 }
 
 std::map<int, MessageQueue*> Kernel::getMessageQueues() {

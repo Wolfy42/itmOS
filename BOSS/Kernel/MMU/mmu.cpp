@@ -1,6 +1,5 @@
 #include <string.h>
 #include "API/dataTypes.h"
-#include "Kernel/Task/TaskManager.h"
 #include "Kernel/Kernel.h"
 #include "mmu.h"
 
@@ -17,8 +16,6 @@ extern volatile unsigned int intRamStart;
 extern volatile unsigned int extDDRStart;
 extern volatile unsigned int intvecsStart;
 
-bool occupiedPagesIntRam[MAX_PAGES_IN_INT_RAM];
-bool occupiedPagesExtDDR[MAX_PAGES_IN_EXT_DDR];
 
 MMU::MMU(Kernel* kernel) {
     m_kernel = kernel;
@@ -26,26 +23,9 @@ MMU::MMU(Kernel* kernel) {
     m_firstFreeInIntRam = &intRamStart;
     m_firstFreeInExtDDR = &extDDRStart;
     
-    // Initialize fields
-    int max = 0;
-    if (MAX_PAGES_IN_EXT_DDR > MAX_PAGES_IN_INT_RAM) {
-        max = MAX_PAGES_IN_EXT_DDR;
-    } else {
-        max = MAX_PAGES_IN_INT_RAM;
-    }
-    if (MAX_MMU_TABLES > max) {
-        max = MAX_MMU_TABLES;
-    }
-    for (int i = 0; i < max; i++) {
-        if (i < MAX_PAGES_IN_EXT_DDR) {
-            occupiedPagesExtDDR[i] = false;
-        }
-        if (i < MAX_PAGES_IN_INT_RAM) {
-            occupiedPagesIntRam[i] = false;
-        }
-        if (i < MAX_MMU_TABLES) {
-            m_tasks[i] = NULL;
-        }
+
+    for (int i = 0; i < MAX_TASKS; i++) {
+        m_tasks[i] = NULL;
     }
     
     //Initialize MMU
@@ -58,14 +38,14 @@ void MMU::initKernelMMU() {
     if (((unsigned int)m_firstFreeInIntRam - INT_RAM_START) % 0x1000 > 0) {
         nrOfKernelPages++;
     }
-    reservePages(INT_RAM, 0, nrOfKernelPages);
-    reservePages(INT_RAM, 15, 1);
+    m_kernel->getRAMManager()->reservePages(INT_RAM, 0, nrOfKernelPages);
+    m_kernel->getRAMManager()->reservePages(INT_RAM, 15, 1);
 
     nrOfKernelPages = (((unsigned int)m_firstFreeInExtDDR - EXT_DDR_START) / 0x1000);
     if (((unsigned int)m_firstFreeInExtDDR - EXT_DDR_START) % 0x1000 > 0) {
         nrOfKernelPages++;
     }
-    reservePages(EXT_DDR, 0, nrOfKernelPages);
+    m_kernel->getRAMManager()->reservePages(EXT_DDR, 0, nrOfKernelPages);
                 
     initDomainAccess();
     
@@ -129,7 +109,7 @@ void MMU::setMasterTablePointerTo(address tableAddress) {
 }
 
 address MMU::createMasterTable() {
-    address masterTableAddress = findFreeMemory(4, true, true);
+    address masterTableAddress = m_kernel->getRAMManager()->findFreeMemory(4, true, true);
     std::memset((void*)masterTableAddress, 0x0000, 4096 * 4);
     return masterTableAddress;
 }
@@ -137,7 +117,7 @@ address MMU::createOrGetL2Table(address masterTableAddress, int masterTableEntry
     address result = 0x0;
     if (masterTableEntryNumber < 4096) {
         if (*(masterTableAddress + masterTableEntryNumber) == 0x0) {
-            result = findFreeMemory(1, true, true);
+            result = m_kernel->getRAMManager()->findFreeMemory(1, true, true);
             
             unsigned int tableEntry = (unsigned int)result | 0x00000011;
             *(masterTableAddress + masterTableEntryNumber) = tableEntry;
@@ -151,7 +131,7 @@ address MMU::createOrGetL2Table(address masterTableAddress, int masterTableEntry
 }
 
 address MMU::createMappedPage(address masterTableAddress, address virtualAddress) {
-    address newPage = findFreeMemory(1, true, true);
+    address newPage = m_kernel->getRAMManager()->findFreeMemory(1, true, true);
     std::memset((void*)newPage, 0x0, 4096);
     
     mapDirectly(masterTableAddress, virtualAddress, newPage);
@@ -198,82 +178,8 @@ bool MMU::isTaskPage(address pageAddress) {
     address intVecsPageStart = (address)((((unsigned int)&intvecsStart) >> 12) << 12);
     return !(((pageAddress >= (address)INT_RAM_START) && (pageAddress < m_firstFreeInIntRam))
         || ((pageAddress >= (address)EXT_DDR_START) && (pageAddress < m_firstFreeInExtDDR))
-        || ((pageAddress >= (address)ROM_INTERRUPT_ENTRIES) && (pageAddress < (address)ROM_INTERRUPT_ENTRIES + ROM_INTERRUPT_LENGTH))
-        || (pageAddress >= intVecsPageStart));
-}
-int MMU::pageForAddress(MemoryType& type, unsigned int memAddress) {
-    int result = -1;
-    if ((memAddress - INT_RAM_START) < 0x10000) {
-        result = (memAddress - INT_RAM_START) / 4096;
-        type = INT_RAM;
-    } else if ((memAddress - EXT_DDR_START) < 0x10000000) {
-        result = (memAddress - EXT_DDR_START) / 4096;
-        type = EXT_DDR;
-    }
-    return result;
-}
-
-address MMU::addressOfPage(MemoryType mem, int pageNumberInMemory) {
-    address result = 0x0;
-    if (mem == INT_RAM) {
-        result = (address)(INT_RAM_START + (pageNumberInMemory * 4096));
-    } else if (mem == EXT_DDR) {
-        result = (address)(EXT_DDR_START + (pageNumberInMemory * 4096));
-    }
-    return result;
-}
-void MMU::reservePages(MemoryType mem, int firstPageNumber, int nrOfPages) {
-    for (int i = firstPageNumber; i < (firstPageNumber + nrOfPages); i++) {
-        if (mem == INT_RAM) {
-            occupiedPagesIntRam[i] = true;
-        } else if (mem == EXT_DDR) {
-            occupiedPagesExtDDR[i] = true;
-        }
-    }
-}
-void MMU::releasePages(MemoryType mem, int firstPageNumber, int nrOfPages) {
-    for (int i = firstPageNumber; i < (firstPageNumber + nrOfPages); ++i) {
-        if (mem == INT_RAM) {
-            occupiedPagesIntRam[i] = false;
-        } else if (mem == EXT_DDR) {
-            occupiedPagesExtDDR[i] = false;
-        }
-        std::memset((void*)addressOfPage(mem, i), 0x0, 4096);
-    }
-}
-
-address MMU::findFreeMemory(int nrOfPages, bool align, bool reserve) {
-    address result = 0x0;
-    int freePages = 0;
-    for (int i = 0; (i < MAX_PAGES_IN_INT_RAM) && (result == 0x0); i++) {
-        if ((!occupiedPagesIntRam[i]) && ((!align) || ((freePages > 0) || ((i % nrOfPages) == 0)))) {
-            freePages++;
-            if (freePages == nrOfPages) {
-                result = addressOfPage(INT_RAM, (i - nrOfPages) + 1);
-                if (reserve) {
-                    reservePages(INT_RAM, (i - nrOfPages) + 1, nrOfPages);
-                }
-            }
-        } else {
-            freePages = 0;
-        }
-    }
-    freePages = 0;
-    for (int i = 0; (i < MAX_PAGES_IN_EXT_DDR) && (result == 0x0); i++) {
-        if ((!occupiedPagesExtDDR[i]) && ((!align) || ((freePages > 0) || ((i % nrOfPages) == 0)))) {
-            freePages++;
-            if (freePages == nrOfPages) {
-                result = addressOfPage(EXT_DDR, (i - nrOfPages) + 1);
-                if (reserve) {
-                    reservePages(EXT_DDR, (i - nrOfPages) + 1, nrOfPages);
-                }
-                
-            }
-        } else {
-            freePages = 0;
-        }
-    }
-    return result;
+        || ((pageAddress >= (address)ROM_INTERRUPT_ENTRIES) && (pageAddress < (address)(ROM_INTERRUPT_ENTRIES + ROM_INTERRUPT_LENGTH)))
+        || ((pageAddress >= intVecsPageStart) && (pageAddress < (address)(INT_RAM_START + INT_RAM_SIZE))));
 }
 
 void MMU::switchToKernelMMU() {
@@ -313,6 +219,7 @@ void MMU::initMemoryForTask(Task* task) {
 void MMU::deleteTaskMemory(Task* task) {
     address masterTableAddress = task->masterTableAddress;
     if (masterTableAddress != 0x0) {
+        MemoryType type;
         
         for (unsigned int masterTableEntry = 0; masterTableEntry < 4096; masterTableEntry++) {
             address l2TableAddress = (address)(((*(masterTableAddress + masterTableEntry)) >> 10) << 10);
@@ -320,15 +227,19 @@ void MMU::deleteTaskMemory(Task* task) {
                 for (unsigned int l2TableEntry = 0; l2TableEntry < 256; l2TableEntry++) {
                     address pageAddress = (address)(((*(l2TableAddress + l2TableEntry)) >> 12) << 12);
                     if ((pageAddress != 0x0) && (isTaskPage(pageAddress))) {
-                        MemoryType type;
-                        int pageNumber = pageForAddress(type, (unsigned int)pageAddress);
-                        releasePages(type, pageNumber, 1);
+                        
+                        int pageNumber = m_kernel->getRAMManager()->pageForAddress(type, (unsigned int)pageAddress);
+                        m_kernel->getRAMManager()->releasePages(type, pageNumber, 1);
                     }
                     *(l2TableAddress + l2TableEntry) = 0x0;
                 }
+                int pageNumber = m_kernel->getRAMManager()->pageForAddress(type, (unsigned int)l2TableAddress);
+                m_kernel->getRAMManager()->releasePages(type, pageNumber, 1);
                 *(masterTableAddress + masterTableEntry) = 0x0;
             }
         }
+        int pageNumber = m_kernel->getRAMManager()->pageForAddress(type, (unsigned int)masterTableAddress);
+        m_kernel->getRAMManager()->releasePages(type, pageNumber, 4);
     }
     m_tasks[task->id] = NULL;
 }
