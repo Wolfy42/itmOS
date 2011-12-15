@@ -2,18 +2,9 @@
 #define LOADER_H_
 
 #include <stdio.h>
-#include <list>
 
-#include "API/dataTypes.h"
 #include "Kernel/MMU/mmu.h"
 #include "Loader/TasksHex.h"
-
-struct Code  {
-	int byteCount;
-	int addr;
-	int recType;
-	byte* bytes;
-};
 
 class Loader {
 	private:
@@ -24,13 +15,10 @@ class Loader {
 		char _endPageNr;
 		
 		void checkPageNumbers(char page);
-		int toInt(char hex);
 	
 	public:
 		Loader(MMU* mmu);
 		virtual ~Loader();
-	
-		std::list<Code*>* parse(char hex[]);
 };
 
 #endif /* LOADER_H_ */
