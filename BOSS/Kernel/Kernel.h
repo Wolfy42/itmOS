@@ -26,8 +26,8 @@ class Kernel {
 		HandlerManager* _handlerManager;
 		SystemCallExec* _executor;
         MMU* _mmu;
-        Loader* _loader;
         RAMManager* _ramManager;
+        Loader* _loader;
 	
 		std::map<int, MessageQueue*> _messageQueues;
 	

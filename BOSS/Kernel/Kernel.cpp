@@ -2,8 +2,8 @@
 
 Kernel::Kernel() {
     _mmu = new MMU(this);
-    _loader = new Loader(_mmu);
     _ramManager = new RAMManager();
+    _loader = new Loader(_ramManager);
     _mmu = new MMU(this);
 	_taskManager = new TaskManager(_mmu);
 	_serviceManager = new ServiceManager(this, _taskManager);

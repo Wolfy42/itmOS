@@ -27,15 +27,19 @@ std::list<Code*>* Parser::parse(char hex[])  {
 		// address
 		c->address = 0;
 		c->address = toInt(hex[i]);
+		c->addressHex[0] = hex[i];
 		i++;
 		c->address *= 16;
 		c->address += toInt(hex[i]);
+		c->addressHex[1] = hex[i];
 		i++;
 		c->address *= 16;
 		c->address += toInt(hex[i]);
+		c->addressHex[2] = hex[i];
 		i++;
 		c->address *= 16;
 		c->address += toInt(hex[i]);
+		c->addressHex[3] = hex[i];
 		i++;
 
 		// record type
@@ -44,10 +48,11 @@ std::list<Code*>* Parser::parse(char hex[])  {
 		i++;
 		recType *= 16;
 		recType += toInt(hex[i]);
+		c->recordType = recType;
 		i++;
 
 		if (recType != 0)  {
-			if (recType == 1)  {
+			if (recType == RECTYPE_EOF)  {
 				// 1 == Last line -> Parsing finished
 				return codeLines;
 			}  else  {

@@ -54,8 +54,6 @@ class MMU {
 
         bool handlePrefetchAbort();  
         bool handleDataAbort();
-        
-        address findFreeMemory(int nrOfPages, bool align, bool reserve);
 };
 
 #endif /*MMU_H_*/
