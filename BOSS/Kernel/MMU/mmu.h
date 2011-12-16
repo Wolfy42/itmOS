@@ -38,10 +38,6 @@ class MMU {
         void lockFirstTLBEntry();
         
         bool isTaskPage(address pageAddress);
-        int pageForAddress(MemoryType& type, unsigned int memAddress);
-        address addressOfPage(MemoryType mem, int pageNumberInMemory);
-        void reservePages(MemoryType mem, int firstPageNumber, int nrOfPages);
-        void releasePages(MemoryType mem, int firstPageNumber, int nrOfPages);
         
     public:
         MMU(Kernel* kernel);
@@ -56,8 +52,8 @@ class MMU {
         void prepagePagesFor(int serviceId);
         address parameterAddressFor(int serviceId);
 
-        void handlePrefetchAbort();  
-        void handleDataAbort();
+        bool handlePrefetchAbort();  
+        bool handleDataAbort();
         
         address findFreeMemory(int nrOfPages, bool align, bool reserve);
 };
