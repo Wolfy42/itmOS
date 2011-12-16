@@ -3,6 +3,7 @@
 
 #include <stdio.h>
 #include <list>
+#include <string.h>
 
 #include "API/dataTypes.h"
 #include "Kernel/RAMManager/RAMManager.h"
@@ -21,12 +22,15 @@ class Loader {
 		
 		bool reserveMemory();
 		void checkPageNumbers(char page);
+		void loadCodeToMemory();
+		
+		void handleDataRecord(Code* dataRecord);
 	
 	public:
 		Loader(RAMManager* ramManager);
 		virtual ~Loader();
 		
-		void loadTask(char hex[]);
+		void loadCode(char hex[]);
 };
 
 #endif /* LOADER_H_ */

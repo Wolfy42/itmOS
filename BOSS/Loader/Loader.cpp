@@ -50,10 +50,47 @@ void Loader::checkPageNumbers(char page) {
 	}
 }
 
-void Loader::loadTask(char hex[]) {
+void Loader::loadCodeToMemory() {
+	std::list<Code*>::const_iterator iterator;
+	
+	for (iterator = _code->begin(); iterator != _code->end(); iterator++) {
+		Code* codeLine = *iterator;
+		
+		// Only check the data records
+		// TODO: Implement all the other record-types!
+		if (codeLine->recordType == RECTYPE_DATA) {
+			handleDataRecord(codeLine);
+		}
+	}
+}
+
+void Loader::handleDataRecord(Code* dataRecord) {
+	int addressOffset = dataRecord->address;
+	int byteCount = dataRecord->byteCount;
+	byte* data = dataRecord->bytes;
+	
+	// Start address for this record
+	address currentAddress = (address)((int)_memoryStart + addressOffset);
+	
+	// Copy data to memory
+	for (int i = 0; i < byteCount; i++) {
+		
+		// TODO: TEST THIS CODE WITH BEAGLE BOARD!
+		
+		// TODO: Does memcpy work?
+		memcpy((int*)currentAddress, data, byteCount);
+		
+		/*// Alternative
+		(*currentAddress) = data[i];
+		currentAddress = (address)((int)currentAddress + sizeof(byte));*/	
+	}
+}
+
+void Loader::loadCode(char hex[]) {
 	_code = _parser->parse(hex); 
 	
 	if (reserveMemory()) {
-		// Load to reserved memory
+		// Load code to reserved memory
+		loadCodeToMemory();
 	}
 }
