@@ -169,14 +169,14 @@ extern "C" void c_intIRQ()  {
  * 		if a context switch is needed
  */
 #pragma TASK
-extern "C" void c_intSWI(int swiNumber, int* parameters)  {
+extern "C" void c_intSWI(int swiNumber, int para1, int para2, int para3, int para4, int para5, int para6, int para7)  {
 
 	// save context
 	SAVECONTEXT_SWI
 
     _mmu->switchToKernelMMU();
 	// if cs is true a context switch is gonna happen
-    bool cs = _SWIHandler->handle(swiNumber, parameters);
+    bool cs = _SWIHandler->handle(swiNumber, para1, para2, para3, para4, para5, para6, para7);
     
     if (cs == true) {
     	
