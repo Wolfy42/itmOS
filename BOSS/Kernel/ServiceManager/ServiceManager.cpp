@@ -16,15 +16,16 @@ void ServiceManager::registerService(int service) {
 void ServiceManager::startService(int service) {  
 	TID_t taskId;
 	  
-	switch (service) {
-		case LED_SERVICE:
+	//TODO: replace this
+//	switch (service) {
+//		case LED_SERVICE:
 			//TODO: LED-Service is a User-Task-Class
 //			taskId = _taskManager->create(LEDService::CONFIG.getServiceName(), 100, LEDService::CONFIG.getInitAddress(), false);
-			break;
-			
-		default:
-			return;
-	}
+//			break;
+//
+//		default:
+//			return;
+//	}
 	
 	_taskIdMapping.insert(std::pair<int, int>(service, taskId));
 }

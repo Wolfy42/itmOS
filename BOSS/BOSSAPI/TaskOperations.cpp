@@ -3,17 +3,15 @@
 #include "API/systemCalls.h"
 
 void yield() {
-    performSyscall(YIELD, (int*)0x0);
+    performSystemCall(YIELD);
 }
 void exit(int state) {
-    int params[] = {state};
-    performSyscall(EXIT, params);
+    performSystemCall(EXIT, state);
 }
 void kill(int pid) {
-    int params[] = {pid};
-    performSyscall(KILL, params);
+    performSystemCall(KILL, pid);
 }
 int fork() {
-    performSyscall(FORK, (int*)0x0);
+	performSystemCall(FORK);
     return 0;
 }

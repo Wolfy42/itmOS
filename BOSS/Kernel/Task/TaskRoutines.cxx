@@ -20,7 +20,5 @@ void initTaskRoutines(TaskManager* tm) {
  */
 void exitTask() {
 	
-	performSyscall(EXIT, &_TaskManager->getActiveTask()->id);
+	performSystemCall(EXIT, (int)&_TaskManager->getActiveTask()->id);
 }
-
-

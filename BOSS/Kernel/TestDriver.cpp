@@ -16,7 +16,6 @@
 
 #include "Kernel/Kernel.h"
 
-#include "API/serviceCalls.h"
 
 #include "OMAP-Lib/OMAP/McBSP2.h"
 
@@ -96,7 +95,7 @@ void tasks_test() {
 	TaskManager* taskmanager = kernel->getTaskManager();
 	
 	// Register and start LED Service
-	kernel->startService(LED_SERVICE);
+//	kernel->startService(LED_SERVICE);
 
 	taskmanager->create("dummy\0", 0, (int)dummy, false);
 	taskmanager->create("led 1\0", 70, (int)task1function, false);
@@ -112,19 +111,6 @@ void tasks_test() {
 }
 
 int main() {
-
-	int a[2];
-	a[0] = 1;
-	a[1] = 2;
-
-	address addr = (address)0x81000000;
-	MemoryManager* mm = MemoryManager::getInstanceAt(addr);
-	MessageQueue* mq = mm->getMessageQueue();
-	Message* m1 = mm->createMessage(1, 2, a);
-	Message* m2 = mm->createMessage(1, 2, a);
-
-	mm->remove(m1);
-	Message* m3 = mm->createMessage(1, 2, a);
 
 	// Init the kernel
 	init_kernel();

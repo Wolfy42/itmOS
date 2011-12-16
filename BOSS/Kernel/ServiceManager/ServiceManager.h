@@ -5,7 +5,6 @@
 
 #include "Messaging/MessageQueue/MessageQueue.h"
 #include "Messaging/Message/Message.h"
-#include "API/serviceCalls.h"
 #include "Kernel/Task/TaskManager.h"
 
 // Forward-declaration
