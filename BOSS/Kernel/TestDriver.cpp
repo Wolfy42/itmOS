@@ -16,16 +16,16 @@
 
 #include "Kernel/Kernel.h"
 
-
 #include "OMAP-Lib/OMAP/McBSP2.h"
 
 #include "Kernel/Task/Task.h"
 #include "MMU/mmu.h"
-
-#include "Loader/Loader.h"
 #include "Messaging/MemoryManager/MemoryManager.h"
 #include "Messaging/MessageQueue/MessageQueue.h"
 #include "Messaging/Message/Message.h"
+
+#include "Loader/Loader.h"
+#include "Loader/TasksHex.h"
 
 Kernel* kernel;
 
@@ -120,6 +120,10 @@ int main() {
 
 	// Task-Tests
 	//tasks_test();
+	
+	// Loader-Tests
+	Loader* loader = kernel->getLoader();
+	loader->loadCode(led);
 
 	while(1) {
 		for (int z = 0; z < 80000;) {
