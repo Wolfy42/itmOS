@@ -78,11 +78,11 @@ void Loader::handleDataRecord(Code* dataRecord) {
 		// TODO: TEST THIS CODE WITH BEAGLE BOARD!
 		
 		// TODO: Does memcpy work?
-		memcpy((int*)currentAddress, data, byteCount);
+		//memcpy((int*)currentAddress, data, byteCount);
 		
-		/*// Alternative
+		// Alternative
 		(*currentAddress) = data[i];
-		currentAddress = (address)((int)currentAddress + sizeof(byte));*/	
+		currentAddress = (address)((int)currentAddress + sizeof(byte));	
 	}
 }
 
