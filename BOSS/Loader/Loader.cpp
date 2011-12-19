@@ -73,17 +73,7 @@ void Loader::handleDataRecord(Code* dataRecord) {
 	address currentAddress = (address)((int)_memoryStart + addressOffset);
 	
 	// Copy data to memory
-	for (int i = 0; i < byteCount; i++) {
-		
-		// TODO: TEST THIS CODE WITH BEAGLE BOARD!
-		
-		// TODO: Does memcpy work?
-		//memcpy((int*)currentAddress, data, byteCount);
-		
-		// Alternative
-		(*currentAddress) = data[i];
-		currentAddress = (address)((int)currentAddress + sizeof(byte));	
-	}
+	memcpy((int*)currentAddress, data, byteCount);
 }
 
 void Loader::loadCode(char hex[]) {
