@@ -123,7 +123,7 @@ int main() {
 	
 	// Loader-Tests
 	Loader* loader = kernel->getLoader();
-	loader->loadCode(led);
+	loader->loadCode(hex_mod_4_test);
 
 	while(1) {
 		for (int z = 0; z < 80000;) {

@@ -62,17 +62,21 @@ std::list<Code*>* Parser::parse(char hex[])  {
 		}
 
 		c->bytes = new byte[c->byteCount];
-		for (int j = 0; j < c->byteCount; j += 4)  {
+		for (int j = 0; j < c->byteCount; j += 4)  { 
+			int nextByteIndex = j + 3;
 			for (int k = 3; k >= 0; k--) {
-				int index = j + k;
-				c->bytes[index] = 0;
-				c->bytes[index] = toInt(hex[i]);
-				i++;
-				c->bytes[index] *= 16;
-				c->bytes[index] += toInt(hex[i]);
-				i++;
+				int currentByte = j + k;
+				if (currentByte < c->byteCount) {
+					c->bytes[nextByteIndex] = 0;
+					c->bytes[nextByteIndex] = toInt(hex[i]);
+					i++;
+					c->bytes[nextByteIndex] *= 16;
+					c->bytes[nextByteIndex] += toInt(hex[i]);
+					i++;
+					nextByteIndex--;
+				}
 			}
-		}
+		}		
 
 		//checksum
 		i++;

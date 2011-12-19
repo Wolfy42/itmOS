@@ -83,4 +83,7 @@ void Loader::loadCode(char hex[]) {
 		// Load code to reserved memory
 		loadCodeToMemory();
 	}
+	
+	// TODO -> remove _code as member -> should be passed as parameter
+	_parser->deleteParsedCode(_code);
 }
