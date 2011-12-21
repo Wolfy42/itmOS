@@ -24,7 +24,7 @@ bool Loader::reserveMemory(std::list<Code*>* code) {
 			// The first hex of the address record defines the page number
 			// 		1ABC -> Page 1
 			//		4000 -> Page 4
-			checkPageNumbers(hexToInt(codeLine->addressHex[0]));
+			checkPageNumbers(codeLine->address);
 		}
 	}
 	
@@ -38,7 +38,9 @@ bool Loader::reserveMemory(std::list<Code*>* code) {
 	}
 }
 
-void Loader::checkPageNumbers(int page) {
+void Loader::checkPageNumbers(int address) {
+	int page = address / 4096;
+	
 	if (page < _startPageNr) {
 		_startPageNr = page;
 	}

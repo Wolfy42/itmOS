@@ -29,19 +29,15 @@ std::list<Code*>* Parser::parse(char hex[])  {
 		// address
 		c->address = 0;
 		c->address += hexToInt(hex[i]);
-		c->addressHex[0] = hex[i];
 		i++;
 		c->address *= 16;
 		c->address += hexToInt(hex[i]);
-		c->addressHex[1] = hex[i];
 		i++;
 		c->address *= 16;
 		c->address += hexToInt(hex[i]);
-		c->addressHex[2] = hex[i];
 		i++;
 		c->address *= 16;
 		c->address += hexToInt(hex[i]);
-		c->addressHex[3] = hex[i];
 		i++;
 		c->address += addressOffset;
 

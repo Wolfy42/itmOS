@@ -22,7 +22,7 @@ class Loader {
 		int _endPageNr;
 		
 		bool reserveMemory(std::list<Code*>* code);
-		void checkPageNumbers(int page);
+		void checkPageNumbers(int address);
 		void loadCodeToMemory(std::list<Code*>* code);
 		
 		void handleDataRecord(Code* dataRecord);

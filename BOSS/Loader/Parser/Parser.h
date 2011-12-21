@@ -17,7 +17,6 @@
 
 struct Code  {
 	int byteCount;
-	char addressHex[4];
 	int address;
 	int recordType;
 	byte* bytes;
