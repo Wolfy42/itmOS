@@ -9,6 +9,7 @@ std::list<Code*>* Parser::parse(char hex[])  {
 
 	std::list<Code*>* codeLines = new std::list<Code*>;
 	int i = 0;
+	int addressOffset = 0;
 	int recType;
 	while (hex[i] != '\0') {
 		Code* c = new Code();
@@ -25,8 +26,8 @@ std::list<Code*>* Parser::parse(char hex[])  {
 		i++;
 
 		// address
-		c->address = 0;
-		c->address = toInt(hex[i]);
+		c->address = addressOffset;
+		c->address += toInt(hex[i]);
 		c->addressHex[0] = hex[i];
 		i++;
 		c->address *= 16;
@@ -51,10 +52,12 @@ std::list<Code*>* Parser::parse(char hex[])  {
 		c->recordType = recType;
 		i++;
 
-		if (recType != 0)  {
+		if (recType != RECTYPE_DATA)  {
 			if (recType == RECTYPE_EOF)  {
 				// 1 == Last line -> Parsing finished
 				return codeLines;
+			}  else if (recType == RECTYPE_EXTENDED_LINEAR_ADDRESS)  {
+				//do nothing -> will be handlet after reading of offset
 			}  else  {
 				printf("Something bad happened! (Intel Hex-RecordType %i unknown", recType);
 				return new std::list<Code*>;
@@ -75,6 +78,9 @@ std::list<Code*>* Parser::parse(char hex[])  {
 				}
 			}
 		}		
+		if (c->recordType == RECTYPE_EXTENDED_LINEAR_ADDRESS)  {
+			addressOffset = (int)(c->bytes[0] * 0x10000);
+		}
 
 		//checksum
 		i++;
