@@ -1,48 +1,32 @@
 #include "ServiceManager.h"
 
-#include "Kernel/Kernel.h"
-
-ServiceManager::ServiceManager(Kernel* kernel, TaskManager* taskManager) : _kernel(kernel), _taskManager(taskManager) {}
+ServiceManager::ServiceManager(TaskManager* taskManager) : _taskManager(taskManager) {}
 
 ServiceManager::~ServiceManager() {}
 
-void ServiceManager::registerService(int service) {
-	//TODO: change this!
-	MessageQueue* queue = new MessageQueue();
-	*(address)0x820F0000 = (unsigned int)queue;
-	_kernel->getMessageQueues().insert(std::pair<int, MessageQueue*>(service, queue));
+void ServiceManager::startServices()  {
+
+	startService(LED_SERVICE_ID);
 }
 
-void ServiceManager::startService(int service) {  
-	TID_t taskId;
-	  
-	//TODO: replace this
-//	switch (service) {
-//		case LED_SERVICE:
-			//TODO: LED-Service is a User-Task-Class
+void ServiceManager::startService(int serviceId) {
+
+	Task* task = _taskManager->create("", 50, 0, true);
+
 //			taskId = _taskManager->create(LEDService::CONFIG.getServiceName(), 100, LEDService::CONFIG.getInitAddress(), false);
-//			break;
-//
-//		default:
-//			return;
-//	}
 	
-	_taskIdMapping.insert(std::pair<int, int>(service, taskId));
+	_serviceTaskMapping.insert(std::pair<int, Task*>(serviceId, task));
 }
 
-// TODO: Untested
-void ServiceManager::stopService(int service) {
-	TID_t taskId = getTaskIdForService(service);
-	_taskIdMapping.erase(service);
-	_taskManager->kill(taskId);
+void ServiceManager::stopService(int serviceId) {
+	_taskManager->kill(getTaskForService(serviceId)->id);
 }
 
-// TODO: Untested
-void ServiceManager::restartService(int service) {
-	stopService(service);
-	startService(service);
+void ServiceManager::restartService(int serviceId) {
+	stopService(serviceId);
+	startService(serviceId);
 }
 
-TID_t ServiceManager::getTaskIdForService(int service) {
-	return _taskIdMapping.find(service)->second;
+Task* ServiceManager::getTaskForService(int serviceId) {
+	return _serviceTaskMapping.find(serviceId)->second;
 }

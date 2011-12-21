@@ -1,6 +1,5 @@
-#include "SystemCallExec.h"
 
-#include "API/systemCalls.h"
+#include "SystemCallExec.h"
 
 SystemCallExec::SystemCallExec(Kernel* kernel, TaskManager* taskmanager) {
 	_kernel = kernel;

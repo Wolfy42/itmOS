@@ -6,7 +6,7 @@ Kernel::Kernel() {
     _loader = new Loader(_ramManager);
     _mmu = new MMU(this);
 	_taskManager = new TaskManager(_mmu);
-	_serviceManager = new ServiceManager(this, _taskManager);
+	_serviceManager = new ServiceManager(_taskManager);
 	_handlerManager = new HandlerManager(this);
 	_executor = new SystemCallExec(this, _taskManager);
     
@@ -19,14 +19,6 @@ Kernel::Kernel() {
 Kernel::~Kernel() {
 	delete _taskManager;
 	delete _serviceManager;
-}
-
-void Kernel::startService(int serviceId) {
-	// Register the service first
-	_serviceManager->registerService(serviceId);
-	
-	// Start the Service
-	_serviceManager->startService(serviceId);
 }
 
 void Kernel::write(int* parameters)  {
@@ -58,8 +50,4 @@ Loader* Kernel::getLoader(void) {
 
 RAMManager* Kernel::getRAMManager(void) {
     return _ramManager;
-}
-
-std::map<int, MessageQueue*> Kernel::getMessageQueues() {
-	return _messageQueues;
 }

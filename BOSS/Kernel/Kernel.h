@@ -1,8 +1,6 @@
 #ifndef KERNEL_H_
 #define KERNEL_H_
 
-#include <map>
-
 #include "Kernel/Task/TaskManager.h"
 #include "Kernel/ServiceManager/ServiceManager.h" 
 #include "Kernel/Interrupt/HandlerManager.h"
@@ -29,13 +27,10 @@ class Kernel {
         RAMManager* _ramManager;
         Loader* _loader;
 	
-		std::map<int, MessageQueue*> _messageQueues;
-	
 	public:
 		Kernel();
 		virtual ~Kernel();
 	
-		void startService(int serviceId);
 		void write(int* parameters);
 		
 		// Getters
@@ -45,7 +40,6 @@ class Kernel {
 		SystemCallExec* getExecutor(void);
 		Loader* getLoader(void);
         RAMManager* getRAMManager(void);
-		std::map<int, MessageQueue*> getMessageQueues();
 };
 
 #endif /* KERNEL_H_ */
