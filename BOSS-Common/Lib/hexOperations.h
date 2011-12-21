@@ -1,6 +1,6 @@
 #ifndef HEXOPERATIONS_H_
 #define HEXOPERATIONS_H_
 
-int xtoi(const char* xs, unsigned int* result);
+int hexToInt(char hex);
 
 #endif /*HEXOPERATIONS_H_*/
