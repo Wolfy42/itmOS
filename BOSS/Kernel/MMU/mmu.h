@@ -23,7 +23,6 @@ class MMU {
     private:
         Kernel* m_kernel;
         Task m_kernelTask;
-        Task* m_tasks[MAX_TASKS];
         Task* m_currentTask;
         
         address m_firstFreeInIntRam;
@@ -37,8 +36,8 @@ class MMU {
         
         address createMasterTable();
         address createOrGetL2Table(address masterTableAddress, int masterTableEntryNumber);
-        address createMappedPage(address masterTableAddress, address virtualAddress);
-        void mapDirectly(address masterTableAddress, address virtualAddress, address physicalAddress);
+        address createMappedPage(address masterTableAddress, address virtualAddress, bool userAccess, bool kernelAccess);
+        void mapDirectly(address masterTableAddress, address virtualAddress, address physicalAddress, bool userAccess, bool kernelAccess);
         void mapOneToOne(address masterTableAddress, address startAddress, unsigned int length, bool userAccess, bool kernelAccess);
         
         void clearTLB();

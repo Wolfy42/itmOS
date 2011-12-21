@@ -55,6 +55,7 @@ ORDER
    .sysmem     > ext_ddr
    .bss        > ext_ddr
    .stackArea  > ext_ddr {
+       . = ALIGN(0x4);
        . = . + (4 * 1024);
        kernelStack = .;
 	   . = . + (4 * 1024);

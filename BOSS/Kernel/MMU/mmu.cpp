@@ -25,11 +25,6 @@ MMU::MMU(Kernel* kernel) {
     m_firstFreeInIntRam = &intRamStart;
     m_firstFreeInExtDDR = &extDDRStart;
     
-
-    for (int i = 0; i < MAX_TASKS; i++) {
-        m_tasks[i] = NULL;
-    }
-    
     //Initialize MMU
     initKernelMMU();
 }
@@ -122,22 +117,32 @@ address MMU::createOrGetL2Table(address masterTableAddress, int masterTableEntry
     return result;
 }
 
-address MMU::createMappedPage(address masterTableAddress, address virtualAddress) {
+address MMU::createMappedPage(address masterTableAddress, address virtualAddress, bool userAccess, bool kernelAccess) {
     address newPage = m_kernel->getRAMManager()->findFreeMemory(1, true, true);
     std::memset((void*)newPage, 0x0, 4096);
     
-    mapDirectly(masterTableAddress, virtualAddress, newPage);
+    mapDirectly(masterTableAddress, virtualAddress, newPage, userAccess, kernelAccess);
     return newPage;
 }
 
-void MMU::mapDirectly(address masterTableAddress, address virtualAddress, address physicalAddress) {
+void MMU::mapDirectly(address masterTableAddress, address virtualAddress, address physicalAddress, bool kernelAccess, bool userAccess) {
     unsigned int masterTableEntryNumber = (unsigned int)virtualAddress >> 20;
     address l2TableAddress = createOrGetL2Table(masterTableAddress, masterTableEntryNumber);
     
     address pageAddress = (address)(((unsigned int)physicalAddress >> 12) << 12);
 
     unsigned int l2TableEntryNumber = ((unsigned int)virtualAddress >> 12) - (((unsigned int)virtualAddress >> 12) & 0xFFF00);
-    unsigned int tableEntry = (unsigned int)pageAddress | 0x00000FF2;
+    
+    unsigned int tableEntry = (unsigned int)pageAddress | 0x00000002;
+    tableEntry |= (userAccess << 4);
+    tableEntry |= (userAccess << 6);
+    tableEntry |= (userAccess << 8);
+    tableEntry |= (userAccess << 10);
+    tableEntry |= (kernelAccess << 5);
+    tableEntry |= (kernelAccess << 7);
+    tableEntry |= (kernelAccess << 9);
+    tableEntry |= (kernelAccess << 11);
+    
     *(l2TableAddress + l2TableEntryNumber) = tableEntry;
 }
 
@@ -187,9 +192,8 @@ void MMU::switchToKernelMMU() {
 }
 
 void MMU::initMemoryForTask(Task* task) {
-    Task* savedTaskPointer = m_tasks[task->id];
     
-    if (savedTaskPointer == NULL) {
+    if (task->masterTableAddress == NULL) {
         task->masterTableAddress = createMasterTable();
         
         mapOneToOne(task->masterTableAddress, (address)ROM_INTERRUPT_ENTRIES, ROM_INTERRUPT_LENGTH, true, true);
@@ -197,21 +201,22 @@ void MMU::initMemoryForTask(Task* task) {
         mapOneToOne(task->masterTableAddress, &intvecsStart, 0x3B, true, false);
         mapOneToOne(task->masterTableAddress, (address)EXT_DDR_START, (unsigned int)m_firstFreeInExtDDR - EXT_DDR_START, true, false);
         
-        task->messageQueueAddress = createMappedPage(task->masterTableAddress, (address)MESSAGE_QUEUE_VIRTUAL_ADDRESS);
+        task->messageQueueAddress = createMappedPage(task->masterTableAddress, (address)MESSAGE_QUEUE_VIRTUAL_ADDRESS, true, true);
         
-        // Fake loader
-        unsigned int startAddress = task->tcb.restartAddress;
-        address newPage = createMappedPage(task->masterTableAddress, (address)startAddress);
+        // Map the code of the task directly
+        for (int i = 0; i < task->pageCount; i++)  {
+            // The next virtual address is the first address plus 4096 bytes (4KB)
+            address virtualAddress = (address)(task->tcb.restartAddress + (i * 4096));
+            // The next physical address is the first address plus 4096 bytes (4KB)
+            address physicalAddress = (address)(((unsigned int)(task->codeLocation)) + (i * 4096));
+            mapDirectly(task->masterTableAddress, virtualAddress, physicalAddress, false, true);
+        }
         
-        address codeLocation = task->codeLocation + ((startAddress - TASK_MEMORY_START) / 4);
-        // load needed instructions into new page
-        std::memcpy((void*)newPage, (void*)(codeLocation), 4096);
         
         setMasterTablePointerTo(task->masterTableAddress);
         
-        m_tasks[task->id] = task;
     } else {
-        setMasterTablePointerTo(savedTaskPointer->masterTableAddress);
+        setMasterTablePointerTo(task->masterTableAddress);
     }
     m_currentTask = task;
 }
@@ -241,7 +246,8 @@ void MMU::deleteTaskMemory(Task* task) {
         int pageNumber = m_kernel->getRAMManager()->pageForAddress(type, (unsigned int)masterTableAddress);
         m_kernel->getRAMManager()->releasePages(type, pageNumber, 4);
     }
-    m_tasks[task->id] = NULL;
+    task->masterTableAddress = NULL;
+    task->messageQueueAddress = NULL;
 }
 
 void MMU::loadPage(int pageNumber) {
@@ -319,7 +325,7 @@ bool MMU::handleDataAbort() {
     if (isLegal(accessedAddress, faultStatus)) {
         Task* currentTask = m_currentTask;
         switchToKernelMMU();
-        createMappedPage(currentTask->masterTableAddress, (address)accessedAddress);
+        createMappedPage(currentTask->masterTableAddress, (address)accessedAddress, true, true);
         initMemoryForTask(currentTask);
         doContextSwitch = false;
     } else {
