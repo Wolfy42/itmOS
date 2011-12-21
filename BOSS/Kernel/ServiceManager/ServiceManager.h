@@ -7,21 +7,23 @@
 #include "Messaging/Message/Message.h"
 #include "Kernel/Task/Task.h"
 #include "Kernel/Task/TaskManager.h"
+#include "Loader/Loader.h"
+#include "Loader/TasksHex.h"
 
 class ServiceManager
 {	
 	private:
 		TaskManager* _taskManager;
+		Loader* _loader;
 		std::map<int, Task*> _serviceTaskMapping;
 	
 	public:
-		ServiceManager(TaskManager* taskManager);
+		ServiceManager(TaskManager* taskManager, Loader* loader);
 		virtual ~ServiceManager();
 		
 		void startServices();
-		void startService(int serviceId);
+		void startService(char* serviceName, int serviceId, char* serviceCode);
 		void stopService(int serviceId);
-		void restartService(int serviceId);
 
 		Task* getTaskForService(int serviceId);
 };

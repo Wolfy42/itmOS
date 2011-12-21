@@ -88,7 +88,7 @@ void audio_test() {
 
 void shell_test() {
 	TaskManager* taskmanager = kernel->getTaskManager();
-	taskmanager->create("shell\0", 100, (int)shellstart, false);
+	taskmanager->create("shell\0", false);
 }
 
 void tasks_test() {
@@ -97,10 +97,10 @@ void tasks_test() {
 	// Register and start LED Service
 //	kernel->startService(LED_SERVICE);
 
-	taskmanager->create("dummy\0", 0, (int)dummy, false);
-	taskmanager->create("led 1\0", 70, (int)task1function, false);
-	taskmanager->create("led 2\0", 30, (int)task2function, false);
-	
+//	taskmanager->create("dummy\0", 0, (int)dummy, false);
+//	taskmanager->create("led 1\0", 70, (int)task1function, false);
+//	taskmanager->create("led 2\0", 30, (int)task2function, false);
+//
 	// Start User-Test-Task
 //	taskmanager->create("User-Test-Task\0", 100, (int)userTask_main, false);
 	
