@@ -57,7 +57,7 @@ std::list<Code*>* Parser::parse(char hex[])  {
 				// 1 == Last line -> Parsing finished
 				return codeLines;
 			}  else if (recType == RECTYPE_EXTENDED_LINEAR_ADDRESS)  {
-				//do nothing -> will be handlet after reading of offset
+				//do nothing -> will be handled after reading of offset
 			}  else  {
 				printf("Something bad happened! (Intel Hex-RecordType %i unknown", recType);
 				return new std::list<Code*>;
@@ -79,7 +79,7 @@ std::list<Code*>* Parser::parse(char hex[])  {
 			}
 		}		
 		if (c->recordType == RECTYPE_EXTENDED_LINEAR_ADDRESS)  {
-			addressOffset = (int)(c->bytes[0] * 0x10000);
+			addressOffset = c->bytes[0] * 0x10000;
 		}
 
 		//checksum
