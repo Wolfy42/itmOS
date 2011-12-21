@@ -26,9 +26,6 @@ class Loader {
 		void loadCodeToMemory(std::list<Code*>* code);
 		
 		void handleDataRecord(Code* dataRecord);
-		
-		// TODO -> Lib
-		int toInt(char hex);
 	
 	public:
 		Loader(RAMManager* ramManager);
