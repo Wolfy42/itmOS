@@ -74,7 +74,7 @@ void Loader::handleDataRecord(Code* dataRecord) {
 	memcpy((int*)currentAddress, data, byteCount);
 }
 
-void Loader::loadCode(Task* task, char hex[]) {
+void Loader::loadTaskCode(Task* task, char hex[]) {
 	std::list<Code*>* code = _parser->parse(hex); 
 	
 	if (reserveMemory(code)) {
@@ -84,6 +84,22 @@ void Loader::loadCode(Task* task, char hex[]) {
 		// Create new Task
 		task->codeLocation = _memoryStart;
 		task->pageCount = _endPageNr - _startPageNr + 1;
+	}
+	
+	_parser->deleteParsedCode(code);
+}
+
+void Loader::loadServiceCode(Task* task, char hex[], ServiceConfig* config) {
+	std::list<Code*>* code = _parser->parse(hex); 
+	
+	if (reserveMemory(code)) {
+		// Load code to reserved memory
+		loadCodeToMemory(code);
+		
+		// Create new Task
+		task->codeLocation = _memoryStart;
+		task->pageCount = _endPageNr - _startPageNr + 1;
+		task->taskRegisters = config->getRegistersForMmuMapping();
 	}
 	
 	_parser->deleteParsedCode(code);

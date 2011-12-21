@@ -1,5 +1,7 @@
 #include "ServiceManager.h"
 
+#include "Kernel/ServiceManager/Configs/LED/LEDConfig.h"
+
 ServiceManager::ServiceManager(TaskManager* taskManager, Loader* loader)  {
 	_taskManager = taskManager;
 	_loader = loader;
@@ -17,7 +19,7 @@ void ServiceManager::startService(char* serviceName, int serviceId, char* servic
 	Task* task = _taskManager->create(serviceName, false);
 	_serviceTaskMapping.insert(std::pair<int, Task*>(serviceId, task));
 
-	_loader->loadCode(task, serviceCode);
+	_loader->loadServiceCode(task, serviceCode, new LEDConfig());
 }
 
 void ServiceManager::stopService(int serviceId) {

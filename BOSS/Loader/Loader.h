@@ -10,6 +10,7 @@
 #include "Loader/TasksHex.h"
 #include "Loader/Parser/Parser.h"
 #include "Kernel/Task/Task.h"
+#include "Kernel/ServiceManager/Configs/ServiceConfig.h"
 
 class Loader {
 	private:
@@ -30,7 +31,8 @@ class Loader {
 		Loader(RAMManager* ramManager);
 		virtual ~Loader();
 		
-		void loadCode(Task* task, char hex[]);
+		void loadTaskCode(Task* task, char hex[]);
+		void loadServiceCode(Task* task, char hex[], ServiceConfig* config);
 };
 
 #endif /* LOADER_H_ */
