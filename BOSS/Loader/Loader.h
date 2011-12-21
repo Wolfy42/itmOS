@@ -18,14 +18,17 @@ class Loader {
 		Parser* _parser;
 		
 		address _memoryStart;
-		char _startPageNr;
-		char _endPageNr;
+		int _startPageNr;
+		int _endPageNr;
 		
 		bool reserveMemory(std::list<Code*>* code);
-		void checkPageNumbers(char page);
+		void checkPageNumbers(int page);
 		void loadCodeToMemory(std::list<Code*>* code);
 		
 		void handleDataRecord(Code* dataRecord);
+		
+		// TODO -> Lib
+		int toInt(char hex);
 	
 	public:
 		Loader(RAMManager* ramManager);

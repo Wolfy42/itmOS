@@ -100,6 +100,7 @@ void Parser::deleteParsedCode(std::list<Code*>* code)  {
 	delete code;
 }
 
+// TODO -> Lib
 int Parser::toInt(char hex)  {
 	if (hex == '0')  {
 		return 0;
