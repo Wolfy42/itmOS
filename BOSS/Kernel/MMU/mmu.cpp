@@ -248,15 +248,6 @@ void MMU::loadPage(int pageNumber) {
     //TODO
 }
 
-void MMU::prepagePagesFor(int serviceId)  {
-	//TODO: to be implemented
-}
-
-address MMU::parameterAddressFor(int serviceId)  {
-	//TODO: to be implemented
-	return (address)0x820F0000;
-}
-
 bool MMU::isLegal(unsigned int accessedAddress, unsigned int faultStatus) {
     bool writeAccess = readBit(&faultStatus, 11);
     unsigned int statusField = (faultStatus & 0xF);
@@ -303,6 +294,7 @@ bool MMU::isLegal(unsigned int accessedAddress, unsigned int faultStatus) {
     
     return result;
 }
+
 bool MMU::handlePrefetchAbort() {
     Task* currentTask = m_currentTask;
     switchToKernelMMU();

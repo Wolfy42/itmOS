@@ -30,7 +30,7 @@ void MessageQueue::pushMessage(Message* message) {
 Message* MessageQueue::popMessage(void) {
 	// Suspend, if Empty
 	if (isEmpty()) {
-		performSyscall(SUSPEND, NULL);
+		performSystemCall(SUSPEND);
 	}
 	
 	while(isEmpty())  {

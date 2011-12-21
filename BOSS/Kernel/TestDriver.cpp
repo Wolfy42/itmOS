@@ -16,17 +16,16 @@
 
 #include "Kernel/Kernel.h"
 
-#include "API/serviceCalls.h"
-
 #include "OMAP-Lib/OMAP/McBSP2.h"
 
 #include "Kernel/Task/Task.h"
 #include "MMU/mmu.h"
-
 #include "Messaging/MemoryManager/MemoryManager.h"
 #include "Messaging/MessageQueue/MessageQueue.h"
 #include "Messaging/Message/Message.h"
 
+#include "Loader/Loader.h"
+#include "Loader/TasksHex.h"
 
 Kernel* kernel;
 
@@ -96,7 +95,7 @@ void tasks_test() {
 	TaskManager* taskmanager = kernel->getTaskManager();
 	
 	// Register and start LED Service
-	kernel->startService(LED_SERVICE);
+//	kernel->startService(LED_SERVICE);
 
 	taskmanager->create("dummy\0", 0, (int)dummy, false);
 	taskmanager->create("led 1\0", 70, (int)task1function, false);
@@ -113,27 +112,18 @@ void tasks_test() {
 
 int main() {
 
-	int a[2];
-	a[0] = 1;
-	a[1] = 2;
-
-	address addr = (address)0x81000000;
-	MemoryManager* mm = MemoryManager::getInstanceAt(addr);
-	MessageQueue* mq = mm->getMessageQueue();
-	Message* m1 = mm->createMessage(1, 2, a);
-	Message* m2 = mm->createMessage(1, 2, a);
-
-	mm->remove(m1);
-	Message* m3 = mm->createMessage(1, 2, a);
-
 	// Init the kernel
 	init_kernel();
 	
 	// Stefans Audio-Tests
-	audio_test();
+	//audio_test();
 
 	// Task-Tests
-	tasks_test();
+	//tasks_test();
+	
+	// Loader-Tests
+	Loader* loader = kernel->getLoader();
+	loader->loadCode(hex_mod_4_test);
 
 	while(1) {
 		for (int z = 0; z < 80000;) {
