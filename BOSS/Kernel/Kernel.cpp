@@ -29,7 +29,7 @@ void Kernel::write(int* parameters)  {
 	int activeTaskId = _taskManager->getActiveTask()->id;
 	Task* task = _serviceManager->getTaskForService(serviceId);
 
-	MemoryManager* memoryManager = (*task).memoryManager;
+	MemoryManager* memoryManager = task->memoryManager;
 	MessageQueue* messageQueue = memoryManager->getMessageQueue();
 
 	Message* message = memoryManager->createMessage(activeTaskId, length, params);
