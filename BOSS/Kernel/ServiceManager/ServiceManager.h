@@ -22,7 +22,7 @@ class ServiceManager
 		virtual ~ServiceManager();
 		
 		void startServices();
-		void startService(char* serviceName, int serviceId, char* serviceCode);
+		void startService(char* serviceName, int serviceId, char* serviceCode, ServiceConfig* config);
 		void stopService(int serviceId);
 
 		Task* getTaskForService(int serviceId);

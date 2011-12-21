@@ -1,7 +1,9 @@
 #ifndef TASK_H_
 #define TASK_H_
 
+#include <list>
 #include "API/dataTypes.h"
+#include "Messaging/MemoryManager/MemoryManager.h"
 
 typedef int TID_t;
 enum Status { Ready, Running, Blocked, Wait };
@@ -35,7 +37,7 @@ struct TCB {
 
 class Task {
     public:
-        address messageQueueAddress;
+        MemoryManager* memoryManager;
         
         address masterTableAddress;
         // id of task
@@ -49,7 +51,14 @@ class Task {
         // registers
         TCB tcb;
         
+        // Code Location
         address codeLocation;
+        
+        // Pagecount
+        int pageCount;
+        
+        // MMU Registers to map
+        std::list<address>* taskRegisters;
         
         // parent/child
         Task* parent;

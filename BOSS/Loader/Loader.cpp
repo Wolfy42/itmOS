@@ -11,10 +11,10 @@ Loader::Loader(RAMManager* mmu) : _ramManager(mmu) {
 
 Loader::~Loader()  {}
 
-bool Loader::reserveMemory() {
+bool Loader::reserveMemory(std::list<Code*>* code) {
 	std::list<Code*>::const_iterator iterator;
 	
-	for (iterator = _code->begin(); iterator != _code->end(); iterator++) {
+	for (iterator = code->begin(); iterator != code->end(); iterator++) {
 		Code* codeLine = *iterator;
 		
 		// Only check the address record
@@ -32,8 +32,7 @@ bool Loader::reserveMemory() {
 	// Check if pageNr-Logic fails
 	if (_startPageNr <= _endPageNr) {
 		// Reserve the needed pages and return true		
-		int pageCount = _endPageNr - _startPageNr + 1;
-		_memoryStart = _ramManager->findFreeMemory(pageCount, true, true);
+		_memoryStart = _ramManager->findFreeMemory(_endPageNr - _startPageNr + 1, true, true);
 		return true;
 	} else {
 		return false; 
@@ -50,14 +49,13 @@ void Loader::checkPageNumbers(char page) {
 	}
 }
 
-void Loader::loadCodeToMemory() {
+void Loader::loadCodeToMemory(std::list<Code*>* code) {
 	std::list<Code*>::const_iterator iterator;
 	
-	for (iterator = _code->begin(); iterator != _code->end(); iterator++) {
+	for (iterator = code->begin(); iterator != code->end(); iterator++) {
 		Code* codeLine = *iterator;
 		
 		// Only check the data records
-		// TODO: Implement all the other record-types!
 		if (codeLine->recordType == RECTYPE_DATA) {
 			handleDataRecord(codeLine);
 		}
@@ -76,14 +74,33 @@ void Loader::handleDataRecord(Code* dataRecord) {
 	memcpy((int*)currentAddress, data, byteCount);
 }
 
-void Loader::loadCode(Task* task, char hex[]) {
-	_code = _parser->parse(hex); 
+void Loader::loadTaskCode(Task* task, char hex[]) {
+	std::list<Code*>* code = _parser->parse(hex); 
 	
-	if (reserveMemory()) {
+	if (reserveMemory(code)) {
 		// Load code to reserved memory
-		loadCodeToMemory();
+		loadCodeToMemory(code);
+		
+		// Create new Task
+		task->codeLocation = _memoryStart;
+		task->pageCount = _endPageNr - _startPageNr + 1;
 	}
 	
-	// TODO -> remove _code as member -> should be passed as parameter
-	_parser->deleteParsedCode(_code);
+	_parser->deleteParsedCode(code);
+}
+
+void Loader::loadServiceCode(Task* task, char hex[], ServiceConfig* config) {
+	std::list<Code*>* code = _parser->parse(hex); 
+	
+	if (reserveMemory(code)) {
+		// Load code to reserved memory
+		loadCodeToMemory(code);
+		
+		// Create new Task
+		task->codeLocation = _memoryStart;
+		task->pageCount = _endPageNr - _startPageNr + 1;
+		task->taskRegisters = config->getRegistersForMmuMapping();
+	}
+	
+	_parser->deleteParsedCode(code);
 }

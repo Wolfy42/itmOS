@@ -110,7 +110,7 @@ void tasks_test() {
 	dummy(kernel->getHandlerManager()->getIrqHandler());
 }
 
-int main() {
+int _main() {
 
 	// Init the kernel
 	init_kernel();

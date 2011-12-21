@@ -10,20 +10,20 @@
 #include "Loader/TasksHex.h"
 #include "Loader/Parser/Parser.h"
 #include "Kernel/Task/Task.h"
+#include "Kernel/ServiceManager/Configs/ServiceConfig.h"
 
 class Loader {
 	private:
 		RAMManager* _ramManager;
 		Parser* _parser;
-		std::list<Code*>* _code;
 		
 		address _memoryStart;
 		char _startPageNr;
 		char _endPageNr;
 		
-		bool reserveMemory();
+		bool reserveMemory(std::list<Code*>* code);
 		void checkPageNumbers(char page);
-		void loadCodeToMemory();
+		void loadCodeToMemory(std::list<Code*>* code);
 		
 		void handleDataRecord(Code* dataRecord);
 	
@@ -31,7 +31,8 @@ class Loader {
 		Loader(RAMManager* ramManager);
 		virtual ~Loader();
 		
-		void loadCode(Task* task, char hex[]);
+		void loadTaskCode(Task* task, char hex[]);
+		void loadServiceCode(Task* task, char hex[], ServiceConfig* config);
 };
 
 #endif /* LOADER_H_ */

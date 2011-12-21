@@ -201,7 +201,7 @@ void MMU::initMemoryForTask(Task* task) {
         mapOneToOne(task->masterTableAddress, &intvecsStart, 0x3B, true, false);
         mapOneToOne(task->masterTableAddress, (address)EXT_DDR_START, (unsigned int)m_firstFreeInExtDDR - EXT_DDR_START, true, false);
         
-        task->messageQueueAddress = createMappedPage(task->masterTableAddress, (address)MESSAGE_QUEUE_VIRTUAL_ADDRESS, true, true);
+        task->memoryManager = (MemoryManager*)createMappedPage(task->masterTableAddress, (address)MESSAGE_QUEUE_VIRTUAL_ADDRESS, true, true);
         
         // Map the code of the task directly
         for (int i = 0; i < task->pageCount; i++)  {
