@@ -15,15 +15,14 @@ class Loader {
 	private:
 		RAMManager* _ramManager;
 		Parser* _parser;
-		std::list<Code*>* _code;
 		
 		address _memoryStart;
 		char _startPageNr;
 		char _endPageNr;
 		
-		bool reserveMemory();
+		bool reserveMemory(std::list<Code*>* code);
 		void checkPageNumbers(char page);
-		void loadCodeToMemory();
+		void loadCodeToMemory(std::list<Code*>* code);
 		
 		void handleDataRecord(Code* dataRecord);
 	

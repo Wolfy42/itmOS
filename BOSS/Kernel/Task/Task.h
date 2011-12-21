@@ -50,7 +50,11 @@ class Task {
         // registers
         TCB tcb;
         
+        // Code Location
         address codeLocation;
+        
+        // Pagecount
+        int pageCount;
         
         // parent/child
         Task* parent;
