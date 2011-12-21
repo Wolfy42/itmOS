@@ -197,7 +197,7 @@ void MMU::initMemoryForTask(Task* task) {
         mapOneToOne(task->masterTableAddress, &intvecsStart, 0x3B);
         mapOneToOne(task->masterTableAddress, (address)EXT_DDR_START, (unsigned int)m_firstFreeInExtDDR - EXT_DDR_START);
         
-        task->messageQueueAddress = createMappedPage(task->masterTableAddress, (address)MESSAGE_QUEUE_VIRTUAL_ADDRESS);
+        task->memoryManager = (MemoryManager*)createMappedPage(task->masterTableAddress, (address)MESSAGE_QUEUE_VIRTUAL_ADDRESS);
         
         // Fake loader
         unsigned int startAddress = task->tcb.restartAddress;
