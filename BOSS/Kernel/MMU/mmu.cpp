@@ -104,7 +104,7 @@ address MMU::createOrGetL2Table(address masterTableAddress, int masterTableEntry
         if (*(masterTableAddress + masterTableEntryNumber) == 0x0) {
             result = m_kernel->getRAMManager()->findFreeMemory(1, true, true);
             
-            unsigned int tableEntry = (unsigned int)result | 0x00000021;
+            unsigned int tableEntry = (unsigned int)result | 0x00000011;
             unsetBit(&tableEntry, 8);
             unsetBit(&tableEntry, 9);
             *(masterTableAddress + masterTableEntryNumber) = tableEntry;
@@ -247,7 +247,6 @@ void MMU::deleteTaskMemory(Task* task) {
         m_kernel->getRAMManager()->releasePages(type, pageNumber, 4);
     }
     task->masterTableAddress = NULL;
-    task->messageQueueAddress = NULL;
 }
 
 void MMU::loadPage(int pageNumber) {
