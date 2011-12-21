@@ -11,15 +11,15 @@ ServiceManager::~ServiceManager() {}
 
 void ServiceManager::startServices()  {
 
-	startService("LED", LED_SERVICE_ID, led);
+	startService("LED", LED_SERVICE_ID, led, new LEDConfig());
 }
 
-void ServiceManager::startService(char* serviceName, int serviceId, char* serviceCode) {
+void ServiceManager::startService(char* serviceName, int serviceId, char* serviceCode, ServiceConfig* config) {
 
 	Task* task = _taskManager->create(serviceName, false);
 	_serviceTaskMapping.insert(std::pair<int, Task*>(serviceId, task));
 
-	_loader->loadServiceCode(task, serviceCode, new LEDConfig());
+	_loader->loadServiceCode(task, serviceCode, config);
 }
 
 void ServiceManager::stopService(int serviceId) {
