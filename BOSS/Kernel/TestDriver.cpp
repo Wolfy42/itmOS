@@ -35,7 +35,7 @@ void ledOff(void) {
 //	driver.ledOff(LED2);
 }
 
-void initScheduler(IRQHandler* hand) {
+void initScheduler_(IRQHandler* hand) {
 	srand_(time_());
 	hand->registerHandler(HalTimerDriver::irqNumberForTimer(GPTIMER2), ledOff);
 
@@ -45,7 +45,7 @@ void initScheduler(IRQHandler* hand) {
 }
 
 void dummy(IRQHandler* hand)  {
-	initScheduler(hand);
+	initScheduler_(hand);
 	_enable_interrupts();
 	asm("\t CPS 0x10");
 	while(1);

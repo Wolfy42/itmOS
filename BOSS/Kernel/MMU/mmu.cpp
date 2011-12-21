@@ -301,7 +301,11 @@ bool MMU::isLegal(unsigned int accessedAddress, unsigned int faultStatus) {
 }
 
 bool MMU::handlePrefetchAbort() {
-    Task* currentTask = m_currentTask;
+    asm("\t MRC p15, #0, r0, c6, c0, #0\n"); // Read data foult address register
+    asm("\t LDR r1, tempVariableForAsmAndCpp\n");
+    asm("\t STR r0, [r1]\n");
+    unsigned int accessedAddress = tempVariableForAsmAndCpp;
+     Task* currentTask = m_currentTask;
     switchToKernelMMU();
     m_kernel->getTaskManager()->kill(currentTask->id);
     return true;

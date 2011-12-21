@@ -26,6 +26,7 @@ struct Code  {
 class Parser {
 
 private:
+	// TODO -> Lib
 	int toInt(char hex);
 
 public:
