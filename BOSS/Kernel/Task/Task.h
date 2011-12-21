@@ -1,6 +1,7 @@
 #ifndef TASK_H_
 #define TASK_H_
 
+#include <list>
 #include "API/dataTypes.h"
 #include "Messaging/MemoryManager/MemoryManager.h"
 
@@ -55,6 +56,9 @@ class Task {
         
         // Pagecount
         int pageCount;
+        
+        // MMU Registers to map
+        std::list<address>* taskRegisters;
         
         // parent/child
         Task* parent;
