@@ -10,6 +10,7 @@ MEMORY
 {
    virtual_memory:     ORIGIN 0x00001000 LENGTH = 0x01000000
    stack_memory:       ORIGIN 0x10000000 LENGTH = 0x00002000
+   sysmem_memory:      ORIGIN 0x10002000 LENGTH = 0x00002000
    messages_memory:    ORIGIN 0x20000000 LENGTH = 0x00001000
 }
 
@@ -30,10 +31,13 @@ SECTIONS
    .data       > virtual_memory
    .switch     > virtual_memory
    .init_array > virtual_memory
-   .sysmem     > virtual_memory
    
    .stack      > stack_memory  {
       systemStack = .;
+   }
+   
+   .sysmem     > sysmem_memory {
+      sysmem = .;
    }
    
    .messages   > messages_memory  {

@@ -101,7 +101,7 @@ TID_t TaskManager::create(char* name, int priority, int initAddress, bool blockP
 
 	// init Task Control Block
 	t->tcb.restartAddress = TASK_MEMORY_START;
-	t->tcb.R13 = 0x00500000;
+	t->tcb.R13 = TASK_STACK_START + TASK_STACK_SIZE;
 	t->tcb.CPSR = 0x80000110;
 	t->tcb.R0 = 0;
 	t->tcb.R1 = 0;

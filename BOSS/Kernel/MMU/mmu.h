@@ -5,6 +5,13 @@
 #define TASK_MEMORY_END 0x1000000
 
 #define MESSAGE_QUEUE_VIRTUAL_ADDRESS 0x20000000
+#define MESSAGE_QUEUE_SIZE            0x00001000
+
+#define TASK_STACK_START 0x10000000
+#define TASK_STACK_SIZE  0x00002000
+
+#define TASK_SYSMEM_START 0x10002000
+#define TASK_SYSMEM_SIZE  0x00002000
 
 #include "API/dataTypes.h"
 #include "Kernel/Task/Task.h"
@@ -32,13 +39,13 @@ class MMU {
         address createOrGetL2Table(address masterTableAddress, int masterTableEntryNumber);
         address createMappedPage(address masterTableAddress, address virtualAddress);
         void mapDirectly(address masterTableAddress, address virtualAddress, address physicalAddress);
-        void mapOneToOne(address masterTableAddress, address startAddress, unsigned int length);
+        void mapOneToOne(address masterTableAddress, address startAddress, unsigned int length, bool userAccess, bool kernelAccess);
         
         void clearTLB();
-        void lockFirstTLBEntry();
         
         bool isTaskPage(address pageAddress);
         
+        bool isLegal(unsigned int accessedAddress, unsigned int faultStatus);
     public:
         MMU(Kernel* kernel);
         virtual ~MMU();

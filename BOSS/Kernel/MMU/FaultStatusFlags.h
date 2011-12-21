@@ -1,0 +1,33 @@
+#ifndef FAULTSTATUSFLAGS_H_
+#define FAULTSTATUSFLAGS_H_
+
+#define ALIGNMENT_FAULT                                     0x01 //0b000001
+#define INSTRUCTION_CACHE_MAINTENANCE_FAULT                 0x04 //0b000100
+
+#define L1_TRANSLATION_PRECISE_EXTERNAL_ABORT_AXI_DECODE    0x0C //0b001100
+#define L1_TRANSLATION_PRECISE_EXTERNAL_ABORT_AXI_SLAVE     0x2C //0b101100
+#define L2_TRANSLATION_PRECISE_EXTERNAL_ABORT_AXI_DECODE    0x0E //0b001110
+#define L2_TRANSLATION_PRECISE_EXTERNAL_ABORT_AXI_SLAVE     0x2E //0b101110
+#define L1_TRANSLATION_PRECISE_PARITY_ERROR                 0x1C //0b011100
+#define L2_TRANSLATION_PRECISE_PARITY_ERROR                 0x1E //0b011110
+
+#define TRANSLATION_FAULT_SECTION                           0x05 //0b000101
+#define TRANSLATION_FAULT_PAGE                              0x07 //0b000111
+
+#define ACCESS_FLAG_FAULT_SECTION                           0x03 //0b000011
+#define ACCESS_FLAG_FAULT_PAGE                              0x06 //0b000110
+
+#define DOMAIN_FAULT_SECTION                                0x09 //0b001001
+#define DOMAIN_FAULT_PAGE                                   0x0B //0b001011
+
+#define PERMISSION_FAULT_SECTION                            0x0D //0b001101
+#define PERMISSION_FAULT_PAGE                               0x0F //0b001111
+
+#define PRECISE_EXTERNAL_ABORT_NONTRANSLATION_AXI_DECODE    0x08 //0b001000
+#define PRECISE_EXTERNAL_ABORT_NONTRANSLATION_AXI_SLAVE     0x28 //0b101000
+#define IMPRECISE_EXTERNAL_ABORT_AXI_DECODE                 0x16 //0b010110
+#define IMPRECISE_EXTERNAL_ABORT_AXI_SLAVE                  0x36 //0b110110
+#define IMPRECISE_ERROR_PARITY_OR_ECC                       0x18 //0b011000
+
+#define DEBUG_EVENT                                         0x02 //0b000010
+#endif /*FAULTSTATUSFLAGS_H_*/

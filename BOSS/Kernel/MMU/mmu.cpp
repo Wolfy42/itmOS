@@ -1,7 +1,9 @@
 #include <string.h>
+#include "Lib/bitOperations.h"
 #include "API/dataTypes.h"
 #include "Kernel/Kernel.h"
 #include "mmu.h"
+#include "FaultStatusFlags.h"
 
 asm("\t .bss _taskMasterTableAddress, 4\n" \
     "\t .bss _tempVariableForAsmAndCpp, 4\n" \
@@ -55,7 +57,7 @@ void MMU::initKernelMMU() {
     setMasterTablePointerTo(tableAddress);
     // Initialize Master Table
     for (unsigned int i = 0x00000000; i < 0xFFF00000; i += 0x00100000) {
-        *tableAddress = i | 0xC12;
+        *tableAddress = i | 0x000000C12;
         tableAddress++;
     }
     *tableAddress = 0xFFF00C12;
@@ -84,18 +86,6 @@ void MMU::clearTLB() {
     asm("\t MCR p15, #0, r0, c8, c7, #0\n");
 }
 
-void MMU::lockFirstTLBEntry() {
-    tempVariableForAsmAndCpp = EXT_DDR_START;
-    asm("\t LDR  r1, tempVariableForAsmAndCpp\n");
-    asm("\t LDR r1, [r1]\n");
-    asm("\t MOV  r0, #0x1\n"); //base=victim=0 (protect bit=1 [lock])
-    asm("\t MOV  r2, #0x0000\n");//base=victim=1 (protect bit=0 [unlock])
-    asm("\t MOVT r2, #0x0840\n");
-    asm("\t MCR  p15, #0, r0, c10, c0, #1\n"); //Write I-TLB Lockdown Register
-    asm("\t MCR  p15, #0, r1, c10, c1, #1\n"); //Prefetch I-TLB
-    asm("\t MCR  p15, #0, r2, c10, c0, #1\n"); //Write I-TLB Lockdown Register
-}
-
 void MMU::setMasterTablePointerTo(address tableAddress) {
     taskMasterTableAddress = tableAddress;
     unsigned int tempAddress = (unsigned int)taskMasterTableAddress & 0xFFFFC000;
@@ -119,7 +109,9 @@ address MMU::createOrGetL2Table(address masterTableAddress, int masterTableEntry
         if (*(masterTableAddress + masterTableEntryNumber) == 0x0) {
             result = m_kernel->getRAMManager()->findFreeMemory(1, true, true);
             
-            unsigned int tableEntry = (unsigned int)result | 0x00000011;
+            unsigned int tableEntry = (unsigned int)result | 0x00000021;
+            unsetBit(&tableEntry, 8);
+            unsetBit(&tableEntry, 9);
             *(masterTableAddress + masterTableEntryNumber) = tableEntry;
             
             std::memset((void*)result, 0x0, 1024); // 256 entries * 4 bytes per entry = 1024 bytes
@@ -145,11 +137,11 @@ void MMU::mapDirectly(address masterTableAddress, address virtualAddress, addres
     address pageAddress = (address)(((unsigned int)physicalAddress >> 12) << 12);
 
     unsigned int l2TableEntryNumber = ((unsigned int)virtualAddress >> 12) - (((unsigned int)virtualAddress >> 12) & 0xFFF00);
-    unsigned int tableEntry = (unsigned int)pageAddress | 0x2;
+    unsigned int tableEntry = (unsigned int)pageAddress | 0x00000FF2;
     *(l2TableAddress + l2TableEntryNumber) = tableEntry;
 }
 
-void MMU::mapOneToOne(address masterTableAddress, address startAddress, unsigned int length) {
+void MMU::mapOneToOne(address masterTableAddress, address startAddress, unsigned int length, bool userAccess, bool kernelAccess) {
     int nrOfMasterTableEntries = (length / 1048576) + 1;
     
     int firstEntryNumber = ((unsigned int)startAddress >> 12) - (((unsigned int)startAddress >> 12) & 0xFFF00);
@@ -164,7 +156,15 @@ void MMU::mapOneToOne(address masterTableAddress, address startAddress, unsigned
         if (freeForL2Table > 0x0) {
             for (int j = firstEntryNumber; (j < 256) && (j <= lastEntryNumber); ++j) {
                 unsigned int tableEntry = firstL2Entry + ((i * 256) + j) * 4096;
-                tableEntry |= 0x2;
+                tableEntry |= 0x00000002;
+                tableEntry |= (userAccess << 4);
+                tableEntry |= (userAccess << 6);
+                tableEntry |= (userAccess << 8);
+                tableEntry |= (userAccess << 10);
+                tableEntry |= (kernelAccess << 5);
+                tableEntry |= (kernelAccess << 7);
+                tableEntry |= (kernelAccess << 9);
+                tableEntry |= (kernelAccess << 11);
                 *(freeForL2Table + j) = tableEntry;
                 firstEntryNumber = j;
             }
@@ -192,10 +192,10 @@ void MMU::initMemoryForTask(Task* task) {
     if (savedTaskPointer == NULL) {
         task->masterTableAddress = createMasterTable();
         
-        mapOneToOne(task->masterTableAddress, (address)ROM_INTERRUPT_ENTRIES, ROM_INTERRUPT_LENGTH);
-        mapOneToOne(task->masterTableAddress, (address)INT_RAM_START, (unsigned int)m_firstFreeInIntRam - INT_RAM_START);
-        mapOneToOne(task->masterTableAddress, &intvecsStart, 0x3B);
-        mapOneToOne(task->masterTableAddress, (address)EXT_DDR_START, (unsigned int)m_firstFreeInExtDDR - EXT_DDR_START);
+        mapOneToOne(task->masterTableAddress, (address)ROM_INTERRUPT_ENTRIES, ROM_INTERRUPT_LENGTH, true, true);
+        mapOneToOne(task->masterTableAddress, (address)INT_RAM_START, (unsigned int)m_firstFreeInIntRam - INT_RAM_START, true, false);
+        mapOneToOne(task->masterTableAddress, &intvecsStart, 0x3B, true, false);
+        mapOneToOne(task->masterTableAddress, (address)EXT_DDR_START, (unsigned int)m_firstFreeInExtDDR - EXT_DDR_START, true, false);
         
         task->messageQueueAddress = createMappedPage(task->masterTableAddress, (address)MESSAGE_QUEUE_VIRTUAL_ADDRESS);
         
@@ -257,6 +257,52 @@ address MMU::parameterAddressFor(int serviceId)  {
 	return (address)0x820F0000;
 }
 
+bool MMU::isLegal(unsigned int accessedAddress, unsigned int faultStatus) {
+    bool writeAccess = readBit(&faultStatus, 11);
+    unsigned int statusField = (faultStatus & 0xF);
+    bool sdBit = readBit(&faultStatus, 12);
+    bool sBit = readBit(&faultStatus, 10);
+    statusField |= (sdBit << 6);
+    statusField |= (sBit << 5);
+    
+    bool result = false;
+    
+    if (writeAccess) {
+        switch (statusField) {
+            case PERMISSION_FAULT_SECTION:
+            case PERMISSION_FAULT_PAGE:
+                result = true;
+                break;
+            case TRANSLATION_FAULT_SECTION:
+            case TRANSLATION_FAULT_PAGE:
+                result = (((accessedAddress >= TASK_STACK_START) && (accessedAddress < TASK_STACK_START + TASK_STACK_SIZE))
+                       || ((accessedAddress >= TASK_SYSMEM_START) && (accessedAddress < TASK_SYSMEM_START + TASK_SYSMEM_SIZE))
+                       || ((accessedAddress >= MESSAGE_QUEUE_VIRTUAL_ADDRESS) && (accessedAddress < MESSAGE_QUEUE_VIRTUAL_ADDRESS + MESSAGE_QUEUE_SIZE)));
+                break;
+            case DEBUG_EVENT:
+                result = true;
+                break;
+            default:
+                result = false;
+                break;        
+        }
+    } else {
+        switch (statusField) {
+            case TRANSLATION_FAULT_SECTION:
+            case TRANSLATION_FAULT_PAGE:
+                result = ((accessedAddress >= TASK_MEMORY_START) && (accessedAddress < TASK_MEMORY_END));
+                break;
+            case DEBUG_EVENT:
+                result = true;
+                break;
+            default:
+                result = false;
+                break;
+        }
+    }
+    
+    return result;
+}
 bool MMU::handlePrefetchAbort() {
     Task* currentTask = m_currentTask;
     switchToKernelMMU();
@@ -265,15 +311,20 @@ bool MMU::handlePrefetchAbort() {
 }
 
 bool MMU::handleDataAbort() {
+    bool doContextSwitch = false;
+    // Get the accessed address
     asm("\t MRC p15, #0, r0, c6, c0, #0\n"); // Read data foult address register
     asm("\t LDR r1, tempVariableForAsmAndCpp\n");
     asm("\t STR r0, [r1]\n");
-    // TODO check for read / write permissions
-    
-    bool doContextSwitch = false;
     unsigned int accessedAddress = tempVariableForAsmAndCpp;
     
-    if ((accessedAddress % 0x4 == 0x0) && (accessedAddress >= TASK_MEMORY_START) && (accessedAddress < TASK_MEMORY_END)) {
+    // Get the abort status
+    asm("\t MRC p15, #0, r0, c5, c0, #0\n");
+    asm("\t LDR r1, tempVariableForAsmAndCpp\n");
+    asm("\t STR r0, [r1]\n");
+    unsigned int faultStatus = tempVariableForAsmAndCpp;
+    
+    if (isLegal(accessedAddress, faultStatus)) {
         Task* currentTask = m_currentTask;
         switchToKernelMMU();
         createMappedPage(currentTask->masterTableAddress, (address)accessedAddress);
