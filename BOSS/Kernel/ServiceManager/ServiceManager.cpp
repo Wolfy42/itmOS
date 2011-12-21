@@ -17,7 +17,7 @@ void ServiceManager::startService(char* serviceName, int serviceId, char* servic
 	Task* task = _taskManager->create(serviceName, false);
 	_serviceTaskMapping.insert(std::pair<int, Task*>(serviceId, task));
 
-	_loader->loadCode(serviceCode);
+	_loader->loadCode(task, serviceCode);
 }
 
 void ServiceManager::stopService(int serviceId) {
