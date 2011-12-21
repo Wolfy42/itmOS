@@ -31,7 +31,7 @@ public:
 	Task* getTaskFor(int taskId);
 	
 	// create a new Task
-	TID_t create(char* name, int priority, int initAddress, bool blockParent);
+	Task* create(char* name, bool blockParent, int priority = 50);
 	
 	// delete a Task by TaskID (TID_t)
 	void kill(int taskId);

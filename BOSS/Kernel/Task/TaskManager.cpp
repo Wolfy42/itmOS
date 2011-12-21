@@ -65,14 +65,9 @@ Task** TaskManager::getTaskList() {
  * 	- priority (0 - 100)
  * 	- initial Address Point
  */
-TID_t TaskManager::create(char* name, int priority, int initAddress, bool blockParent) {
+Task* TaskManager::create(char* name, bool blockParent, int priority) {
 
 	int nextTask = getNextFreeSlot();
-
-	// no empty slot: return nextTask (which should be error number)
-	if (nextTask == -1) {
-		return nextTask;
-	}
 
 	// init task
 	Task* t = new Task();
@@ -81,7 +76,6 @@ TID_t TaskManager::create(char* name, int priority, int initAddress, bool blockP
 	t->status = Ready;
 	t->child = NULL;
 	t->parent = NULL;
-    t->codeLocation = (address)initAddress;
 	
 	if (blockParent == true) {
 	
@@ -122,7 +116,7 @@ TID_t TaskManager::create(char* name, int priority, int initAddress, bool blockP
 	_tasks[nextTask] = t;
 
 	// return TaskID
-	return t->id;
+	return t;
 }
 	
 

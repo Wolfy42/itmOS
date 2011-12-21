@@ -3,6 +3,9 @@
 
 #include "Kernel/Kernel.h"
 #include "Kernel/Task/TaskManager.h"
+#include "API/systemCalls.h"
+
+class Kernel;
 
 class SystemCallExec
 {

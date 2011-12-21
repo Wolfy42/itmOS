@@ -5,28 +5,27 @@
 
 #include "Messaging/MessageQueue/MessageQueue.h"
 #include "Messaging/Message/Message.h"
+#include "Kernel/Task/Task.h"
 #include "Kernel/Task/TaskManager.h"
-
-// Forward-declaration
-class Kernel;
+#include "Loader/Loader.h"
+#include "Loader/TasksHex.h"
 
 class ServiceManager
 {	
 	private:
-		Kernel* _kernel;
 		TaskManager* _taskManager;
-		std::map<int, int> _taskIdMapping;
+		Loader* _loader;
+		std::map<int, Task*> _serviceTaskMapping;
 	
 	public:
-		ServiceManager(Kernel* kernel, TaskManager* taskManager);
+		ServiceManager(TaskManager* taskManager, Loader* loader);
 		virtual ~ServiceManager();
 		
-		void registerService(int service);
-		void startService(int service); 
-		void stopService(int service);
-		void restartService(int service);
-		
-		TID_t getTaskIdForService(int service);
+		void startServices();
+		void startService(char* serviceName, int serviceId, char* serviceCode);
+		void stopService(int serviceId);
+
+		Task* getTaskForService(int serviceId);
 };
 
 #endif /*SERVICEMANAGER_H_*/
