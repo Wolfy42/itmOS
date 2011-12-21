@@ -1,31 +1,17 @@
 #include "Kernel/Kernel.h"
-//#include "Service/LED/LEDService.h"
+#include "Kernel/ServiceManager/ServiceManager.h"
 
 
+int main(int argc, char **argv) {
 
-int _main(int argc, char **argv) {
+	_disable_interrupts();
 
-//	//TODO: start already in kernel-mode
-//	asm("	CPS   0x13");
-//
-//	Kernel* kernel = new Kernel();
-//	TaskManager* taskmanager = new TaskManager();
-//	SWIExecutor* swiExecutor = new SWIExecutor(kernel, taskmanager);
-//
-//	swi_setSWIExecutor(swiExecutor);
-//
-//	//LEDService* ledService = new LEDService();
-//	//kernel->startService(ledService);
-//
-//	// up to user-mode
-//	//asm("	CPS   0x10");
-//
-//	switchLEDOff(LED1);
-//
-//	//kernel->executeServiceCalls();
-//
-//	// TODO: should be called by a scheduler
-//	//ledService->run();
+	Kernel* kernel = new Kernel();
+	ServiceManager* serviceManager = kernel->getServiceManager();
 
-	return 0;
+	serviceManager->startServices();
+
+	_enable_interrupts();
+
+	while(1);
 }
