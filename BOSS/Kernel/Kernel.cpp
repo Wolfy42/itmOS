@@ -22,10 +22,18 @@ Kernel::~Kernel() {
 }
 
 void Kernel::write(int* parameters)  {
-	//TODO: use memory manager
-//	Message* message = new Message(parameters);
-//	MessageQueue* messageQueue = _messageQueues.find(message->getTaskId())->second;
-//	messageQueue->addMessage(message);
+	int serviceId = parameters[0];
+	int length = parameters[1];
+	int* params = &parameters[2];
+
+	int activeTaskId = _taskManager->getActiveTask()->id;
+	Task* task = _serviceManager->getTaskForService(serviceId);
+
+	MemoryManager* memoryManager = (*task).memoryManager;
+	MessageQueue* messageQueue = memoryManager->getMessageQueue();
+
+	Message* message = memoryManager->createMessage(activeTaskId, length, params);
+	messageQueue->pushMessage(message);
 }
 
 TaskManager* Kernel::getTaskManager(void) {

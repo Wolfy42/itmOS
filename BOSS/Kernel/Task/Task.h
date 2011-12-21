@@ -2,6 +2,7 @@
 #define TASK_H_
 
 #include "API/dataTypes.h"
+#include "Messaging/MemoryManager/MemoryManager.h"
 
 typedef int TID_t;
 enum Status { Ready, Running, Blocked, Wait };
@@ -35,7 +36,7 @@ struct TCB {
 
 class Task {
     public:
-        address messageQueueAddress;
+        MemoryManager* memoryManager;
         
         address masterTableAddress;
         // id of task
