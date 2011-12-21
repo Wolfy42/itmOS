@@ -1,4 +1,5 @@
 #include <string.h>
+#include <list>
 #include "Lib/bitOperations.h"
 #include "API/dataTypes.h"
 #include "Kernel/Kernel.h"
@@ -212,6 +213,12 @@ void MMU::initMemoryForTask(Task* task) {
             mapDirectly(task->masterTableAddress, virtualAddress, physicalAddress, false, true);
         }
         
+        std::list<address>* taskRegisters = task->taskRegisters;
+        std::list<address>::const_iterator iter;
+        
+        for (iter = taskRegisters->begin(); iter != taskRegisters->end(); iter++) {
+            mapOneToOne(task->masterTableAddress, *iter, 1, true, true);
+        }
         
         setMasterTablePointerTo(task->masterTableAddress);
         
