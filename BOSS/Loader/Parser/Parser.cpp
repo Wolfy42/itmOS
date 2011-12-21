@@ -27,7 +27,7 @@ std::list<Code*>* Parser::parse(char hex[])  {
 		i++;
 
 		// address
-		c->address = addressOffset;
+		c->address = 0;
 		c->address += hexToInt(hex[i]);
 		c->addressHex[0] = hex[i];
 		i++;
@@ -43,6 +43,7 @@ std::list<Code*>* Parser::parse(char hex[])  {
 		c->address += hexToInt(hex[i]);
 		c->addressHex[3] = hex[i];
 		i++;
+		c->address += addressOffset;
 
 		// record type
 		recType = 0;
