@@ -49,9 +49,6 @@ class MMU {
         
         void loadPage(int pageNumber);
 
-        void prepagePagesFor(int serviceId);
-        address parameterAddressFor(int serviceId);
-
         bool handlePrefetchAbort();  
         bool handleDataAbort();
 };
