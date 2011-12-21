@@ -65,7 +65,7 @@ Task** TaskManager::getTaskList() {
  * 	- priority (0 - 100)
  * 	- initial Address Point
  */
-Task* TaskManager::create(char* name, int priority, int initAddress, bool blockParent) {
+Task* TaskManager::create(char* name, bool blockParent, int priority) {
 
 	int nextTask = getNextFreeSlot();
 
@@ -76,7 +76,6 @@ Task* TaskManager::create(char* name, int priority, int initAddress, bool blockP
 	t->status = Ready;
 	t->child = NULL;
 	t->parent = NULL;
-    t->codeLocation = (address)initAddress;
 	
 	if (blockParent == true) {
 	

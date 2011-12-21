@@ -6,7 +6,7 @@ Kernel::Kernel() {
     _loader = new Loader(_ramManager);
     _mmu = new MMU(this);
 	_taskManager = new TaskManager(_mmu);
-	_serviceManager = new ServiceManager(_taskManager);
+	_serviceManager = new ServiceManager(_taskManager, _loader);
 	_handlerManager = new HandlerManager(this);
 	_executor = new SystemCallExec(this, _taskManager);
     

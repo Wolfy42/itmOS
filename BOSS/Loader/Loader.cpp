@@ -76,7 +76,7 @@ void Loader::handleDataRecord(Code* dataRecord) {
 	memcpy((int*)currentAddress, data, byteCount);
 }
 
-void Loader::loadCode(char hex[]) {
+void Loader::loadCode(Task* task, char hex[]) {
 	_code = _parser->parse(hex); 
 	
 	if (reserveMemory()) {
