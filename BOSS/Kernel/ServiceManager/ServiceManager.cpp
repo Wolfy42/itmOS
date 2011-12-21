@@ -22,6 +22,7 @@ void ServiceManager::startService(char* serviceName, int serviceId, char* servic
 
 void ServiceManager::stopService(int serviceId) {
 	_taskManager->kill(getTaskForService(serviceId)->id);
+	_serviceTaskMapping.erase(serviceId);
 }
 
 Task* ServiceManager::getTaskForService(int serviceId) {

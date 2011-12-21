@@ -9,6 +9,7 @@
 #include "Kernel/RAMManager/RAMManager.h"
 #include "Loader/TasksHex.h"
 #include "Loader/Parser/Parser.h"
+#include "Kernel/Task/Task.h"
 
 class Loader {
 	private:
@@ -30,7 +31,7 @@ class Loader {
 		Loader(RAMManager* ramManager);
 		virtual ~Loader();
 		
-		void loadCode(char hex[]);
+		void loadCode(Task* task, char hex[]);
 };
 
 #endif /* LOADER_H_ */
