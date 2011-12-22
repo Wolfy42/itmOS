@@ -13,11 +13,25 @@ Kernel::Kernel() {
 			_handlerManager->getIrqHandler(), 
 			_handlerManager->getSwiHandler(), 
 			_taskManager, _mmu);
+			
+	initScheduler();
 }
 
 Kernel::~Kernel() {
 	delete _taskManager;
 	delete _serviceManager;
+}
+
+void interrupted(void) {
+	// Bla
+}
+
+void Kernel::initScheduler() {
+	srand_(time_());
+	_handlerManager->getIrqHandler()->registerHandler(HalTimerDriver::irqNumberForTimer(GPTIMER1), interrupted);
+
+	HalTimerDriver::init(GPTIMER1, GPT_IRQMODE_OVERFLOW, 100);
+	HalTimerDriver::start(GPTIMER1);
 }
 
 void Kernel::write(int* parameters)  {

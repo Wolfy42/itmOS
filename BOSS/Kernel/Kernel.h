@@ -10,6 +10,11 @@
 #include "Kernel/MMU/mmu.h"
 #include "Loader/Loader.h"
 
+#include "HAL/Timer/HalTimerDriver.h"
+#include "Lib/Rand.h"
+#include "Lib/Time.h"
+
+
 #include "Messaging/Message/Message.h"
 #include "Messaging/MessageQueue/MessageQueue.h"
 
@@ -26,6 +31,8 @@ class Kernel {
         MMU* _mmu;
         RAMManager* _ramManager;
         Loader* _loader;
+	
+		void initScheduler(void);
 	
 	public:
 		Kernel();
