@@ -134,7 +134,9 @@ void MMU::mapDirectly(address masterTableAddress, address virtualAddress, addres
     
         unsigned int l2TableEntryNumber = ((unsigned int)virtualAddress >> 12) - (((unsigned int)virtualAddress >> 12) & 0xFFF00);
         
+        // 0x2 means small page (0b10)
         unsigned int tableEntry = (unsigned int)pageAddress | 0x00000002;
+        // Set the AP bits
         tableEntry |= (userAccess << 4);
         tableEntry |= (userAccess << 6);
         tableEntry |= (userAccess << 8);
@@ -176,9 +178,9 @@ void MMU::initMemoryForTask(Task* task) {
         task->masterTableAddress = createMasterTable();
         
         mapOneToOne(task->masterTableAddress, (address)ROM_INTERRUPT_ENTRIES, ROM_INTERRUPT_LENGTH, true, true);
-        mapOneToOne(task->masterTableAddress, (address)INT_RAM_START, (unsigned int)m_firstFreeInIntRam - INT_RAM_START, true, false);
-        mapOneToOne(task->masterTableAddress, &intvecsStart, 0x3B, true, false);
-        mapOneToOne(task->masterTableAddress, (address)EXT_DDR_START, (unsigned int)m_firstFreeInExtDDR - EXT_DDR_START, true, false);
+        mapOneToOne(task->masterTableAddress, (address)INT_RAM_START, (unsigned int)m_firstFreeInIntRam - INT_RAM_START, true, true);
+        mapOneToOne(task->masterTableAddress, &intvecsStart, 0x3B, true, true);
+        mapOneToOne(task->masterTableAddress, (address)EXT_DDR_START, (unsigned int)m_firstFreeInExtDDR - EXT_DDR_START, true, true);
         
         task->memoryManager = (MemoryManager*)createMappedPage(task->masterTableAddress, (address)MESSAGE_QUEUE_VIRTUAL_ADDRESS, true, true);
         
@@ -190,7 +192,7 @@ void MMU::initMemoryForTask(Task* task) {
             address virtualAddress = (address)(task->tcb.restartAddress + (i * 4096));
             // The next physical address is the first address plus 4096 bytes (4KB)
             address physicalAddress = (address)(((unsigned int)(task->codeLocation)) + (i * 4096));
-            mapDirectly(task->masterTableAddress, virtualAddress, physicalAddress, false, true);
+            mapDirectly(task->masterTableAddress, virtualAddress, physicalAddress, true, true);
         }
         
         setMasterTablePointerTo(task->masterTableAddress);
@@ -319,10 +321,12 @@ bool MMU::handleDataAbort() {
         initMemoryForTask(currentTask);
         doContextSwitch = false;
     } else {
-        Task* currentTask = m_currentTask;
-        switchToKernelMMU();
-        m_kernel->getTaskManager()->kill(currentTask->id);
-        doContextSwitch = true;
+        if (m_currentTask != NULL) {
+            Task* currentTask = m_currentTask;
+            switchToKernelMMU();
+            m_kernel->getTaskManager()->kill(currentTask->id);
+            doContextSwitch = true;
+        }
     }
     return doContextSwitch;
 }
