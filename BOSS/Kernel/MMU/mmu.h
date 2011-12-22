@@ -39,7 +39,7 @@ class MMU {
         address createMappedPage(address masterTableAddress, address virtualAddress, bool userAccess, bool kernelAccess);
         void mapDirectly(address masterTableAddress, address virtualAddress, address physicalAddress, bool userAccess, bool kernelAccess);
         void mapOneToOne(address masterTableAddress, address startAddress, unsigned int length, bool userAccess, bool kernelAccess);
-        
+        void mapHardwareRegisters(Task* task);
         void clearTLB();
         
         bool isTaskPage(address pageAddress);
