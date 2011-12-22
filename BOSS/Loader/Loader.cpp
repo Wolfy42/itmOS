@@ -69,7 +69,6 @@ void Loader::handleDataRecord(Code* dataRecord) {
 	byte* data = dataRecord->bytes;
 	
 	// Start address for this record
-	// TODO: 0x1000 entfernen bei refactoring
 	address currentAddress = (address)((int)_memoryStart + addressOffset - TASK_MEMORY_START);
 	
 	// Copy data to memory
@@ -77,18 +76,7 @@ void Loader::handleDataRecord(Code* dataRecord) {
 }
 
 void Loader::loadTaskCode(Task* task, char hex[]) {
-	std::list<Code*>* code = _parser->parse(hex); 
-	
-	if (reserveMemory(code)) {
-		// Load code to reserved memory
-		loadCodeToMemory(code);
-		
-		// Create new Task
-		task->codeLocation = _memoryStart;
-		task->pageCount = _endPageNr - _startPageNr + 1;
-	}
-	
-	_parser->deleteParsedCode(code);
+	loadServiceCode(task, hex, NULL);
 }
 
 void Loader::loadServiceCode(Task* task, char hex[], ServiceConfig* config) {
@@ -101,7 +89,10 @@ void Loader::loadServiceCode(Task* task, char hex[], ServiceConfig* config) {
 		// Create new Task
 		task->codeLocation = _memoryStart;
 		task->pageCount = _endPageNr - _startPageNr + 1;
-		task->taskRegisters = config->getRegistersForMmuMapping();
+		
+		if (config != NULL) {
+			task->taskRegisters = config->getRegistersForMmuMapping();
+		}
 	}
 	
 	_parser->deleteParsedCode(code);

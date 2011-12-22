@@ -1,46 +1,26 @@
 #include "Kernel/Kernel.h"
-#include "Kernel/ServiceManager/ServiceManager.h"
-#include "HAL/Timer/HalTimerDriver.h"
-#include "Lib/Rand.h"
-#include "Lib/Time.h"
 
-void interrupted(void) {
-	// Bla
-}
-
-void initScheduler(IRQHandler* hand) {
-	srand_(time_());
-	hand->registerHandler(HalTimerDriver::irqNumberForTimer(GPTIMER2), interrupted);
-
-	HalTimerDriver::init(GPTIMER2, GPT_IRQMODE_OVERFLOW, 100);
-	HalTimerDriver::start(GPTIMER2);
-}
-
-void dummy2(void)  {
+void leerlauf(void)  {
 	while(1);
 }
 
 int main() {
-
 	_disable_interrupts();
 
-	Kernel* kernel = new Kernel();
-	ServiceManager* serviceManager = kernel->getServiceManager();
-
-	initScheduler(kernel->getHandlerManager()->getIrqHandler());
+	Kernel* kernel = new Kernel(); 
 
 	// Dummy Task
-	Task* dummyTask = kernel->getTaskManager()->create("dummy2\0", false);
-	dummyTask->codeLocation = (address)((void*)dummy2);
-	dummyTask->pageCount = 1;
+	Task* leerlaufTask = kernel->getTaskManager()->create("leerlauf\0", false);
+	leerlaufTask->codeLocation = (address)((void*)leerlauf);
+	leerlaufTask->pageCount = 1;
 	
 	// Start Services
-	serviceManager->startServices();
+	kernel->getServiceManager()->startServices();
 
 	// Init
 	_enable_interrupts();
 	asm("\t CPS 0x10");
-	dummy2();
+	leerlauf();
 	
 	while(1);
 }
