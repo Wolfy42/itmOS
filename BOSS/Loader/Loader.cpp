@@ -75,12 +75,12 @@ void Loader::handleDataRecord(Code* dataRecord) {
 	memcpy((int*)currentAddress, data, byteCount);
 }
 
-void Loader::loadTaskCode(Task* task, char hex[]) {
-	loadServiceCode(task, hex, NULL);
+void Loader::loadTaskCode(Task* task, CodeBytes* codeBytes) {
+	loadServiceCode(task, codeBytes, NULL);
 }
 
-void Loader::loadServiceCode(Task* task, char hex[], ServiceConfig* config) {
-	std::list<Code*>* code = _parser->parse(hex); 
+void Loader::loadServiceCode(Task* task, CodeBytes* codeBytes, ServiceConfig* config) {
+	std::list<Code*>* code = _parser->parse(codeBytes);
 	
 	if (reserveMemory(code)) {
 		// Load code to reserved memory

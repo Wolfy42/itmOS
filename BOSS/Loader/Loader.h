@@ -31,8 +31,8 @@ class Loader {
 		Loader(RAMManager* ramManager);
 		virtual ~Loader();
 		
-		void loadTaskCode(Task* task, char hex[]);
-		void loadServiceCode(Task* task, char hex[], ServiceConfig* config);
+		void loadTaskCode(Task* task, CodeBytes* codeBytes);
+		void loadServiceCode(Task* task, CodeBytes* codeBytes, ServiceConfig* config);
 };
 
 #endif /* LOADER_H_ */
