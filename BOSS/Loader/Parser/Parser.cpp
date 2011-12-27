@@ -81,15 +81,15 @@ std::list<Code*>* Parser::parse(CodeBytes* codeBytes)  {
 
 			c->bytes = new byte[c->byteCount];
 			for (int j = 0; j < c->byteCount; j+=4)  {
-				c->bytes[j] = hexToInt(codeByte3[i]) * 16;
-				c->bytes[j+1] = hexToInt(codeByte2[i]) * 16;
-				c->bytes[j+2] = hexToInt(codeByte1[i]) * 16;
-				c->bytes[j+3] = hexToInt(codeByte0[i]) * 16;
+				c->bytes[j] = hexToInt(codeByte0[i]) * 16;
+				c->bytes[j+1] = hexToInt(codeByte1[i]) * 16;
+				c->bytes[j+2] = hexToInt(codeByte2[i]) * 16;
+				c->bytes[j+3] = hexToInt(codeByte3[i]) * 16;
 				i++;
-				c->bytes[j] += hexToInt(codeByte3[i]);
-				c->bytes[j+1] += hexToInt(codeByte2[i]);
-				c->bytes[j+2] += hexToInt(codeByte1[i]);
-				c->bytes[j+3] += hexToInt(codeByte0[i]);
+				c->bytes[j] += hexToInt(codeByte0[i]);
+				c->bytes[j+1] += hexToInt(codeByte1[i]);
+				c->bytes[j+2] += hexToInt(codeByte2[i]);
+				c->bytes[j+3] += hexToInt(codeByte3[i]);
 				i++;
 			}
 			codeLines->push_back(c);
