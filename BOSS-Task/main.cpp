@@ -4,7 +4,14 @@
 int main() {
 
 	HalLedDriver dr;
-	dr.ledOff(LED1);
-
+	dr.ledOff(LED2);
+	int i=0;
+	while (1)  {
+		i=0;
+		while (i<80000)  {
+			i++;
+		}
+		dr.toggle(LED1);
+	}
 	return 0;
 }
