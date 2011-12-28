@@ -32,6 +32,12 @@ c_r13_system    .long    systemStack
 
 _c_int00: .asmfunc
 
+    ; Perform all the required initilizations:
+    ;  - Process BINIT Table
+    ;  - Perform C auto initialization
+    ;  - Call global constructors)
+    BL    __TI_auto_init
+
     ; CALL APPLICATION
     BL    ARGS_MAIN_RTN
 
