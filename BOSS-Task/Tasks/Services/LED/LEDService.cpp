@@ -1,17 +1,5 @@
-#include <stdio.h>
+
 #include "LEDService.h"
-
-
-// ~~~~~~~~~~~~~~~~~~~~ CONFIG & STARTUP ~~~~~~~~~~~~~~~~~~~~
-LEDConfig LEDService::CONFIG = LEDConfig();
-
-// Static main method for this service
-void LEDService::main(void) {
-	LEDService service;
-	service.run();
-}
-// ~~~~~~~~~~~~~~~~~~~~ CONFIG & STARTUP ~~~~~~~~~~~~~~~~~~~~
-
 
 LEDService::LEDService(): Service()  {}
 LEDService::~LEDService()  {}
@@ -34,7 +22,7 @@ void LEDService::executeMessage(Message* message)  {
 			break;
 		case SERVICE_GET_LED_STATUS:
 			int response[2];
-			response[0] = params[2]; // write Back caller-Id
+			response[0] = message->getTaskId();
 			response[1] = _driver.isOn(led);
 			writeResponse(response);
 			break;
