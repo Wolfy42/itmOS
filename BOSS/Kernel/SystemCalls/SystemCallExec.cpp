@@ -14,19 +14,33 @@ SystemCallExec::~SystemCallExec()
  * 	execute Sys Calls
  */
 bool SystemCallExec::execute(int swiNumber, int para1, int para2, int para3, int para4, int para5, int para6, int para7)  {
-    switch (swiNumber) {
+    bool switchTask = false;
+    int* params = new int[7];
+    params[0] = para1;
+    params[1] = para2;
+    params[2] = para3;
+    params[3] = para4;
+    params[4] = para5;
+    params[5] = para6;
+    params[6] = para7;
+
+	switch (swiNumber) {
 
     	case WRITE:
-    		//TODO: write the parameters into the messageQueue of a Service
-//    		_kernel->write(parameters);
+    		_kernel->write(params);
     		break;
     	case WRITE_RESPONE:
     		//TODO: write the response from a service to a task
     		break;
+    	case SUSPEND:
+    		//TODO: suspend a task
+    		break;
+
         case EXIT:
          	_taskmanager->kill(para1);
          	// context switch
-        	return true;
+         	switchTask = true;
+         	break;
         	
         case KILL:
             break;
@@ -36,7 +50,9 @@ bool SystemCallExec::execute(int swiNumber, int para1, int para2, int para3, int
             break;
         case YIELD:
         	// just context switch
-        	return true;
+        	switchTask = true;
+        	break;
     }
-    return false;
+	delete params;
+    return switchTask;
 }
