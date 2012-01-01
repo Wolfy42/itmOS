@@ -39,6 +39,7 @@ public:
 
 	MemoryManager(address memoryStartAddress);
 	virtual ~MemoryManager();
+	void addPointerAddressOffset(int offset);
 
 	MessageQueue* getMessageQueue();
 	Message* createMessage(int taskId, int paramSize, int* messageParams);

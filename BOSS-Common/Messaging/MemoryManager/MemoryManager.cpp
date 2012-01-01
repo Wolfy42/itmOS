@@ -25,6 +25,11 @@ MessageQueue* MemoryManager::createMessageQueue()  {
 	return new (mq) MessageQueue();
 }
 
+void MemoryManager::addPointerAddressOffset(int offset)  {
+	_messageQueue = (MessageQueue*)((int)_messageQueue + offset);
+	_memoryStartAddress = (address)((int)_memoryStartAddress +offset);
+}
+
 MessageQueue* MemoryManager::getMessageQueue()  {
 	return _messageQueue;
 }

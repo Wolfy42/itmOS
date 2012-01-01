@@ -184,6 +184,8 @@ void MMU::initMemoryForTask(Task* task) {
         
         task->memoryManager = (MemoryManager*)createMappedPage(task->masterTableAddress, (address)MESSAGE_QUEUE_VIRTUAL_ADDRESS, true, true);
         MemoryManager::getInstanceAt((address)task->memoryManager);
+        int virtualOffset = (int)MESSAGE_QUEUE_VIRTUAL_ADDRESS - (int)task->memoryManager;
+        task->memoryManager->addPointerAddressOffset(virtualOffset);
         
         mapHardwareRegisters(task);
         
