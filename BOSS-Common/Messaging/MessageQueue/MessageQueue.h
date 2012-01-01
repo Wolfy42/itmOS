@@ -20,7 +20,6 @@ private:
 
 public:
 	MessageQueue();
-	virtual ~MessageQueue();
 
 	void pushMessage(Message* message);
 	Message* popMessage(void);

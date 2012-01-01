@@ -24,6 +24,7 @@ class MemoryManager {
 private:
 
 	address _memoryStartAddress;
+	int _virtualOffset;
 	MessageQueue* _messageQueue;
 
 	MessageQueue* createMessageQueue();
@@ -35,13 +36,13 @@ private:
 
 public:
 
-	static MemoryManager* getInstanceAt(address memoryStartAddress);
+	static MemoryManager* getInstanceAt(address memoryStartAddress, int virtualOffset);
 
-	MemoryManager(address memoryStartAddress);
-	virtual ~MemoryManager();
-	void addPointerAddressOffset(int offset);
+	MemoryManager(address memoryStartAddress, int virtualOffset);
 
 	MessageQueue* getMessageQueue();
+	MessageQueue* getMessageQueueWithoutVirtualOffset();
+
 	Message* createMessage(int taskId, int paramSize, int* messageParams);
 	void remove(Message* message);
 

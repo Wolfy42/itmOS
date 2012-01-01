@@ -7,8 +7,6 @@ MessageQueue::MessageQueue() {
 	_last = 0; 
 }
 
-MessageQueue::~MessageQueue() {}
-
 void MessageQueue::pushMessage(Message* message) {
 	// Throw exception if full
 	if (isFull()) {

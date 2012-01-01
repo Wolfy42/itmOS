@@ -43,7 +43,7 @@ void Kernel::write(int* parameters)  {
 	Task* task = _serviceManager->getTaskForService(serviceId);
 
 	MemoryManager* memoryManager = task->memoryManager;
-	MessageQueue* messageQueue = memoryManager->getMessageQueue();
+	MessageQueue* messageQueue = memoryManager->getMessageQueueWithoutVirtualOffset();
 
 	Message* message = memoryManager->createMessage(activeTaskId, length, params);
 	messageQueue->pushMessage(message);

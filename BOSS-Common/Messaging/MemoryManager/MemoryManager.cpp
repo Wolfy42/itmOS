@@ -1,37 +1,36 @@
 
 #include "MemoryManager.h"
 
-MemoryManager* MemoryManager::getInstanceAt(address memoryStartAddress)  {
+MemoryManager* MemoryManager::getInstanceAt(address memoryStartAddress, int virtualOffset)  {
 
 	address freeMemory = address((int)memoryStartAddress + sizeof(MemoryManager));
-	MemoryManager* mm = new ((void*)memoryStartAddress) MemoryManager(freeMemory);
+	MemoryManager* mm = new ((void*)memoryStartAddress) MemoryManager(freeMemory, virtualOffset);
 	return mm;
 }
 
-MemoryManager::MemoryManager(address memoryStartAddress)  {
+MemoryManager::MemoryManager(address memoryStartAddress, int virtualOffset)  {
 	_memoryStartAddress = memoryStartAddress;
+	_virtualOffset = virtualOffset;
 
 	MemoryHeader *mh = new ((void*)_memoryStartAddress) MemoryHeader();
 	mh->memoryState = BOSS_MEMORY_FREE;
 	mh->size = 0;
 
 	_messageQueue = createMessageQueue();
-}
 
-MemoryManager::~MemoryManager()  {}
+	/* run this code to switch OFF an LED
+	int a[2];
+	a[0] = 0; // LED1
+	a[1] = 0; // toggle
+
+	Message* message = createMessage(1, 2, a);
+	getMessageQueueWithoutVirtualOffset()->pushMessage(message);
+	*/
+}
 
 MessageQueue* MemoryManager::createMessageQueue()  {
 	MessageQueue* mq = (MessageQueue*)getNextFreeAddressWith(sizeof(MessageQueue));
-	return new (mq) MessageQueue();
-}
-
-void MemoryManager::addPointerAddressOffset(int offset)  {
-	_messageQueue = (MessageQueue*)((int)_messageQueue + offset);
-	_memoryStartAddress = (address)((int)_memoryStartAddress +offset);
-}
-
-MessageQueue* MemoryManager::getMessageQueue()  {
-	return _messageQueue;
+	return (MessageQueue*)((int)new (mq) MessageQueue() + _virtualOffset);
 }
 
 Message* MemoryManager::createMessage(int taskId, int paramSize, int* messageParams)  {
@@ -40,7 +39,15 @@ Message* MemoryManager::createMessage(int taskId, int paramSize, int* messagePar
 	memcpy(arr, messageParams, paramSize * sizeof(int));
 
 	Message* mes = (Message*)getNextFreeAddressWith(sizeof(Message));
-	return new (mes) Message(taskId, paramSize, arr);
+	return (Message*)((int)new (mes) Message(taskId, paramSize, (int*)((int)arr+_virtualOffset)) + _virtualOffset);
+}
+
+MessageQueue* MemoryManager::getMessageQueue()  {
+	return _messageQueue;
+}
+
+MessageQueue* MemoryManager::getMessageQueueWithoutVirtualOffset()  {
+	return (MessageQueue*)((int)_messageQueue - _virtualOffset);
 }
 
 void MemoryManager::remove(Message* message)  {
