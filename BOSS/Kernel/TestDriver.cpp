@@ -16,8 +16,6 @@
 
 #include "Kernel/Kernel.h"
 
-#include "OMAP-Lib/OMAP/McBSP2.h"
-
 #include "Kernel/Task/Task.h"
 #include "MMU/mmu.h"
 #include "Messaging/MemoryManager/MemoryManager.h"
@@ -79,11 +77,6 @@ void shellstart() {
 
 void init_kernel() {
 	kernel = new Kernel();
-}
-
-void audio_test() {
-	McBSP2* mcbsp2 = new McBSP2();
-	mcbsp2->init_mcbsp2();
 }
 
 void shell_test() {
