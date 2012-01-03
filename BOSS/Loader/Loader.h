@@ -18,11 +18,11 @@ class Loader {
 		Parser* _parser;
 		
 		address _memoryStart;
-		char _startPageNr;
-		char _endPageNr;
+		int _startPageNr;
+		int _endPageNr;
 		
 		bool reserveMemory(std::list<Code*>* code);
-		void checkPageNumbers(char page);
+		void checkPageNumbers(int address);
 		void loadCodeToMemory(std::list<Code*>* code);
 		
 		void handleDataRecord(Code* dataRecord);
@@ -31,8 +31,8 @@ class Loader {
 		Loader(RAMManager* ramManager);
 		virtual ~Loader();
 		
-		void loadTaskCode(Task* task, char hex[]);
-		void loadServiceCode(Task* task, char hex[], ServiceConfig* config);
+		void loadTaskCode(Task* task, CodeBytes* codeBytes);
+		void loadServiceCode(Task* task, CodeBytes* codeBytes, ServiceConfig* config);
 };
 
 #endif /* LOADER_H_ */

@@ -1,8 +1,8 @@
 #include "Kernel.h"
 
 Kernel::Kernel() {
-    _mmu = new MMU(this);
     _ramManager = new RAMManager();
+    _mmu = new MMU(this);
     _loader = new Loader(_ramManager);
 	_taskManager = new TaskManager(_mmu);
 	_serviceManager = new ServiceManager(_taskManager, _loader);
@@ -13,11 +13,25 @@ Kernel::Kernel() {
 			_handlerManager->getIrqHandler(), 
 			_handlerManager->getSwiHandler(), 
 			_taskManager, _mmu);
+			
+	initScheduler();
 }
 
 Kernel::~Kernel() {
 	delete _taskManager;
 	delete _serviceManager;
+}
+
+void interrupted(void) {
+	// Bla
+}
+
+void Kernel::initScheduler() {
+	srand_(time_());
+	_handlerManager->getIrqHandler()->registerHandler(HalTimerDriver::irqNumberForTimer(GPTIMER1), interrupted);
+
+	HalTimerDriver::init(GPTIMER1, GPT_IRQMODE_OVERFLOW, 100);
+	HalTimerDriver::start(GPTIMER1);
 }
 
 void Kernel::write(int* parameters)  {
@@ -29,7 +43,7 @@ void Kernel::write(int* parameters)  {
 	Task* task = _serviceManager->getTaskForService(serviceId);
 
 	MemoryManager* memoryManager = task->memoryManager;
-	MessageQueue* messageQueue = memoryManager->getMessageQueue();
+	MessageQueue* messageQueue = memoryManager->getMessageQueueWithoutVirtualOffset();
 
 	Message* message = memoryManager->createMessage(activeTaskId, length, params);
 	messageQueue->pushMessage(message);

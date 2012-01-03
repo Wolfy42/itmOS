@@ -6,6 +6,8 @@
 #include <list>
 
 #include "API/dataTypes.h"
+#include "Loader/TasksHex.h"
+#include "Lib/hexOperations.h"
 
 // RecType defines
 #define RECTYPE_DATA 						0x0
@@ -17,23 +19,18 @@
 
 struct Code  {
 	int byteCount;
-	char addressHex[4];
 	int address;
 	int recordType;
 	byte* bytes;
 };
 
 class Parser {
-
-private:
-	int toInt(char hex);
-
-public:
-	Parser();
-	virtual ~Parser();
-
-	std::list<Code*>* parse(char hex[]);
-	void deleteParsedCode(std::list<Code*>* code);
+	public:
+		Parser();
+		virtual ~Parser();
+	
+		std::list<Code*>* parse(CodeBytes* codeBytes);
+		void deleteParsedCode(std::list<Code*>* code);
 };
 
 #endif /* PARSER_H_ */

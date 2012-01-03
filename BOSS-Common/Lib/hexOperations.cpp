@@ -1,47 +1,38 @@
-#include <ctype.h>
-#include <string.h>
 #include "hexOperations.h"
 
-// Converts a hexadecimal string to integer
-int xtoi(const char* xs, unsigned int* result) {
-	size_t szlen = strlen(xs);
- 	int i, xv, fact;
-
- 	if (szlen > 0) {
-  		// Converting more than 32bit hexadecimal value?
-  		if (szlen > 8) {
-  			return 2; // exit
-  		}
-
-  		// Begin conversion here
-  		*result = 0;
- 		fact = 1;
-
-  		// Run until no more character to convert
-  		for(i = szlen - 1; i >= 0; i--) {
-   			if (isxdigit(*(xs + i))) {
-    			if (*(xs + i) >= 97) {
-     				xv = ( *(xs+i) - 97) + 10;
-    			} 
-    			else if ( *(xs+i) >= 65) {
-     				xv = (*(xs+i) - 65) + 10;
-  				} 
-  				else {
-	     			xv = *(xs + i) - 48;
-	    		}
-	    		
-	    		*result += (xv * fact);
-	    		fact *= 16;
-	    		
-   			} else {
-	    		// Conversion was abnormally terminated
-	    		// by non hexadecimal digit, hence
-	    		// returning only the converted with
-	    		// an error value 4 (illegal hex character)
-	    		return 4;
-	 		}
-  		}
+int hexToInt(char hex) {
+	if (hex == '0')  {
+		return 0;
+	}  else if (hex == '1')  {
+		return 1;
+	}  else if (hex == '2')  {
+		return 2;
+	}  else if (hex == '3')  {
+		return 3;
+	}  else if (hex == '4')  {
+		return 4;
+	}  else if (hex == '5')  {
+		return 5;
+	}  else if (hex == '6')  {
+		return 6;
+	}  else if (hex == '7')  {
+		return 7;
+	}  else if (hex == '8')  {
+		return 8;
+	}  else if (hex == '9')  {
+		return 9;
+	}  else if (hex == 'A')  {
+		return 10;
+	}  else if (hex == 'B')  {
+		return 11;
+	}  else if (hex == 'C')  {
+		return 12;
+	}  else if (hex == 'D')  {
+		return 13;
+	}  else if (hex == 'E')  {
+		return 14;
+	}  else if (hex == 'F')  {
+		return 15;
 	}
- 	// Nothing to convert
- 	return 1;
+	return 0;
 }

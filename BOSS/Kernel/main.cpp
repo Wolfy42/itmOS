@@ -3,9 +3,13 @@
 #include "HAL/Audio/OMAP/McBSP2.h"
 #include "HAL/Audio/TPS65950/TPS65950.h"
 #include "HAL/I2C/I2C.h"
+#include "API/systemCalls.h"
 
-int main(int argc, char **argv) {
+void leerlauf(void)  {
+	while(1);
+}
 
+int main() {
 	_disable_interrupts();
 
 	// Audio Test -> don't touch this -> "i kill you!"
@@ -18,12 +22,22 @@ int main(int argc, char **argv) {
 
 
 
-	Kernel* kernel = new Kernel();
-	ServiceManager* serviceManager = kernel->getServiceManager();
-
-	serviceManager->startServices();
-
-	_enable_interrupts();
-
-	while(1);
+//	Kernel* kernel = new Kernel();
+//	ServiceManager* serviceManager = kernel->getServiceManager();
+//
+//
+//	// Dummy Task
+//	Task* leerlaufTask = kernel->getTaskManager()->create("leerlauf\0", false);
+//	leerlaufTask->codeLocation = (address)((void*)leerlauf);
+//	leerlaufTask->pageCount = 1;
+//
+//	// Start Services
+//	kernel->getServiceManager()->startServices();
+//
+//	// Init
+//	_enable_interrupts();
+//	asm("\t CPS 0x10");
+//	leerlauf();
+//
+//	while(1);
 }

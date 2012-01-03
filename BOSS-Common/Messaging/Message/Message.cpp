@@ -8,8 +8,6 @@ Message::Message(int taskId, int paramsLength, int* params)  {
 	_params = params;
 }
 
-Message::~Message()  {}
-
 int Message::getTaskId()  {
 	return _taskId;
 }

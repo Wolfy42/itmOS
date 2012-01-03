@@ -32,13 +32,6 @@ c_r13_system    .long    systemStack
 
 _c_int00: .asmfunc
 
-    ; SET System-Stack / User-Stack
-    CPS   0x1F
-    LDR   sp, c_r13_system
-
-    ; Back to User-Mode
-    CPS   0x10
-
     ; Perform all the required initilizations:
     ;  - Process BINIT Table
     ;  - Perform C auto initialization

@@ -11,11 +11,12 @@ class Message {
 public:
 
 	Message(int taskId, int paramsLength, int* params);
-	virtual ~Message();
 
 	int getTaskId();
 	int getParamsLength();
 	int* getParams();
+
+	void addPointerAddressOffset(int virtualOffset);
 };
 
 #endif /* MESSAGE_H_ */

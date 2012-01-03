@@ -5,12 +5,18 @@ Parser::Parser()  {}
 
 Parser::~Parser()  {}
 
-std::list<Code*>* Parser::parse(char hex[])  {
+std::list<Code*>* Parser::parse(CodeBytes* codeBytes)  {
 
 	std::list<Code*>* codeLines = new std::list<Code*>;
 	int i = 0;
+	int addressOffset = 0;
 	int recType;
-	while (hex[i] != '\0') {
+	int byteCount;
+	char* codeByte0 = codeBytes->byte0;
+	char* codeByte1 = codeBytes->byte1;
+	char* codeByte2 = codeBytes->byte2;
+	char* codeByte3 = codeBytes->byte3;
+	while (codeByte0[i] != '\0') {
 		Code* c = new Code();
 
 		// start code
@@ -18,69 +24,80 @@ std::list<Code*>* Parser::parse(char hex[])  {
 
 		// byte count
 		c->byteCount = 0;
-		c->byteCount = toInt(hex[i]);
+		c->byteCount = hexToInt(codeByte0[i]);
 		i++;
 		c->byteCount *= 16;
-		c->byteCount += toInt(hex[i]);
+		c->byteCount += hexToInt(codeByte0[i]);
+		c->byteCount *= 4; //4 files with bytes
 		i++;
 
 		// address
 		c->address = 0;
-		c->address = toInt(hex[i]);
-		c->addressHex[0] = hex[i];
+		c->address += hexToInt(codeByte0[i]);
 		i++;
 		c->address *= 16;
-		c->address += toInt(hex[i]);
-		c->addressHex[1] = hex[i];
+		c->address += hexToInt(codeByte0[i]);
 		i++;
 		c->address *= 16;
-		c->address += toInt(hex[i]);
-		c->addressHex[2] = hex[i];
+		c->address += hexToInt(codeByte0[i]);
 		i++;
 		c->address *= 16;
-		c->address += toInt(hex[i]);
-		c->addressHex[3] = hex[i];
+		c->address += hexToInt(codeByte0[i]);
 		i++;
+		c->address += addressOffset;
 
 		// record type
 		recType = 0;
-		recType = toInt(hex[i]);
+		recType = hexToInt(codeByte0[i]);
 		i++;
 		recType *= 16;
-		recType += toInt(hex[i]);
+		recType += hexToInt(codeByte0[i]);
 		c->recordType = recType;
 		i++;
 
-		if (recType != 0)  {
+		if (recType != RECTYPE_DATA)  {
+			byteCount = c->byteCount /= 4;
+			delete c;
+
 			if (recType == RECTYPE_EOF)  {
 				// 1 == Last line -> Parsing finished
 				return codeLines;
+			}  else if (recType == RECTYPE_EXTENDED_LINEAR_ADDRESS)  {
+				addressOffset = 0;
+				for (int j = 0; j < byteCount; j++)  {
+					addressOffset = hexToInt(codeByte0[i]) * 16;
+					i++;
+					addressOffset += hexToInt(codeByte0[i]);
+					i++;
+				}
+				addressOffset *= 0x10000;
 			}  else  {
 				printf("Something bad happened! (Intel Hex-RecordType %i unknown", recType);
 				return new std::list<Code*>;
 			}
 		}
 
-		c->bytes = new byte[c->byteCount];
-		for (int j = 0; j < c->byteCount; j += 4)  { 
-			for (int k = 3; k >= 0; k--) {
-				int currentByte = j + k;
-				if (currentByte < c->byteCount) {
-					c->bytes[currentByte] = 0;
-					c->bytes[currentByte] = toInt(hex[i]);
-					i++;
-					c->bytes[currentByte] *= 16;
-					c->bytes[currentByte] += toInt(hex[i]);
-					i++;
-				}
+		if (c->recordType == RECTYPE_DATA)  {
+
+			c->bytes = new byte[c->byteCount];
+			for (int j = 0; j < c->byteCount; j+=4)  {
+				c->bytes[j] = hexToInt(codeByte0[i]) * 16;
+				c->bytes[j+1] = hexToInt(codeByte1[i]) * 16;
+				c->bytes[j+2] = hexToInt(codeByte2[i]) * 16;
+				c->bytes[j+3] = hexToInt(codeByte3[i]) * 16;
+				i++;
+				c->bytes[j] += hexToInt(codeByte0[i]);
+				c->bytes[j+1] += hexToInt(codeByte1[i]);
+				c->bytes[j+2] += hexToInt(codeByte2[i]);
+				c->bytes[j+3] += hexToInt(codeByte3[i]);
+				i++;
 			}
-		}		
+			codeLines->push_back(c);
+		}
 
 		//checksum
 		i++;
 		i++;
-
-		codeLines->push_back(c);
 	}
 	return codeLines;
 }
@@ -92,41 +109,4 @@ void Parser::deleteParsedCode(std::list<Code*>* code)  {
 		delete *iterator;
 	}
 	delete code;
-}
-
-int Parser::toInt(char hex)  {
-	if (hex == '0')  {
-		return 0;
-	}  else if (hex == '1')  {
-		return 1;
-	}  else if (hex == '2')  {
-		return 2;
-	}  else if (hex == '3')  {
-		return 3;
-	}  else if (hex == '4')  {
-		return 4;
-	}  else if (hex == '5')  {
-		return 5;
-	}  else if (hex == '6')  {
-		return 6;
-	}  else if (hex == '7')  {
-		return 7;
-	}  else if (hex == '8')  {
-		return 8;
-	}  else if (hex == '9')  {
-		return 9;
-	}  else if (hex == 'A')  {
-		return 10;
-	}  else if (hex == 'B')  {
-		return 11;
-	}  else if (hex == 'C')  {
-		return 12;
-	}  else if (hex == 'D')  {
-		return 13;
-	}  else if (hex == 'E')  {
-		return 14;
-	}  else if (hex == 'F')  {
-		return 15;
-	}
-	return 0;
 }
