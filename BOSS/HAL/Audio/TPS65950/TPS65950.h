@@ -8,8 +8,11 @@
 #ifndef TPS65950_H_
 #define TPS65950_H_
 
+#include <stdint.h>
+
 class TPS65950 {
 private:
+	void audioRegW(uint32_t address, uint32_t value);
 
 public:
 	TPS65950();
