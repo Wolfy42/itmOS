@@ -9,6 +9,7 @@
 #include "Kernel/Task/TaskManager.h"
 #include "Loader/Loader.h"
 #include "Loader/TasksHex.h"
+#include "Loader/TasksHex/LedBytes.h"
 
 class ServiceManager
 {	

@@ -11,11 +11,8 @@ ServiceManager::~ServiceManager() {}
 
 void ServiceManager::startServices()  {
 
-	CodeBytes* cb = new CodeBytes;
-	cb->byte0 = led_byte_0;
-	cb->byte1 = led_byte_1;
-	cb->byte2 = led_byte_2;
-	cb->byte3 = led_byte_3;
+	LedBytes ld;
+	CodeBytes* cb = ld.getCodeBytes();
 	LEDConfig* lc = new LEDConfig;
 	startService("LED", LED_SERVICE_ID, cb, lc);
 	delete cb;
