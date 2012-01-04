@@ -18,6 +18,7 @@
 #include "Kernel/Task/TaskManager.h"
 
 class Kernel;
+class RAMManager;
 
 class MMU {
     private:
@@ -34,11 +35,12 @@ class MMU {
         void initDomainAccess();
         void setMasterTablePointerTo(address tableAddress);
         
+        unsigned char getAccessFlagForDomain(unsigned char domainNumber);
         address createMasterTable();
-        address createOrGetL2Table(address masterTableAddress, int masterTableEntryNumber);
-        address createMappedPage(address masterTableAddress, address virtualAddress, bool userAccess, bool kernelAccess);
-        void mapDirectly(address masterTableAddress, address virtualAddress, address physicalAddress, bool userAccess, bool kernelAccess);
-        void mapOneToOne(address masterTableAddress, address startAddress, unsigned int length, bool userAccess, bool kernelAccess);
+        address createOrGetL2Table(address masterTableAddress, int masterTableEntryNumber, unsigned char domainNumber);
+        address createMappedPage(address masterTableAddress, address virtualAddress, unsigned char domainNumber);
+        void mapDirectly(address masterTableAddress, address virtualAddress, address physicalAddress, unsigned char domainNumber);
+        void mapOneToOne(address masterTableAddress, address startAddress, unsigned int length, unsigned char domainNumber);
         void mapHardwareRegisters(Task* task);
         void clearTLB();
         
@@ -55,6 +57,8 @@ class MMU {
         
         void loadPage(int pageNumber);
 
+        RAMManager* getRAMManager();
+        
         bool handlePrefetchAbort();  
         bool handleDataAbort();
 };

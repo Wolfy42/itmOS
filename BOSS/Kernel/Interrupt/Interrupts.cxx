@@ -22,21 +22,26 @@ asm("	.bss _tcb1, 4 ");
 asm("	.bss _tcb2, 4 ");
 asm("	.bss _stack_pointer_saved_context, 4 ");
 asm("	.bss _stack_pointer_original, 4 ");
+asm("   .bss _tempVariableForAsmAndCpp2, 4 ");
 
 asm("	.global _tcb1 ");
 asm("	.global _tcb2 ");
 asm("	.global _stack_pointer_saved_context ");
 asm("	.global _stack_pointer_original ");
+asm("   .global _tempVariableForAsmAndCpp2 ");
 
 asm("tcb1 .field _tcb1, 32 ");
 asm("tcb2 .field _tcb2, 32 ");
 asm("stack_pointer_saved_context .field _stack_pointer_saved_context, 32 ");
 asm("stack_pointer_original .field _stack_pointer_original, 32 ");
+asm("tempVariableForAsmAndCpp2 .field _tempVariableForAsmAndCpp2, 32 ");
 
 extern int tcb1;
 extern int tcb2;
 extern int stack_pointer_saved_context;
 extern int stack_pointer_original;
+extern int tempVariableForAsmAndCpp2;
+extern int swiParameterAddress;
 
 
 /*
@@ -48,6 +53,7 @@ void initInterruptHandler(IRQHandler* irq, SWIHandler* swi, TaskManager* tm, MMU
 	_SWIHandler = swi;
 	_TaskManager = tm;
     _mmu = mmu;
+    
 }
 
 
@@ -71,9 +77,8 @@ void initInterruptHandler(IRQHandler* irq, SWIHandler* swi, TaskManager* tm, MMU
     
 #define SAVECONTEXT_SWI \
 	asm(" STMFD   R13!, {R0-R12, R14} ; Save Process-Registers "); \
-	asm(" LDR     R0, stack_pointer_saved_context"); \
-	asm(" STR     R13, [R0], #0"); \
-	stack_pointer_original = stack_pointer_saved_context + SAVED_REGISTERS_SPACE + SWI_PARAMETERS_SPACE + WEIRD_EXTRA_SPACE;
+	asm(" LDR     R10, stack_pointer_saved_context"); \
+	asm(" STR     R13, [R10], #0");
 
 /*
  * 	Context Switch Routine
@@ -170,19 +175,25 @@ extern "C" void c_intIRQ()  {
  */
 #pragma TASK
 extern "C" void c_intSWI(int swiNumber, int para1, int para2, int para3, int para4, int para5, int para6, int para7)  {
-
+    asm("\t MOV r8, r0\n");
 	// save context
 	SAVECONTEXT_SWI
+    tempVariableForAsmAndCpp2 = (unsigned int)&swiParameterAddress;
+    asm("\t LDR r11, tempVariableForAsmAndCpp2\n");
+    asm("\t LDR r11, [r11], #0\n");
+    asm("\t STR r8, [r11]\n");
+    asm("\t STMFA r11, {R1-R7}\n");
+    stack_pointer_original = stack_pointer_saved_context + SAVED_REGISTERS_SPACE + SWI_PARAMETERS_SPACE + WEIRD_EXTRA_SPACE;
 
     _mmu->switchToKernelMMU();
 	// if cs is true a context switch is gonna happen
-    bool cs = _SWIHandler->handle(swiNumber, para1, para2, para3, para4, para5, para6, para7);
+    bool cs = _SWIHandler->handle(swiParameterAddress, &swiParameterAddress + 1);
     
     if (cs == true) {
     	
     	// perform a context switch
     	contextSwitch();
-    } 
+    }
     _mmu->initMemoryForTask(_TaskManager->getActiveTask());
 	// restore stackpointer of swi
 	asm(" LDMFD   R13!, {R0-R12, PC}^");
