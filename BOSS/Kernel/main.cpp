@@ -4,6 +4,7 @@
 #include "HAL/Audio/TPS65950/TPS65950.h"
 #include "HAL/I2C/I2C.h"
 #include "API/systemCalls.h"
+#include "Loader/TasksHex/TestBytes.h"
 
 #include "Video/graphics.h"
 #include "Video/video.h"
@@ -12,35 +13,44 @@ void leerlauf(void)  {
 	while(1);
 }
 
+int printBOSS();
+
 int main() {
 	_disable_interrupts();
 
+//	printBOSS();
+
 //	 Audio Test -> don't touch this -> "i kill you!"
-	McBSP2* mcbsp2 = new McBSP2();
-	mcbsp2->init_mcbsp2();
-
-	TPS65950* tps = new TPS65950();
-	tps->init_tps65950();
-
-
-
-
-//	Kernel* kernel = new Kernel();
-//	ServiceManager* serviceManager = kernel->getServiceManager();
+//	McBSP2* mcbsp2 = new McBSP2();
+//	mcbsp2->init_mcbsp2();
 //
-//
-//	// Dummy Task
-//	Task* leerlaufTask = kernel->getTaskManager()->create("leerlauf\0", false);
-//	leerlaufTask->codeLocation = (address)((void*)leerlauf);
-//	leerlaufTask->pageCount = 1;
-//
-//	// Start Services
-//	kernel->getServiceManager()->startServices();
-//
-//	// Init
-//	_enable_interrupts();
-//	asm("\t CPS 0x10");
-//	leerlauf();
+//	TPS65950* tps = new TPS65950();
+//	tps->init_tps65950();
+
+
+
+
+	Kernel* kernel = new Kernel();
+	ServiceManager* serviceManager = kernel->getServiceManager();
+
+
+	// Dummy Task
+	Task* leerlaufTask = kernel->getTaskManager()->create("leerlauf\0", false);
+	leerlaufTask->codeLocation = (address)((void*)leerlauf);
+	leerlaufTask->pageCount = 1;
+
+	// Start Services
+	kernel->getServiceManager()->startServices();
+
+	// Start Test-Task to toggle LED's
+	Task* task = kernel->getTaskManager()->create("test", false);
+	TestBytes tb;
+	kernel->getLoader()->loadTaskCode(task, tb.getCodeBytes());
+
+	// Init
+	_enable_interrupts();
+	asm("\t CPS 0x10");
+	leerlauf();
 
 	while(1);
 }
@@ -52,7 +62,7 @@ int main() {
 #define RES_HEIGHT 768
 #define FBADDR ((char *)0x83000000)
 
-int _main()  {
+int printBOSS()  {
 
 //	_enable_interrupts();
 
