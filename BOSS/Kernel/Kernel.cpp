@@ -6,8 +6,8 @@ Kernel::Kernel() {
     _loader = new Loader(_ramManager);
 	_taskManager = new TaskManager(_mmu);
 	_serviceManager = new ServiceManager(_taskManager, _loader);
+    _executor = new SystemCallExec(this, _taskManager);
 	_handlerManager = new HandlerManager(this);
-	_executor = new SystemCallExec(this, _taskManager);
     
 	initInterruptHandler(
 			_handlerManager->getIrqHandler(), 
