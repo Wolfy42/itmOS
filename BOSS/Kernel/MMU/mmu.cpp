@@ -307,6 +307,10 @@ bool MMU::isLegal(unsigned int accessedAddress, unsigned int faultStatus) {
     return result;
 }
 
+RAMManager* MMU::getRAMManager() {
+    return m_kernel->getRAMManager();
+}
+
 bool MMU::handlePrefetchAbort() {
     asm("\t MRC p15, #0, r0, c6, c0, #2\n");
     asm("\t MRC p15, #0, r1, c5, c0, #1\n");

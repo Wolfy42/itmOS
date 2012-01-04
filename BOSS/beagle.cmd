@@ -43,6 +43,9 @@ SECTIONS
    }
    .pinit      > int_ram {
        *(.pinit)
+        . = ALIGN(0x4);
+        _swiParameterAddress = .;
+        . = . + 128;
    		_intRamStart = .;
    	}
 

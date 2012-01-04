@@ -18,6 +18,7 @@
 #include "Kernel/Task/TaskManager.h"
 
 class Kernel;
+class RAMManager;
 
 class MMU {
     private:
@@ -56,6 +57,8 @@ class MMU {
         
         void loadPage(int pageNumber);
 
+        RAMManager* getRAMManager();
+        
         bool handlePrefetchAbort();  
         bool handleDataAbort();
 };

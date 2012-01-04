@@ -15,7 +15,7 @@ class SWIHandler {
 		virtual ~SWIHandler();
 	
 		// returns true if context switch is needed
-		bool handle(int swiNumber, int para1, int para2, int para3, int para4, int para5, int para6, int para7);
+		bool handle(int swiNumber, int params[]);
 };
 
 #endif /* SWIEXECUTOR_H_ */
