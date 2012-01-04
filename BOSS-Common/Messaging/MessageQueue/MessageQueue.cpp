@@ -5,6 +5,7 @@ MessageQueue::MessageQueue() {
 	_capacity = MAX_MESSAGES;
 	_first = 0;
 	_last = 0; 
+	_queue[_first] = NULL;
 }
 
 void MessageQueue::pushMessage(Message* message) {
@@ -18,7 +19,7 @@ void MessageQueue::pushMessage(Message* message) {
 	_queue[_last] = message;
 	
 	// Set index _first for next free position to push in queue
-	if (_last < _capacity) {
+	if (_last+1 < _capacity) {
 		_last++;
 	} else {
 		_last = 0;
@@ -42,7 +43,7 @@ Message* MessageQueue::popMessage(void) {
 	_queue[_first] = NULL;
 	
 	// Set index _first for next element to pop in queue
-	if (_first < _capacity) {
+	if (_first+1 < _capacity) {
 		_first++;
 	} else {
 		_first = 0;
