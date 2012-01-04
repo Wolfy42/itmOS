@@ -1,17 +1,15 @@
 #include "Service-API/LED/LED.h"
-#include "HAL/LED/HalLedDriver.h"
 
-int _main() {
+int main() {
 
-	HalLedDriver dr;
-	dr.ledOff(LED2);
+	switchLEDOff(LED1);
 	int i=0;
 	while (1)  {
 		i=0;
 		while (i<80000)  {
 			i++;
 		}
-		dr.toggle(LED1);
+		toggleLED(LED2);
 	}
 	return 0;
 }
