@@ -99,15 +99,17 @@ address MMU::createMasterTable() {
     std::memset((void*)masterTableAddress, 0x0000, 4096 * 4);
     return masterTableAddress;
 }
-address MMU::createOrGetL2Table(address masterTableAddress, int masterTableEntryNumber) {
+address MMU::createOrGetL2Table(address masterTableAddress, int masterTableEntryNumber, unsigned char domainNumber) {
     address result = 0x0;
     if (masterTableEntryNumber < 4096) {
         if (*(masterTableAddress + masterTableEntryNumber) == 0x0) {
             result = m_kernel->getRAMManager()->findFreeMemory(1, true, true);
             
+            // 0b10001 means coarse page table
             unsigned int tableEntry = (unsigned int)result | 0x00000011;
-            unsetBit(&tableEntry, 8);
-            unsetBit(&tableEntry, 9);
+            // Set the domain
+            tableEntry |= (domainNumber << 5);
+            
             *(masterTableAddress + masterTableEntryNumber) = tableEntry;
             
             std::memset((void*)result, 0x0, 1024); // 256 entries * 4 bytes per entry = 1024 bytes
@@ -118,17 +120,29 @@ address MMU::createOrGetL2Table(address masterTableAddress, int masterTableEntry
     return result;
 }
 
-address MMU::createMappedPage(address masterTableAddress, address virtualAddress, bool userAccess, bool kernelAccess) {
+unsigned char MMU::getAccessFlagForDomain(unsigned char domainNumber) {
+    unsigned char result = 0;
+    switch (domainNumber) {
+        case 0:
+            result = 3;
+            break;
+        default:
+            result = 1;
+            break;
+    }
+    return result;
+}
+address MMU::createMappedPage(address masterTableAddress, address virtualAddress, unsigned char domainNumber) {
     address newPage = m_kernel->getRAMManager()->findFreeMemory(1, true, true);
     std::memset((void*)newPage, 0x0, 4096);
     
-    mapDirectly(masterTableAddress, virtualAddress, newPage, userAccess, kernelAccess);
+    mapDirectly(masterTableAddress, virtualAddress, newPage, domainNumber);
     return newPage;
 }
 
-void MMU::mapDirectly(address masterTableAddress, address virtualAddress, address physicalAddress, bool kernelAccess, bool userAccess) {
+void MMU::mapDirectly(address masterTableAddress, address virtualAddress, address physicalAddress, unsigned char domainNumber) {
     unsigned int masterTableEntryNumber = (unsigned int)virtualAddress >> 20;
-    address l2TableAddress = createOrGetL2Table(masterTableAddress, masterTableEntryNumber);
+    address l2TableAddress = createOrGetL2Table(masterTableAddress, masterTableEntryNumber, domainNumber);
     if (l2TableAddress != 0x0) {
         address pageAddress = (address)(((unsigned int)physicalAddress >> 12) << 12);
     
@@ -136,15 +150,13 @@ void MMU::mapDirectly(address masterTableAddress, address virtualAddress, addres
         
         // 0x2 means small page (0b10)
         unsigned int tableEntry = (unsigned int)pageAddress | 0x00000002;
+        
+        unsigned char accessFlag = getAccessFlagForDomain(domainNumber);
         // Set the AP bits
-        tableEntry |= (userAccess << 4);
-        tableEntry |= (userAccess << 6);
-        tableEntry |= (userAccess << 8);
-        tableEntry |= (userAccess << 10);
-        tableEntry |= (kernelAccess << 5);
-        tableEntry |= (kernelAccess << 7);
-        tableEntry |= (kernelAccess << 9);
-        tableEntry |= (kernelAccess << 11);
+        tableEntry |= (accessFlag << 4);
+        tableEntry |= (accessFlag << 6);
+        tableEntry |= (accessFlag << 8);
+        tableEntry |= (accessFlag << 10);
         
         *(l2TableAddress + l2TableEntryNumber) = tableEntry;
     } else {
@@ -152,11 +164,11 @@ void MMU::mapDirectly(address masterTableAddress, address virtualAddress, addres
     }
 }
 
-void MMU::mapOneToOne(address masterTableAddress, address startAddress, unsigned int length, bool userAccess, bool kernelAccess) {
+void MMU::mapOneToOne(address masterTableAddress, address startAddress, unsigned int length, unsigned char domainNumber) {
     // Each entry maps 4096 bytes = 0x1000
     for (int i = 0; i < length; i += 0x1000) {
         // Map the next page. because startAddress is of type address, it adds 4 * i automatically => take i / 4
-        mapDirectly(masterTableAddress, startAddress + (i / 4), startAddress + (i / 4), userAccess, kernelAccess);
+        mapDirectly(masterTableAddress, startAddress + (i / 4), startAddress + (i / 4), domainNumber);
     }
 }
 
@@ -177,12 +189,12 @@ void MMU::initMemoryForTask(Task* task) {
     if (task->masterTableAddress == NULL) {
         task->masterTableAddress = createMasterTable();
         
-        mapOneToOne(task->masterTableAddress, (address)ROM_INTERRUPT_ENTRIES, ROM_INTERRUPT_LENGTH, true, true);
-        mapOneToOne(task->masterTableAddress, (address)INT_RAM_START, (unsigned int)m_firstFreeInIntRam - INT_RAM_START, true, true);
-        mapOneToOne(task->masterTableAddress, &intvecsStart, 0x3B, true, true);
-        mapOneToOne(task->masterTableAddress, (address)EXT_DDR_START, (unsigned int)m_firstFreeInExtDDR - EXT_DDR_START, true, true);
+        mapOneToOne(task->masterTableAddress, (address)ROM_INTERRUPT_ENTRIES, ROM_INTERRUPT_LENGTH, 0);
+        mapOneToOne(task->masterTableAddress, (address)INT_RAM_START, (unsigned int)m_firstFreeInIntRam - INT_RAM_START, 0);
+        mapOneToOne(task->masterTableAddress, &intvecsStart, 0x3B, 1);
+        mapOneToOne(task->masterTableAddress, (address)EXT_DDR_START, (unsigned int)m_firstFreeInExtDDR - EXT_DDR_START, 0);
         
-        task->memoryManager = (MemoryManager*)createMappedPage(task->masterTableAddress, (address)MESSAGE_QUEUE_VIRTUAL_ADDRESS, true, true);
+        task->memoryManager = (MemoryManager*)createMappedPage(task->masterTableAddress, (address)MESSAGE_QUEUE_VIRTUAL_ADDRESS, 0);
         int virtualOffset = (int)MESSAGE_QUEUE_VIRTUAL_ADDRESS - (int)task->memoryManager;
         MemoryManager::getInstanceAt((address)task->memoryManager, virtualOffset);
         
@@ -194,7 +206,7 @@ void MMU::initMemoryForTask(Task* task) {
             address virtualAddress = (address)(task->tcb.restartAddress + (i * 4096));
             // The next physical address is the first address plus 4096 bytes (4KB)
             address physicalAddress = (address)(((unsigned int)(task->codeLocation)) + (i * 4096));
-            mapDirectly(task->masterTableAddress, virtualAddress, physicalAddress, true, true);
+            mapDirectly(task->masterTableAddress, virtualAddress, physicalAddress, 0);
         }
         
         setMasterTablePointerTo(task->masterTableAddress);
@@ -211,7 +223,7 @@ void MMU::mapHardwareRegisters(Task* task) {
         std::list<address>::const_iterator iter;
         
         for (iter = taskRegisters->begin(); iter != taskRegisters->end(); iter++) {
-            mapOneToOne(task->masterTableAddress, *iter, 1, true, true);
+            mapOneToOne(task->masterTableAddress, *iter, 1, 0);
         }
     }
 }
@@ -296,6 +308,8 @@ bool MMU::isLegal(unsigned int accessedAddress, unsigned int faultStatus) {
 }
 
 bool MMU::handlePrefetchAbort() {
+    asm("\t MRC p15, #0, r0, c6, c0, #2\n");
+    asm("\t MRC p15, #0, r1, c5, c0, #1\n");
     Task* currentTask = m_currentTask;
     switchToKernelMMU();
     m_kernel->getTaskManager()->kill(currentTask->id);
@@ -319,7 +333,7 @@ bool MMU::handleDataAbort() {
     if (isLegal(accessedAddress, faultStatus)) {
         Task* currentTask = m_currentTask;
         switchToKernelMMU();
-        createMappedPage(currentTask->masterTableAddress, (address)accessedAddress, true, true);
+        createMappedPage(currentTask->masterTableAddress, (address)accessedAddress, 0);
         initMemoryForTask(currentTask);
         doContextSwitch = false;
     } else {
