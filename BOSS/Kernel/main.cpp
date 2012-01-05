@@ -1,11 +1,8 @@
 #include "Kernel/Kernel.h"
 #include "Kernel/ServiceManager/ServiceManager.h"
-#include "HAL/Audio/OMAP/McBSP2.h"
-#include "HAL/Audio/TPS65950/TPS65950.h"
-#include "HAL/I2C/I2C.h"
 #include "API/systemCalls.h"
 #include "Loader/TasksHex/TestBytes.h"
-
+#include "HAL/Audio/audio.h"
 #include "Video/graphics.h"
 #include "Video/video.h"
 
@@ -18,17 +15,12 @@ int printBOSS();
 int main() {
 	_disable_interrupts();
 
+	// Audio Test -> "berühr dass, und eine Zahnbürste fährt morgens ins Leere!"
+	Audio* audio = new Audio();
+	audio->playSample();
+	delete audio;
+
 	printBOSS();
-
-//	 Audio Test -> don't touch this -> "i kill you!"
-//	McBSP2* mcbsp2 = new McBSP2();
-//	mcbsp2->init_mcbsp2();
-//
-//	TPS65950* tps = new TPS65950();
-//	tps->init_tps65950();
-
-
-
 
 	Kernel* kernel = new Kernel();
 	ServiceManager* serviceManager = kernel->getServiceManager();
