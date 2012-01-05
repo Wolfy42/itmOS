@@ -134,7 +134,7 @@ void contextSwitch() {
 
 	// !! The next line is a added to the code in the ARM-book, because
 	//    normally this would be called at the end of the function, but we don't reach that
-	//asm("	ADD     R13, R13, #4 ");
+//	asm("	ADD     R13, R13, #4 ");
 
 	asm("	MOVS 	PC, R14						; Return to address in R14_irq, with SPSR_irq -> CPSR transfer" );
 }
@@ -175,7 +175,10 @@ extern "C" void c_intIRQ()  {
  */
 #pragma TASK
 extern "C" void c_intSWI(int swiNumber, int para1, int para2, int para3, int para4, int para5, int para6, int para7)  {
-    asm("\t MOV r8, r0\n");
+	// Save the stack
+	asm("	ADD     R13, R13, #20 ");
+	// copy R0 into R8 --> R0 is needed
+	asm("\t MOV r8, r0\n");
 	// save context
 	SAVECONTEXT_SWI
     tempVariableForAsmAndCpp2 = (unsigned int)&swiParameterAddress;
