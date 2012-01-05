@@ -30,7 +30,7 @@ void Kernel::initScheduler() {
 	srand_(time_());
 	_handlerManager->getIrqHandler()->registerHandler(HalTimerDriver::irqNumberForTimer(GPTIMER1), interrupted);
 
-	HalTimerDriver::init(GPTIMER1, GPT_IRQMODE_OVERFLOW, 100);
+	HalTimerDriver::init(GPTIMER1, GPT_IRQMODE_OVERFLOW, 1);
 	HalTimerDriver::start(GPTIMER1);
 }
 
@@ -41,6 +41,7 @@ void Kernel::write(int* parameters)  {
 
 	int activeTaskId = _taskManager->getActiveTask()->id;
 	Task* task = _serviceManager->getTaskForService(serviceId);
+	task->status = Ready;
 
 	MemoryManager* memoryManager = task->memoryManager;
 	MessageQueue* messageQueue = memoryManager->getMessageQueueWithoutVirtualOffset();

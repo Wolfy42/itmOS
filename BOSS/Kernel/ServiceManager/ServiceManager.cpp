@@ -21,7 +21,7 @@ void ServiceManager::startServices()  {
 
 void ServiceManager::startService(char* serviceName, int serviceId, CodeBytes* codeBytes, ServiceConfig* config) {
 
-	Task* task = _taskManager->create(serviceName, false);
+	Task* task = _taskManager->create(serviceName, false, 100);
 	_serviceTaskMapping.insert(std::pair<int, Task*>(serviceId, task));
 
 	_loader->loadServiceCode(task, codeBytes, config);

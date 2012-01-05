@@ -18,7 +18,7 @@ int printBOSS();
 int main() {
 	_disable_interrupts();
 
-//	printBOSS();
+	printBOSS();
 
 //	 Audio Test -> don't touch this -> "i kill you!"
 //	McBSP2* mcbsp2 = new McBSP2();
@@ -35,7 +35,7 @@ int main() {
 
 
 	// Dummy Task
-	Task* leerlaufTask = kernel->getTaskManager()->create("leerlauf\0", false);
+	Task* leerlaufTask = kernel->getTaskManager()->create("leerlauf\0", false, 0);
 	leerlaufTask->codeLocation = (address)((void*)leerlauf);
 	leerlaufTask->pageCount = 1;
 
@@ -100,5 +100,5 @@ int printBOSS()  {
 	moveTo(rp, 650, 530);
 	drawString(rp, "Project", 6);
 
-	while(1);
+//	while(1);
 }

@@ -198,7 +198,7 @@ void TaskManager::schedule() {
 	// who is the winner? (we do the second loop for the anti-performance thing)
 	for (int task = 0; task < MAX_TASKS; task++) {
 	
-		if (_tasks[task] != NULL) {
+		if (_tasks[task] != NULL && _tasks[task]->status == Ready) {
 	
 			level += ((float)_tasks[task]->priority / (float)prioritySum);
 			if (level >= magicSmartFunnyNumber) {

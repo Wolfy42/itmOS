@@ -6,7 +6,7 @@ int main() {
 	int i=0;
 	while (1)  {
 		i=0;
-		while (i<80000)  {
+		while (i<800000)  {
 			i++;
 		}
 		toggleLED(LED2);
