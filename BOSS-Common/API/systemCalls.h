@@ -23,7 +23,7 @@
 
 //--------------------------------SWI to Kernel------------------------
 #pragma SWI_ALIAS(0);
-void swi(int swiNumber, int para1, int para2, int para3, int para4, int para5, int para6, int para7);
+void swi(int swiNumber, int para1, int para2, int para3);
 
 void performSystemCall(int systemCallId);
 void performSystemCall(int systemCallId, int para1);

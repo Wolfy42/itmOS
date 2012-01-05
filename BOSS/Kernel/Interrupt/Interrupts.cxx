@@ -174,7 +174,7 @@ extern "C" void c_intIRQ()  {
  * 		if a context switch is needed
  */
 #pragma TASK
-extern "C" void c_intSWI(int swiNumber, int para1, int para2, int para3, int para4, int para5, int para6, int para7)  {
+extern "C" void c_intSWI(int swiNumber, int para1, int para2, int para3)  {
 	// Save the stack
 	asm("	ADD     R13, R13, #20 ");
 	// copy R0 into R8 --> R0 is needed
@@ -185,7 +185,7 @@ extern "C" void c_intSWI(int swiNumber, int para1, int para2, int para3, int par
     asm("\t LDR r11, tempVariableForAsmAndCpp2\n");
     asm("\t LDR r11, [r11], #0\n");
     asm("\t STR r8, [r11]\n");
-    asm("\t STMFA r11, {R1-R7}\n");
+    asm("\t STMFA r11, {R1-R3}\n");
     stack_pointer_original = stack_pointer_saved_context + SAVED_REGISTERS_SPACE + SWI_PARAMETERS_SPACE + WEIRD_EXTRA_SPACE;
 
     _mmu->switchToKernelMMU();
