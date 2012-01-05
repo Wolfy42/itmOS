@@ -191,7 +191,7 @@ void MMU::initMemoryForTask(Task* task) {
         
         mapOneToOne(task->masterTableAddress, (address)ROM_INTERRUPT_ENTRIES, ROM_INTERRUPT_LENGTH, 0);
         mapOneToOne(task->masterTableAddress, (address)INT_RAM_START, (unsigned int)m_firstFreeInIntRam - INT_RAM_START, 0);
-        mapOneToOne(task->masterTableAddress, &intvecsStart, 0x3B, 1);
+        mapOneToOne(task->masterTableAddress, &intvecsStart, 0x3B, 0);
         mapOneToOne(task->masterTableAddress, (address)EXT_DDR_START, (unsigned int)m_firstFreeInExtDDR - EXT_DDR_START, 0);
         
         task->memoryManager = (MemoryManager*)createMappedPage(task->masterTableAddress, (address)MESSAGE_QUEUE_VIRTUAL_ADDRESS, 0);
@@ -274,7 +274,7 @@ bool MMU::isLegal(unsigned int accessedAddress, unsigned int faultStatus) {
         switch (statusField) {
             case PERMISSION_FAULT_SECTION:
             case PERMISSION_FAULT_PAGE:
-                result = true;
+                result = false;
                 break;
             case TRANSLATION_FAULT_SECTION:
             case TRANSLATION_FAULT_PAGE:
