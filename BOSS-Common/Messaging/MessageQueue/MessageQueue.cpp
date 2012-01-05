@@ -8,11 +8,11 @@ MessageQueue::MessageQueue() {
 	_queue[_first] = NULL;
 }
 
-void MessageQueue::pushMessage(Message* message) {
+bool MessageQueue::pushMessage(Message* message) {
 	// Throw exception if full
 	if (isFull()) {
 		// TODO: Throw Exception
-		return;
+		return false;
 	}
 	
 	// Add message to position _last
@@ -24,6 +24,7 @@ void MessageQueue::pushMessage(Message* message) {
 	} else {
 		_last = 0;
 	}
+	return true;
 }
 
 Message* MessageQueue::popMessage(void) {
