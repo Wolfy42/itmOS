@@ -11,7 +11,7 @@
 #define YIELD               0x5
 
 #define WRITE               0x6
-#define WRITE_RESPONE       0x7
+#define WRITE_RESPONSE      0x7
 
 #define SUSPEND	            0x8
 
@@ -23,10 +23,11 @@
 
 //--------------------------------SWI to Kernel------------------------
 #pragma SWI_ALIAS(0);
-void swi(int swiNumber, int para1, int para2, int para3, int para4, int para5, int para6, int para7);
+void swi(int* swiParameters);
 
 void performSystemCall(int systemCallId);
 void performSystemCall(int systemCallId, int para1);
 void performServiceCall(int serviceId, int para1, int para2);
+void performServiceResponse(int callerId, int para1);
 
 #endif /*SYSTEMCALLS_H_*/

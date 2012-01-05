@@ -2,6 +2,9 @@
 #define LED_H_
 
 #include "API/systemCalls.h"
+#include "Messaging/MemoryManager/MemoryManager.h"
+#include "Messaging/MessageQueue/MessageQueue.h"
+#include "Messaging/Message/Message.h"
 
 enum LED {
     LED1,
@@ -9,10 +12,10 @@ enum LED {
 };
 
 enum LEDServiceCommand {
-    SERVICE_TOGGLE_LED,
-    SERVICE_SWITCH_LED_ON,
-    SERVICE_SWITCH_LED_OFF,
-    SERVICE_GET_LED_STATUS
+    SERVICE_TOGGLE_LED = 0,
+    SERVICE_SWITCH_LED_ON = 1,
+    SERVICE_SWITCH_LED_OFF = 2,
+    SERVICE_GET_LED_STATUS = 3
 };
 
 void toggleLED(LED led);

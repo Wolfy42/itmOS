@@ -13,6 +13,7 @@ void leerlauf(void)  {
 int printBOSS();
 
 int main() {
+
 	_disable_interrupts();
 
 	// Audio Test -> "berühr dass, und eine Zahnbürste fährt morgens ins Leere!"

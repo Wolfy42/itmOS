@@ -5,6 +5,7 @@
 #include "Messaging/MemoryManager/MemoryManager.h"
 #include "Messaging/MessageQueue/MessageQueue.h"
 #include "Messaging/Message/Message.h"
+#include "API/systemCalls.h"
 
 class UserModeTask {
 
@@ -13,7 +14,7 @@ private:
 	MessageQueue* _messagesQueue;
 
 protected:
-	void writeResponse(int* response);
+	void writeResponse(int callerId, int para1);
 
 public:
 

@@ -24,26 +24,17 @@ bool SystemCallExec::execute(int swiNumber, int para1, int para2, int para3, int
     params[5] = para6;
     params[6] = para7;
 
-//    swiNumber = SUSPEND;
-
 	switch (swiNumber) {
 
     	case WRITE:
     		_kernel->write(params);
     		break;
-    	case WRITE_RESPONE:
-    		//TODO: write the response from a service to a task
+    	case WRITE_RESPONSE:
+    		_kernel->writeResponse(params);
     		break;
     	case SUSPEND:
 
-//    		int paramsTest[4];
-//    		paramsTest[0] = LED_SERVICE_ID;
-//    		paramsTest[1] = 2;
-//    		paramsTest[2] = 0;
-//    		paramsTest[3] = 0;
-//    		_kernel->write(paramsTest);
-    		//TODO: suspend a task
-
+    		//TODO: user Task-Manager
     		_taskmanager->getActiveTask()->status = Blocked;
     		break;
 

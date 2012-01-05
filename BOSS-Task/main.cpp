@@ -1,6 +1,6 @@
 #include "Service-API/LED/LED.h"
 
-int main() {
+int _main() {
 
 	switchLEDOff(LED1);
 	int i=0;
@@ -9,7 +9,13 @@ int main() {
 		while (i<800000)  {
 			i++;
 		}
-		toggleLED(LED2);
+		if (getLEDState(LED2))  {
+			switchLEDOff(LED2);
+			switchLEDOn(LED1);
+		}  else  {
+			switchLEDOn(LED2);
+			switchLEDOff(LED1);
+		}
 	}
 	return 0;
 }

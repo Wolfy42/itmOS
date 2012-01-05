@@ -1,6 +1,8 @@
 #ifndef INTERRUPTS_H_
 #define INTERRUPTS_H_
 
+#include <string.h>
+
 #include "Handler/IRQHandler.h"
 #include "Handler/SWIHandler.h"
 #include "Kernel/Task/TaskManager.h"
