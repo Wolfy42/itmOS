@@ -15,13 +15,12 @@ int printBOSS();
 int main() {
 	_disable_interrupts();
 
-    asm("\t MRC p15, #0, r10, c0, c1, #4\n");
 	// Audio Test -> "berühr dass, und eine Zahnbürste fährt morgens ins Leere!"
 //	Audio* audio = new Audio();
 //	audio->playSample();
 //	delete audio;
 
-//	printBOSS();
+	printBOSS();
 
 	Kernel* kernel = new Kernel();
 	ServiceManager* serviceManager = kernel->getServiceManager();
