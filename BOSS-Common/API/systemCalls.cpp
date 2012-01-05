@@ -29,7 +29,7 @@ void performServiceResponse(int callerId, int para1)  {
 }
 
 void performServiceCall(int serviceId, int para1, int para2)  {
-	int* params = new int[4];
+	int* params = new int[5];
 	params[0] = WRITE;
 	params[1] = serviceId;
 	params[2] = 2;

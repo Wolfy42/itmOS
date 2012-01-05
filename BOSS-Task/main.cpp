@@ -1,6 +1,6 @@
 #include "Service-API/LED/LED.h"
 
-int _main() {
+int main() {
 
 	switchLEDOff(LED1);
 	int i=0;
