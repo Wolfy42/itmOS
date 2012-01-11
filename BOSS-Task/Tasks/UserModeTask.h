@@ -22,7 +22,8 @@ public:
 
 	virtual void executeMessage(Message* message) = 0;
 
-	virtual void run();
+	void run();
+	void writeResponse(int callerId, int lenght, int params[]);
 };
 
 #endif /* USERMODETASK_H_ */

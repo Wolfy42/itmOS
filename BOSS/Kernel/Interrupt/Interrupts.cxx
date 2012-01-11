@@ -176,7 +176,7 @@ extern "C" void c_intIRQ()  {
 #pragma TASK
 extern "C" void c_intSWI(int swiNumber, int receiver, int length, int params[])  {
 	// Save the stack
-	asm("	ADD     R13, R13, #20 ");
+	asm("	ADD     R13, R13, #24 ");
 	// copy R0 into R8 --> R0 is needed
 	asm("\t MOV r8, r0\n");
 	// save context
@@ -186,7 +186,9 @@ extern "C" void c_intSWI(int swiNumber, int receiver, int length, int params[]) 
     asm("\t LDR r11, [r11], #0\n");
     asm("\t STR r8, [r11]\n");
     asm("\t STMFA r11, {R1-R2}\n");
-    memcpy(&swiParameterAddress + 3, params, (&swiParameterAddress)[2]);
+    length = (&swiParameterAddress)[2];
+    int* newParamAddress = &swiParameterAddress + 3; 
+    memcpy(newParamAddress, params, length * sizeof(int));
     stack_pointer_original = stack_pointer_saved_context + SAVED_REGISTERS_SPACE + SWI_PARAMETERS_SPACE + WEIRD_EXTRA_SPACE;
 
     _mmu->switchToKernelMMU();

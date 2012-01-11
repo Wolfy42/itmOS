@@ -11,7 +11,7 @@
 #define YIELD               0x5
 
 #define WRITE               0x6
-#define WRITE_RESPONE       0x7
+#define WRITE_RESPONSE      0x7
 
 #define SUSPEND	            0x8
 
@@ -28,5 +28,6 @@ void swi(int swiNumber, int receiver, int length, int params[]);
 void performSystemCall(int systemCallId);
 void performSystemCall(int systemCallId, int length, int params[]);
 void performServiceCall(int serviceId, int length, int params[]);
+void performServiceResponse(int callerId, int length, int params[]);
 
 #endif /*SYSTEMCALLS_H_*/

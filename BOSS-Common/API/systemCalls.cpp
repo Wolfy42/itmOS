@@ -11,3 +11,7 @@ void performSystemCall(int systemCallId, int length, int params[])  {
 void performServiceCall(int serviceId, int length, int params[])  {
     swi(WRITE, serviceId, length, params);
 }
+
+void performServiceResponse(int callerId, int length, int params[])  {
+	 swi(WRITE_RESPONSE, callerId, length, params);
+}
