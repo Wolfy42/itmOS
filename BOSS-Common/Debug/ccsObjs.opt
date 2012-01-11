@@ -1,1 +1,0 @@
-"./API/systemCalls.obj" "./Lib/hexOperations.obj" "./Lib/bitOperations.obj" "./Lib/Time.obj" "./Lib/Rand.obj" "./Messaging/MemoryManager/MemoryManager.obj" "./Messaging/Message/Message.obj" "./Messaging/MessageQueue/MessageQueue.obj" 
