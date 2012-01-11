@@ -232,7 +232,7 @@ void HalDisplayDriver::omap_venc_init(int mode) {
 	Write32(VENC, VENC_F_CONTROL, VENC_RESET);
 	while (Read32(VENC, VENC_F_CONTROL) & VENC_RESET)
 
-	for (i=0;venc_setup[i].reg != -1;i++)
+	for (i = 0; venc_setup[i].reg != -1; i++)
 		Write32(VENC, venc_setup[i].reg, venc_setup[i].mode[mode]);
 
 	// set a test pattern only
@@ -338,10 +338,6 @@ void HalDisplayDriver::omap_dispc_init(void) {
 		| DISPC_GOLCD
 		| DISPC_STNTFT
 		| DISPC_LCDENABLE
-
-		// tv out:
-		//| DISPC_GODIGITAL
-		//| DISPC_DIGITALENABLE
 		);
 
 	while ((Read32(DISPC, DISPC_CONTROL) & DISPC_GOLCD))
@@ -367,8 +363,6 @@ void HalDisplayDriver::omap_set_lcd_mode(int w, int h, int d) {
 	int i;
 	struct video_mode *m;
 
-//	dprintf("omap4: set_lcd_mode %d,%d\n", w, h);
-
 	for (i=0;i<sizeof(modes)/sizeof(modes[0]);i++) {
 		if (w <= modes[i].width 
 		    && h <= modes[i].height)
@@ -377,8 +371,6 @@ void HalDisplayDriver::omap_set_lcd_mode(int w, int h, int d) {
 	i -= 1;
 found:
 	m = &modes[i];
-	
-//	dprintf("omap3: found mode[%s]\n", m->name);
 
 	Write32(DISPC, DISPC_SIZE_LCD, m->dispc_size);
 	Write32(DISPC, DISPC_TIMING_H, m->dispc_timing_h);
