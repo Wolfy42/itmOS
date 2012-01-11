@@ -36,8 +36,8 @@ void Kernel::initScheduler() {
 
 void Kernel::write(int* parameters)  {
 	int serviceId = parameters[0];
-	int length = 2;
-	int* params = &parameters[1];
+	int length = parameters[1];
+	int* params = &parameters[2];
 
 	int activeTaskId = _taskManager->getActiveTask()->id;
 	Task* task = _serviceManager->getTaskForService(serviceId);

@@ -30,7 +30,7 @@ bool SystemCallExec::execute(int swiNumber, int params[])  {
     		break;
 
         case EXIT:
-         	_taskmanager->kill(params[0]);
+         	_taskmanager->kill(params[1]);
          	// context switch
          	switchTask = true;
          	break;
