@@ -23,10 +23,10 @@
 
 //--------------------------------SWI to Kernel------------------------
 #pragma SWI_ALIAS(0);
-void swi(int swiNumber, int para1, int para2, int para3);
+void swi(int swiNumber, int receiver, int length, int params[]);
 
 void performSystemCall(int systemCallId);
-void performSystemCall(int systemCallId, int para1);
-void performServiceCall(int serviceId, int para1, int para2);
+void performSystemCall(int systemCallId, int length, int params[]);
+void performServiceCall(int serviceId, int length, int params[]);
 
 #endif /*SYSTEMCALLS_H_*/
