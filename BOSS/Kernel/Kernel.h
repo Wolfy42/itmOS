@@ -39,6 +39,7 @@ class Kernel {
 		virtual ~Kernel();
 	
 		void write(int* parameters);
+		void writeResponse(int* parameters);
 		
 		// Getters
 		TaskManager* getTaskManager(void);

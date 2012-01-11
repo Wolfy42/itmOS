@@ -1,6 +1,8 @@
 #include "ServiceManager.h"
 
 #include "Kernel/ServiceManager/Configs/LED/LEDConfig.h"
+#include "Kernel/ServiceManager/Configs/Serial/SerialConfig.h"
+#include "Loader/TasksHex/SerialBytes.h"
 
 ServiceManager::ServiceManager(TaskManager* taskManager, Loader* loader)  {
 	_taskManager = taskManager;
@@ -13,8 +15,12 @@ void ServiceManager::startServices()  {
 
 	LedBytes ld;
 	CodeBytes* cb = ld.getCodeBytes();
-	LEDConfig* lc = new LEDConfig;
+	SerialBytes serialBytes;
+	CodeBytes* cb_serial = serialBytes.getCodeBytes();
+	LEDConfig* lc = new LEDConfig();
 	startService("LED", LED_SERVICE_ID, cb, lc);
+	SerialConfig* sc = new SerialConfig();
+	startService("Serial", SERIAL_SERVICE_ID, cb_serial, sc);
 	delete cb;
 	delete lc;
 }

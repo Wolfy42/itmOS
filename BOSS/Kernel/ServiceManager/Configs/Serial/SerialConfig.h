@@ -2,8 +2,11 @@
 #define SERIALCONFIG_H_
 
 #include <list>
-#include "HAL/gpio.h"
-#include "Tasks/Services/ServiceConfig.h"
+#include "Kernel/ServiceManager/Configs/ServiceConfig.h"
+
+#define UART1 0x4806A000 /* UART only */
+#define UART2 0x4806C000 /* UART only */
+#define UART3 0x49020000 /* UART, IrDA, CIR */
 
 class SerialConfig : public ServiceConfig 
 {		
@@ -11,8 +14,6 @@ class SerialConfig : public ServiceConfig
 		SerialConfig();
 		virtual ~SerialConfig();
 		
-		virtual char* getServiceName(void);
-		virtual int getInitAddress(void);
 		virtual void initRegistersForMmuMapping(void);
 };
 

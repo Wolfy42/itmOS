@@ -21,7 +21,7 @@ private:
 public:
 	MessageQueue();
 
-	void pushMessage(Message* message);
+	bool pushMessage(Message* message);
 	Message* popMessage(void);
 
 	bool isEmpty(void);

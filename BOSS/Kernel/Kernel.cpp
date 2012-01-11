@@ -47,7 +47,27 @@ void Kernel::write(int* parameters)  {
 	MessageQueue* messageQueue = memoryManager->getMessageQueueWithoutVirtualOffset();
 
 	Message* message = memoryManager->createMessage(activeTaskId, length, params);
-	messageQueue->pushMessage(message);
+	if (!messageQueue->pushMessage(message))  {
+		task->memoryManager->remove(message, false);
+	}
+}
+
+void Kernel::writeResponse(int* parameters)  {
+	int taskId = parameters[0];
+	int length = parameters[1];
+	int* params = &parameters[2];
+
+	int activeTaskId = _taskManager->getActiveTask()->id;
+	Task* task = getTaskManager()->getTaskFor(taskId);
+	task->status = Ready;
+
+	MemoryManager* memoryManager = task->memoryManager;
+	MessageQueue* messageQueue = memoryManager->getMessageQueueWithoutVirtualOffset();
+
+	Message* message = memoryManager->createMessage(activeTaskId, length, params);
+	if (!messageQueue->pushMessage(message))  {
+		task->memoryManager->remove(message, false);
+	}
 }
 
 TaskManager* Kernel::getTaskManager(void) {

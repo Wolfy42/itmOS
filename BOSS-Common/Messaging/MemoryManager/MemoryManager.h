@@ -44,7 +44,7 @@ public:
 	MessageQueue* getMessageQueueWithoutVirtualOffset();
 
 	Message* createMessage(int taskId, int paramSize, int* messageParams);
-	void remove(Message* message);
+	void remove(Message* message, bool isVirtual);
 
 };
 

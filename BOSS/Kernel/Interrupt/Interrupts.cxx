@@ -134,7 +134,7 @@ void contextSwitch() {
 
 	// !! The next line is a added to the code in the ARM-book, because
 	//    normally this would be called at the end of the function, but we don't reach that
-	//asm("	ADD     R13, R13, #4 ");
+//	asm("	ADD     R13, R13, #4 ");
 
 	asm("	MOVS 	PC, R14						; Return to address in R14_irq, with SPSR_irq -> CPSR transfer" );
 }
@@ -174,15 +174,21 @@ extern "C" void c_intIRQ()  {
  * 		if a context switch is needed
  */
 #pragma TASK
-extern "C" void c_intSWI(int swiNumber, int para1, int para2, int para3, int para4, int para5, int para6, int para7)  {
-    asm("\t MOV r8, r0\n");
+extern "C" void c_intSWI(int swiNumber, int receiver, int length, int params[])  {
+	// Save the stack
+	asm("	ADD     R13, R13, #24 ");
+	// copy R0 into R8 --> R0 is needed
+	asm("\t MOV r8, r0\n");
 	// save context
 	SAVECONTEXT_SWI
     tempVariableForAsmAndCpp2 = (unsigned int)&swiParameterAddress;
     asm("\t LDR r11, tempVariableForAsmAndCpp2\n");
     asm("\t LDR r11, [r11], #0\n");
     asm("\t STR r8, [r11]\n");
-    asm("\t STMFA r11, {R1-R7}\n");
+    asm("\t STMFA r11, {R1-R2}\n");
+    length = (&swiParameterAddress)[2];
+    int* newParamAddress = &swiParameterAddress + 3; 
+    memcpy(newParamAddress, params, length * sizeof(int));
     stack_pointer_original = stack_pointer_saved_context + SAVED_REGISTERS_SPACE + SWI_PARAMETERS_SPACE + WEIRD_EXTRA_SPACE;
 
     _mmu->switchToKernelMMU();
