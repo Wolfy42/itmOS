@@ -22,7 +22,7 @@ public:
 
 	virtual void executeMessage(Message* message) = 0;
 
-	void run();
+	virtual void run();
 };
 
 #endif /* USERMODETASK_H_ */

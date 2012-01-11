@@ -1,6 +1,9 @@
 #ifndef SERVICECONFIG_H_
 #define SERVICECONFIG_H_
 
+#include <list>
+#include "API/dataTypes.h"
+
 class ServiceConfig 
 {	
 	protected:
