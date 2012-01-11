@@ -1,29 +1,18 @@
-/*  graphics.c: some (very very) basic graphics functions.
+#include "Graphics.h"
 
-    Copyright (C) 2010 Michael Zucchi
+Graphics::Graphics()
+{
+}
 
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
-
-#include "graphics.h"
-#include <stdarg.h>
+Graphics::~Graphics()
+{
+}
 
 struct RastPort defrp;
 struct BitMap fb;
 
 /* can only be called once ... */
-struct RastPort *graphics_init(char *fbaddr, int width, int height, int type) {
+struct RastPort* Graphics::graphics_init(char *fbaddr, int width, int height, int type) {
 	fb.width = width;
 	fb.height = height;
 	fb.format = type;
@@ -39,7 +28,7 @@ struct RastPort *graphics_init(char *fbaddr, int width, int height, int type) {
 	return &defrp;
 }
 
-void setColour(struct RastPort *rp, unsigned int rgb) {
+void Graphics::setColour(struct RastPort *rp, unsigned int rgb) {
 	// TODO: switch rp->drawable->format ...
 
 	rp->colour = ((rgb & 0xf80000) >> 8)
@@ -49,7 +38,7 @@ void setColour(struct RastPort *rp, unsigned int rgb) {
 
 extern void fill_rect_565(void *addr, int width, int height, unsigned int colour, int stride);
 
-void drawRect(struct RastPort *rp, int w, int h) {
+void Graphics::drawRect(struct RastPort *rp, int w, int h) {
 	unsigned int colour = rp->colour;
 	unsigned short *outp = (unsigned short *)rp->point;
 
@@ -67,7 +56,8 @@ void drawRect(struct RastPort *rp, int w, int h) {
 	}
 }
 
-void moveTo(struct RastPort *rp, int x, int y) {
+
+void Graphics::moveTo(struct RastPort *rp, int x, int y) {
 	rp->x = x;
 	rp->y = y;
 	rp->point = ((unsigned char *)rp->drawable.bitmap->data)
@@ -75,11 +65,11 @@ void moveTo(struct RastPort *rp, int x, int y) {
 		+ y * rp->drawable.bitmap->stride;
 }
 
-void drawPixel(struct RastPort *rp) {
+void Graphics::drawPixel(struct RastPort *rp) {
 	*((unsigned short *)rp->point) = rp->colour;
 }
 
-void drawChar(struct RastPort *rp, unsigned int c, int scale) {
+void Graphics::drawChar(struct RastPort *rp, unsigned int c, int scale) {
 	int i, j, s;
 	int w, h;
 	unsigned short *outp;
@@ -116,7 +106,7 @@ void drawChar(struct RastPort *rp, unsigned int c, int scale) {
 	rp->x += w*scale;
 }
 
-void drawString(struct RastPort *rp, const char *s, int scale) {
+void Graphics::drawString(struct RastPort *rp, const char *s, int scale) {
 	unsigned int c;
 	unsigned int x = rp->x;
 
