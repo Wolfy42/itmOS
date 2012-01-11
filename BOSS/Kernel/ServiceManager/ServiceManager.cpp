@@ -1,9 +1,5 @@
 #include "ServiceManager.h"
 
-#include "Kernel/ServiceManager/Configs/LED/LEDConfig.h"
-#include "Kernel/ServiceManager/Configs/Serial/SerialConfig.h"
-#include "Loader/TasksHex/SerialBytes.h"
-
 ServiceManager::ServiceManager(TaskManager* taskManager, Loader* loader)  {
 	_taskManager = taskManager;
 	_loader = loader;

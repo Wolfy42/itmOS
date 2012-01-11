@@ -14,7 +14,6 @@
 #include "Lib/Rand.h"
 #include "Lib/Time.h"
 
-
 #include "Messaging/Message/Message.h"
 #include "Messaging/MessageQueue/MessageQueue.h"
 

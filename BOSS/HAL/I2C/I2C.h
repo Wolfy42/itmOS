@@ -10,6 +10,8 @@
 
 #include <stdint.h>
 
+#include "API/dataTypes.h"
+
 #define MMIO_WRITE32(addr, data) \
   (*((mem_address_t *) addr) = data)
 

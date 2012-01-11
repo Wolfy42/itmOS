@@ -1,8 +1,8 @@
 #include "Kernel/Kernel.h"
-#include "Kernel/ServiceManager/ServiceManager.h"
 #include "API/systemCalls.h"
-#include "Loader/TasksHex/TestBytes.h"
 #include "HAL/Audio/audio.h"
+#include "Loader/TasksHex/TestBytes.h"
+
 #include "Video/graphics.h"
 #include "Video/video.h"
 
@@ -23,8 +23,6 @@ int main() {
 	printBOSS();
 
 	Kernel* kernel = new Kernel();
-	ServiceManager* serviceManager = kernel->getServiceManager();
-
 
 	// Dummy Task
 	Task* leerlaufTask = kernel->getTaskManager()->create("leerlauf\0", false, 0);

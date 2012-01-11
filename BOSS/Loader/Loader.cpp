@@ -1,7 +1,5 @@
 
 #include "Loader.h"
-#include "Kernel/MMU/mmu.h"
-#include "Lib/hexOperations.h"
 
 Loader::Loader(RAMManager* mmu) : _ramManager(mmu) {
 	_parser = new Parser();

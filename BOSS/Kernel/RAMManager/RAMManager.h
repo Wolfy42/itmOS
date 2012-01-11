@@ -13,7 +13,10 @@
 #define ROM_INTERRUPT_ENTRIES 0x14000
 #define ROM_INTERRUPT_LENGTH 0x1C
 
+#include <string.h>
+
 #include "API/dataTypes.h"
+#include "Lib/bitOperations.h"
 
 enum MemoryType {
     INT_RAM, EXT_DDR

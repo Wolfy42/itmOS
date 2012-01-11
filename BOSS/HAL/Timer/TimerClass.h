@@ -2,6 +2,7 @@
 #define TIMERCLASS_H_
 
 #include "API/dataTypes.h"
+#include "Lib/bitOperations.h"
 #include "HAL/gpt.h"
 
 class TimerClass {

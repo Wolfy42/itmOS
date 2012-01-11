@@ -2,6 +2,7 @@
 #define TASKMANAGER_H_
 
 #include "Task.h"
+
 /*
  * Change if you wanna hav mor fun (tasks)
  */
