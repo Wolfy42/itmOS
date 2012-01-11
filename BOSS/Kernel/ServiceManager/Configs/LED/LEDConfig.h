@@ -2,8 +2,10 @@
 #define LEDCONFIG_H_
 
 #include <list>
-#include "HAL/gpio.h"
 #include "Kernel/ServiceManager/Configs/ServiceConfig.h"
+
+#define CONTROL_GPIO_BASE (address) 0x48002000
+#define GPIO_BASE         (address) 0x49056000
 
 class LEDConfig : public ServiceConfig 
 {		
