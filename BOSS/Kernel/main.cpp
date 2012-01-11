@@ -1,7 +1,7 @@
 #include "Kernel/Kernel.h"
 #include "API/systemCalls.h"
 #include "HAL/Audio/audio.h"
-#include "HAL/Video/HalVideoDriver.h"
+#include "HAL/Display/HalDisplayDriver.h"
 #include "DisplayService/Graphics.h"
 #include "Loader/TasksHex/TestBytes.h"
 
@@ -54,9 +54,9 @@ int main() {
 int printBOSS()  {
 	RastPort *rp;
 
-	HalVideoDriver::video_init();
+	HalDisplayDriver::video_init();
 	rp = Graphics::graphics_init(FBADDR, RES_WIDTH, RES_HEIGHT, BM_RGB16);
-	HalVideoDriver::omap_attach_framebuffer(0, rp->drawable.bitmap);
+	HalDisplayDriver::omap_attach_framebuffer(0, rp->drawable.bitmap);
 	
 	// Background
 	Graphics::moveTo(rp, 0, 0);

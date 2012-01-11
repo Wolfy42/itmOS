@@ -1,14 +1,12 @@
-#include "HalVideoDriver.h"
+#include "HalDisplayDriver.h"
 
-HalVideoDriver::HalVideoDriver()
+HalDisplayDriver::HalDisplayDriver()
 {
 }
 
-HalVideoDriver::~HalVideoDriver()
+HalDisplayDriver::~HalDisplayDriver()
 {
 }
-
-
 
 
 // ~~~~~~~~~~ STRUCTS AND STUFF ~~~~~~~~~~
@@ -114,22 +112,6 @@ struct {
 	{ -1 }
 };
 
-#if 0
-static void ksleep(int v) {
-	int i;
-
-	// this is approximately 1ms, at least on beagleboard c3
-	while (v--) {
-		for (i=0;i<1000;i++) {
-			asm volatile("mov r0, r0");
-			asm volatile("mov r0, r0");
-		}
-	}
-}
-#endif
-
-
-
 
 // ~~~~~~~~~~ STATICS ~~~~~~~~~~~
 static inline void Write32(void *base, unsigned int reg, unsigned int v) {
@@ -150,10 +132,8 @@ static inline void Set32(void *base, unsigned int reg, unsigned int m, unsigned 
 }
 
 
-
-
 // ~~~~~~~~~~ PUBLIC ~~~~~~~~~~
-void HalVideoDriver::video_init(void) {
+void HalDisplayDriver::video_init(void) {
 	Write32(DISPC_BASE, DISPC_IRQENABLE, 0x00000);
 	Write32(DISPC_BASE, DISPC_IRQSTATUS, 0x1ffff);
 
@@ -168,7 +148,7 @@ void HalVideoDriver::video_init(void) {
 
 // set a bitmap on the given video source
 // vid 0 = gfx, 1 = vid1, 2 = vid2
-void HalVideoDriver::omap_attach_framebuffer(int id, struct BitMap *bm) {
+void HalDisplayDriver::omap_attach_framebuffer(int id, struct BitMap *bm) {
 	void *DISPC = DISPC_BASE;
 
 	// FIXME: other formats than RGB16 taken from bitmap
@@ -240,21 +220,17 @@ void HalVideoDriver::omap_attach_framebuffer(int id, struct BitMap *bm) {
 }
 
 
-
-
 // ~~~~~~~~~~ PRIVATE ~~~~~~~~~~
 
 // init video encoder.
 // by default just show test pattern
 // This doesn't work
-void HalVideoDriver::omap_venc_init(int mode) {
+void HalDisplayDriver::omap_venc_init(int mode) {
 	void *VENC = VENC_BASE;
 	int i;
 
 	Write32(VENC, VENC_F_CONTROL, VENC_RESET);
-//	dprintf("venc reset\n");
 	while (Read32(VENC, VENC_F_CONTROL) & VENC_RESET)
-//		dprintf("waiting venc reset\n");
 
 	for (i=0;venc_setup[i].reg != -1;i++)
 		Write32(VENC, venc_setup[i].reg, venc_setup[i].mode[mode]);
@@ -264,14 +240,14 @@ void HalVideoDriver::omap_venc_init(int mode) {
 }
 
 // init beagle gpio for video
-void HalVideoDriver::omap_beagle_init(void) {
+void HalDisplayDriver::omap_beagle_init(void) {
 	// setup GPIO stuff, i can't find any references to these
 	Write32(GPIO1_BASE, GPIO_OE, 0xfefffedf);
 	Write32(GPIO1_BASE, GPIO_SETDATAOUT, 0x01000120);
 	// DVI-D is enabled by GPIO 170?
 }
 
-void HalVideoDriver::omap_clock_init(void) {
+void HalDisplayDriver::omap_clock_init(void) {
 	// sets pixel clock to 72MHz
 
 	// sys_clk = 26.0 Mhz
@@ -281,7 +257,7 @@ void HalVideoDriver::omap_clock_init(void) {
 	// and also VENC clock = 864 / 16 = 54MHz
 
 	// The clock multiplier/divider cannot be changed
-	// without affecting other system clocks - do don't.
+	// without affecting other system clocks - so don't.
 
 	// pll4 clock multiplier/divider
 	Write32(CM_CLOCK_BASE, CM_CLKSEL2_PLL, (432 << 8) | 12);
@@ -292,13 +268,13 @@ void HalVideoDriver::omap_clock_init(void) {
 	Write32(CM_CLOCK_BASE, CM_CLKEN_PLL, 0x00370037);
 }
 
-void HalVideoDriver::omap_dss_init(void) {
+void HalDisplayDriver::omap_dss_init(void) {
 	Write32(DSS_BASE, DSS_SYSCONFIG, DSS_AUTOIDLE);
 	// Select DSS1 ALWON as clock source
 	Write32(DSS_BASE, DSS_CONTROL, DSS_VENC_OUT_SEL | DSS_DAC_POWERDN_BGZ | DSS_DAC_DEMEN | DSS_VENC_CLOCK_4X_ENABLE);
 }
 
-void HalVideoDriver::omap_dispc_init(void) {
+void HalDisplayDriver::omap_dispc_init(void) {
 	void *DISPC = DISPC_BASE;
 
 	Write32(DISPC, DISPC_SYSCONFIG,
@@ -372,7 +348,7 @@ void HalVideoDriver::omap_dispc_init(void) {
 		;
 }
 
-void HalVideoDriver::omap_disable_display(int vid) {
+void HalDisplayDriver::omap_disable_display(int vid) {
 	switch (vid) {
 	case 0:
 		Set32(DISPC_BASE, DISPC_GFX_ATTRIBUTES, DISPC_GFXENABLE, 0);
@@ -386,7 +362,7 @@ void HalVideoDriver::omap_disable_display(int vid) {
 	}
 }
 
-void HalVideoDriver::omap_set_lcd_mode(int w, int h, int d) {
+void HalDisplayDriver::omap_set_lcd_mode(int w, int h, int d) {
 	void *DISPC = DISPC_BASE;
 	int i;
 	struct video_mode *m;
