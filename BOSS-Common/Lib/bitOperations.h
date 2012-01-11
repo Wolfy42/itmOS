@@ -11,6 +11,4 @@ void toggleBit(address number, int bitOffset);
 
 bool readBit(address number, int bitOffset);
 
-void registerWrite(address base, address reg, int value);
-
 #endif /*BITOPERATIONS_H_*/

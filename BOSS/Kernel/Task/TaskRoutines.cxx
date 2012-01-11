@@ -20,5 +20,6 @@ void initTaskRoutines(TaskManager* tm) {
  */
 void exitTask() {
 	
-	performSystemCall(EXIT, (int)&_TaskManager->getActiveTask()->id);
+    int params[] = {(int)&_TaskManager->getActiveTask()->id};
+	performSystemCall(EXIT, 1, params);
 }

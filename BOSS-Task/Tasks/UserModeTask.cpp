@@ -19,6 +19,6 @@ void UserModeTask::run()  {
 	}
 }
 
-void UserModeTask::writeResponse(int* response)  {
-	//TODO: generate a syscall
+void UserModeTask::writeResponse(int callerId, int length, int params[])  {
+	performServiceResponse(callerId, length, params);
 }

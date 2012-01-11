@@ -21,8 +21,8 @@ bool SystemCallExec::execute(int swiNumber, int params[])  {
     	case WRITE:
     		_kernel->write(params);
     		break;
-    	case WRITE_RESPONE:
-    		//TODO: write the response from a service to a task
+    	case WRITE_RESPONSE:
+    		_kernel->writeResponse(params);
     		break;
     	case SUSPEND:
 
@@ -30,7 +30,7 @@ bool SystemCallExec::execute(int swiNumber, int params[])  {
     		break;
 
         case EXIT:
-         	_taskmanager->kill(params[0]);
+         	_taskmanager->kill(params[1]);
          	// context switch
          	switchTask = true;
          	break;

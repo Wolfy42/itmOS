@@ -2,16 +2,14 @@
 #include <list>
 
 #include "Loader/Parser/Parser.h"
+#include "Loader/TasksHex/TestBytes.h"
 #include "Loader/TasksHex.h"
 
 int _main(int argc, char **argv) {
 
 	Parser p;
-	CodeBytes* cb = new CodeBytes;
-	cb->byte0 = test_byte_0;
-	cb->byte1 = test_byte_1;
-	cb->byte2 = test_byte_2;
-	cb->byte3 = test_byte_3;
+	TestBytes tb;
+	CodeBytes* cb = tb.getCodeBytes();
 
 	std::list<Code*>* code = p.parse(cb);
 

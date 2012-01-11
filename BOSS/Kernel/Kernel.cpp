@@ -36,11 +36,25 @@ void Kernel::initScheduler() {
 
 void Kernel::write(int* parameters)  {
 	int serviceId = parameters[0];
-	int length = 2;
-	int* params = &parameters[1];
+	int length = parameters[1];
+	int* params = &parameters[2];
 
-	int activeTaskId = _taskManager->getActiveTask()->id;
 	Task* task = _serviceManager->getTaskForService(serviceId);
+	writeIntoMessageQueue(task, length, params);
+}
+
+void Kernel::writeResponse(int* parameters)  {
+	int taskId = parameters[0];
+	int length = parameters[1];
+	int* params = &parameters[2];
+
+	Task* task = getTaskManager()->getTaskFor(taskId);
+	writeIntoMessageQueue(task, length, params);
+}
+
+void Kernel::writeIntoMessageQueue(Task* task, int length, int params[])  {
+	int activeTaskId = _taskManager->getActiveTask()->id;
+
 	task->status = Ready;
 
 	MemoryManager* memoryManager = task->memoryManager;

@@ -1,7 +1,6 @@
 #ifndef LOADER_H_
 #define LOADER_H_
 
-#include <stdio.h>
 #include <list>
 #include <string.h>
 
