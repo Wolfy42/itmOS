@@ -22,7 +22,7 @@ void LEDService::executeMessage(Message* message)  {
 			break;
 		case SERVICE_GET_LED_STATUS:
 			int response[] = {_driver.isOn(led)};
-			writeResponse(message->getTaskId(), 1, params);
+			writeResponse(message->getTaskId(), 1, response);
 			break;
 	}
 }

@@ -54,8 +54,8 @@ void Kernel::write(int* parameters)  {
 
 void Kernel::writeResponse(int* parameters)  {
 	int taskId = parameters[0];
-	int length = 2;
-	int* params = &parameters[1];
+	int length = parameters[1];
+	int* params = &parameters[2];
 
 	int activeTaskId = _taskManager->getActiveTask()->id;
 	Task* task = getTaskManager()->getTaskFor(taskId);
