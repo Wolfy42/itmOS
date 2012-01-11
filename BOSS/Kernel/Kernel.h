@@ -33,6 +33,7 @@ class Kernel {
         Loader* _loader;
 	
 		void initScheduler(void);
+		void writeIntoMessageQueue(Task* task, int length, int params[]);
 	
 	public:
 		Kernel();
