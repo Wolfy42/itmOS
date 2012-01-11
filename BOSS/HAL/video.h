@@ -15,8 +15,8 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-#ifndef _OMAP3_VIDEO_H
-#define _OMAP3_VIDEO_H
+#ifndef VIDEO_H_
+#define VIDEO_H_
 
 /* OMAP video related registers */
 
@@ -487,4 +487,4 @@
 #define VENC_FSC_R601_PAL_G 0x2A098ACB
 #define VENC_FSC_R601_PAL_Nc 0x21E6EFE3
 
-#endif
+#endif /*VIDEO_H_*/
