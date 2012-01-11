@@ -22,7 +22,7 @@ bool SystemCallExec::execute(int swiNumber, int params[])  {
     		_kernel->write(params);
     		break;
     	case WRITE_RESPONSE:
-    		//TODO: write the response from a service to a task
+    		_kernel->writeResponse(params);
     		break;
     	case SUSPEND:
 
