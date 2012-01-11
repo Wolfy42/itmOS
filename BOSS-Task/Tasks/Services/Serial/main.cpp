@@ -1,6 +1,6 @@
 #include "Tasks/Services/Serial/SerialService.h"
 
-int __main(void) {
+int main(void) {
 	SerialService serialService;
 	serialService.run();
 }

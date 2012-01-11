@@ -1,6 +1,6 @@
 #include "Tasks/Services/LED/LEDService.h"
 
-int main(void) {
+int ___main(void) {
 	LEDService ledService;
 	ledService.run();
 }
