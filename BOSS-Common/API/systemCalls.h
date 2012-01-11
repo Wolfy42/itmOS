@@ -1,8 +1,6 @@
 #ifndef SYSTEMCALLS_H_
 #define SYSTEMCALLS_H_
 
-#include "API/dataTypes.h"
-
 //--------------------------------System - Calls ----------------------
 #define EXIT                0x1
 #define KILL                0x2
