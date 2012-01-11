@@ -2,7 +2,6 @@
 #define HALTIMERDRIVER_H_
 
 #include "HAL/Timer/TimerClass.h"
-#include "HAL/gpt.h"
 
 class HalTimerDriver {
 	private:		

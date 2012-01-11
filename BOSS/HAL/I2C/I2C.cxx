@@ -6,8 +6,6 @@
  */
 
 #include "HAL/I2C/I2C.h"
-#include "API/dataTypes.h"
-#include <stdint.h>
 
 #define TIMEOUT 10000
 

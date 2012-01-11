@@ -5,11 +5,16 @@
 #include <string.h>
 
 #include "API/dataTypes.h"
+
+#include "Lib/hexOperations.h"
+
 #include "Kernel/RAMManager/RAMManager.h"
-#include "Loader/TasksHex.h"
-#include "Loader/Parser/Parser.h"
+#include "Kernel/MMU/mmu.h"
 #include "Kernel/Task/Task.h"
 #include "Kernel/ServiceManager/Configs/ServiceConfig.h"
+
+#include "Loader/TasksHex.h"
+#include "Loader/Parser/Parser.h"
 
 class Loader {
 	private:

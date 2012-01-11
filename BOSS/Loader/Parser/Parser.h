@@ -2,7 +2,6 @@
 #ifndef PARSER_H_
 #define PARSER_H_
 
-#include <stdio.h>
 #include <list>
 
 #include "API/dataTypes.h"

@@ -5,9 +5,6 @@
 #include "HAL/gpt.h"
 #include "API/dataTypes.h"
 
-// needed for NULL :P
-#include <stdio.h>
-
 IRQHandler::IRQHandler() {
 	
 	// Initialize all handlers to NULL 
