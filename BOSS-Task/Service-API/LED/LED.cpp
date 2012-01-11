@@ -23,9 +23,9 @@ bool getLEDState(LED led) {
 	MemoryManager* memoryManager = (MemoryManager*)&messagesStart;
 	MessageQueue* messagesQueue = memoryManager->getMessageQueue();
 
-	if (messagesQueue->isEmpty()) {
-		performSystemCall(SUSPEND);
-	}
+//	if (messagesQueue->isEmpty()) {
+//		performSystemCall(SUSPEND);
+//	}
 
 	while (messagesQueue->isEmpty())  {
 

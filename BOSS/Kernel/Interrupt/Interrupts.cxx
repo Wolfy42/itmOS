@@ -176,7 +176,7 @@ extern "C" void c_intIRQ()  {
 #pragma TASK
 extern "C" void c_intSWI(int swiNumber, int receiver, int length, int params[])  {
 	// Save the stack
-	asm("	ADD     R13, R13, #20 ");
+	asm("	ADD     R13, R13, #24 ");
 	// copy R0 into R8 --> R0 is needed
 	asm("\t MOV r8, r0\n");
 	// save context
