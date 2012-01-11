@@ -66,12 +66,12 @@ void SerialService::init() {
 	}
 	return;
 }
-
+int printText(char* text);
 void SerialService::run() {
 	char buffer[1];
 	buffer[0] = ' ';
 	read(1, buffer);
-	
+	printText(&buffer[0]);
 	
 }
 
