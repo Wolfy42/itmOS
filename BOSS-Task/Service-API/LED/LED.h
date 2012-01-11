@@ -3,6 +3,10 @@
 
 #include "API/systemCalls.h"
 
+#include "Messaging/MemoryManager/MemoryManager.h"
+#include "Messaging/MessageQueue/MessageQueue.h"
+#include "Messaging/Message/Message.h"
+
 enum LED {
     LED1,
     LED2

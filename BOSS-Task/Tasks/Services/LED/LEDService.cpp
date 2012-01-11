@@ -21,10 +21,8 @@ void LEDService::executeMessage(Message* message)  {
 			_driver.toggle(led);
 			break;
 		case SERVICE_GET_LED_STATUS:
-			int response[2];
-			response[0] = message->getTaskId();
-			response[1] = _driver.isOn(led);
-			writeResponse(response);
+			int response[] = {_driver.isOn(led)};
+			writeResponse(message->getTaskId(), 1, params);
 			break;
 	}
 }
