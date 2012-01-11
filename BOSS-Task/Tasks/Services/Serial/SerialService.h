@@ -2,7 +2,6 @@
 #define SERIALSERVICE_H_
 
 #include "Tasks/Services/Service.h"
-#include "Tasks/Services/Serial/SerialConfig.h"
 
 
 enum SerialCommand {
@@ -21,17 +20,12 @@ private:
 	int read(int count, char* buffer);
 	
 	
+	
 public:
+
 	SerialService();
 	virtual ~SerialService();
-
-	// ~~~~~~~~~~~~~~~~~~~~ CONFIG & STARTUP ~~~~~~~~~~~~~~~~~~~~
-	// Service-Config
-	static SerialConfig CONFIG;
-	
-	// Service-Main
-	static void main(void);
-	// ~~~~~~~~~~~~~~~~~~~~ CONFIG & STARTUP ~~~~~~~~~~~~~~~~~~~~
+	void run();
 
 };
 
