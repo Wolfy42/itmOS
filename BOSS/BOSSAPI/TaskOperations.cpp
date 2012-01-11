@@ -6,10 +6,12 @@ void yield() {
     performSystemCall(YIELD);
 }
 void exit(int state) {
-    performSystemCall(EXIT, state);
+    int params[] = {state};
+    performSystemCall(EXIT, 1, params);
 }
 void kill(int pid) {
-    performSystemCall(KILL, pid);
+    int params[] = {pid};
+    performSystemCall(KILL, 1, params);
 }
 int fork() {
 	performSystemCall(FORK);
