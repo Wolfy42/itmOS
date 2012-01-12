@@ -1,8 +1,9 @@
 #ifndef LEDSERVICE_H_
 #define LEDSERVICE_H_
 
-#include "HAL/LED/HalLedDriver.h"
 #include "Tasks/Services/Service.h"
+#include "HAL/LED/HalLedDriver.h"
+#include "Service-API/LED/LED.h"
 
 class LEDService : public Service {
 

@@ -1,8 +1,7 @@
-
 #include "LEDService.h"
 
-LEDService::LEDService(): Service()  {}
-LEDService::~LEDService()  {}
+LEDService::LEDService() : Service() {}
+LEDService::~LEDService() {}
 
 void LEDService::executeMessage(Message* message)  {
 
