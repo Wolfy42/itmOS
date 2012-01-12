@@ -47,7 +47,7 @@ void ShellService::executeCommand(std::string command) {
 void ShellService::echo(std::string echo) {
 	
 	int params[] = { (int)echo.c_str() };
-	performServiceCall(HDMI_SERVICE_ID, 2, params);
+	performServiceCall(DISPLAY_SERVICE_ID, 2, params);
 }
 
 ShellService::ShellService()
