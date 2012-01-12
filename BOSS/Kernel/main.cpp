@@ -1,9 +1,10 @@
 #include "Kernel/Kernel.h"
 #include "API/systemCalls.h"
 #include "HAL/Audio/audio.h"
-#include "HAL/Display/HalDisplayDriver.h"
-#include "DisplayService/Graphics.h"
 #include "Loader/TasksHex/TestBytes.h"
+
+//#include "HAL/Display/HalDisplayDriver.h"
+//#include "DisplayService/Graphics.h"
 
 void leerlauf(void)  {
 	while(1);
@@ -19,7 +20,7 @@ int main() {
 	audio->playSample();
 	delete audio;
 
-	printBOSS();
+	//printBOSS();
 
 	Kernel* kernel = new Kernel();
 
@@ -45,7 +46,7 @@ int main() {
 }
 
 
-#define WIDTH 1024
+/*#define WIDTH 1024
 #define HEIGHT 768
 #define RES_WIDTH 1024
 #define RES_HEIGHT 768
@@ -77,4 +78,4 @@ int printBOSS()  {
 	Graphics::drawString(rp, "Project", 6);
 
 	return 0;
-}
+}*/

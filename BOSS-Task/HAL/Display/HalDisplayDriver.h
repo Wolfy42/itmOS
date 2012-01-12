@@ -2,7 +2,7 @@
 #define HALDISPLAYDRIVER_H_
 
 #include "HAL/video.h"
-#include "DisplayService/Graphics.h"
+#include "Tasks/Services/Display/Graphics.h"
 
 typedef unsigned int uint32;
 
