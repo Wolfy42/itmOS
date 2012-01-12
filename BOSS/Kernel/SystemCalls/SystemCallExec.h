@@ -13,6 +13,7 @@ class SystemCallExec
 		Kernel* _kernel;
 		TaskManager* _taskmanager;
 		
+        bool semaphore(bool enterOrLeave, int semaphoreType, int id);
 	public:
 		SystemCallExec(Kernel* kernel, TaskManager* taskmanager);
 		virtual ~SystemCallExec();

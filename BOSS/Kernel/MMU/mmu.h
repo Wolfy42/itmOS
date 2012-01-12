@@ -13,6 +13,9 @@
 #define TASK_SYSMEM_START 0x10002000
 #define TASK_SYSMEM_SIZE  0x00002000
 
+#define TASK_ADDITIONAL_MEMORY_START 0x30000000
+#define TASK_ADDITIONAL_MEMORY_SIZE  0x00300000
+
 #include "API/dataTypes.h"
 #include "Kernel/Task/Task.h"
 #include "Kernel/Task/TaskManager.h"

@@ -280,7 +280,8 @@ bool MMU::isLegal(unsigned int accessedAddress, unsigned int faultStatus) {
             case TRANSLATION_FAULT_PAGE:
                 result = (((accessedAddress >= TASK_STACK_START) && (accessedAddress < TASK_STACK_START + TASK_STACK_SIZE))
                        || ((accessedAddress >= TASK_SYSMEM_START) && (accessedAddress < TASK_SYSMEM_START + TASK_SYSMEM_SIZE))
-                       || ((accessedAddress >= MESSAGE_QUEUE_VIRTUAL_ADDRESS) && (accessedAddress < MESSAGE_QUEUE_VIRTUAL_ADDRESS + MESSAGE_QUEUE_SIZE)));
+                       || ((accessedAddress >= MESSAGE_QUEUE_VIRTUAL_ADDRESS) && (accessedAddress < MESSAGE_QUEUE_VIRTUAL_ADDRESS + MESSAGE_QUEUE_SIZE))
+                       || ((accessedAddress >= TASK_ADDITIONAL_MEMORY_START) && (accessedAddress < TASK_ADDITIONAL_MEMORY_START + TASK_ADDITIONAL_MEMORY_SIZE)));
                 break;
             case DEBUG_EVENT:
                 result = true;
@@ -290,18 +291,7 @@ bool MMU::isLegal(unsigned int accessedAddress, unsigned int faultStatus) {
                 break;        
         }
     } else {
-        switch (statusField) {
-            case TRANSLATION_FAULT_SECTION:
-            case TRANSLATION_FAULT_PAGE:
-                result = ((accessedAddress >= TASK_MEMORY_START) && (accessedAddress < TASK_MEMORY_END));
-                break;
-            case DEBUG_EVENT:
-                result = true;
-                break;
-            default:
-                result = false;
-                break;
-        }
+       result = false;
     }
     
     return result;

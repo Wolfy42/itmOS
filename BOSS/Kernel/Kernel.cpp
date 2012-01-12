@@ -89,3 +89,4 @@ Loader* Kernel::getLoader(void) {
 RAMManager* Kernel::getRAMManager(void) {
     return _ramManager;
 }
+
