@@ -13,6 +13,6 @@ void DisplayConfig::initRegistersForMmuMapping(void) {
 	_registersForMmuMapping->push_back(CM_DSS_BASE);
     
     for (int i = 0; i < 768; i++) {
-        _registersForMmuMapping->push_back((address)((int)0x01FFFD00) + ((int)0x1000) * i);
+        _registersForMmuMapping->push_back((address)(((int)0x83CFF000) + ((int)0x1000) * i));
     }
 }

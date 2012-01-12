@@ -49,7 +49,7 @@ void MMU::initKernelMMU() {
     // Pages needed by kernel in extDDR
     m_kernel->getRAMManager()->reservePages(EXT_DDR, 0, nrOfKernelPages);
     // Top 768 pages in extDDR for frame buffer
-    m_kernel->getRAMManager()->reservePages(EXT_DDR, 0x01FFFD00, 768);
+    m_kernel->getRAMManager()->reservePages(EXT_DDR, 0x1CFF, 768);
 
     initDomainAccess();
     
