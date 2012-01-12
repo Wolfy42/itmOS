@@ -18,7 +18,11 @@
 #define BUTTON_SERVICE_ID 0xB
 #define LED_SERVICE_ID 0xED
 #define SERIAL_SERVICE_ID 0x11
+<<<<<<< HEAD
 #define HDMI_SERVICE_ID 0xEC
+=======
+#define DISPLAY_SERVICE_ID 0xD1
+>>>>>>> 5adc45ccc59edc93a53894a95902625cca688257
 
 //--------------------------------SWI to Kernel------------------------
 #pragma SWI_ALIAS(0);
