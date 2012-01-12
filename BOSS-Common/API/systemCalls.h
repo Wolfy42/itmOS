@@ -18,6 +18,7 @@
 #define BUTTON_SERVICE_ID 0xB
 #define LED_SERVICE_ID 0xED
 #define SERIAL_SERVICE_ID 0x11
+#define HDMI_SERVICE_ID 0xEC
 
 //--------------------------------SWI to Kernel------------------------
 #pragma SWI_ALIAS(0);
