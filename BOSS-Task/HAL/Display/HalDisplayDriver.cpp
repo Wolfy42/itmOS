@@ -396,7 +396,7 @@ found:
 
 
 // ~~~~~~~~~~ Delegation to Graphics ~~~~~~~~~~
-void HalDisplayDriver::setColour(unsigned int rgb) {
+void HalDisplayDriver::setColor(unsigned int rgb) {
 	_graphics->setColour(rgb);
 }
 

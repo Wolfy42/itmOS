@@ -8,7 +8,7 @@
 #include "Messaging/Message/Message.h"
 
 enum DisplayServiceCommand {
-    SERVICE_SET_COLOUR,
+    SERVICE_SET_COLOR,
     SERVICE_MOVE_TO,
     SERVICE_DRAW_PIXEL,
     SERVICE_DRAW_RECT,
@@ -16,7 +16,7 @@ enum DisplayServiceCommand {
     SERVICE_DRAW_STRING
 };
 
-void setColour(unsigned int rgb);
+void setColor(unsigned int rgb);
 void moveTo(int x, int y);
 void drawPixel();
 void drawRect(int w, int h);

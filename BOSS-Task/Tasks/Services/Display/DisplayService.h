@@ -2,7 +2,6 @@
 #define DISPLAYSERVICE_H_
 
 #include "Tasks/Services/Service.h"
-#include "Tasks/Services/Display/Graphics.h"
 #include "HAL/Display/HalDisplayDriver.h"
 
 class DisplayService : public Service {

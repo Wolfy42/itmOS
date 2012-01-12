@@ -8,6 +8,7 @@
 #include "Kernel/Interrupt/Interrupts.h"
 #include "Kernel/RAMManager/RAMManager.h"
 #include "Kernel/MMU/mmu.h"
+#include "Kernel/Task/Semaphore.h"
 #include "Loader/Loader.h"
 
 #include "HAL/Timer/HalTimerDriver.h"
