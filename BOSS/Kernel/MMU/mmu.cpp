@@ -36,15 +36,21 @@ void MMU::initKernelMMU() {
     if (((unsigned int)m_firstFreeInIntRam - INT_RAM_START) % 0x1000 > 0) {
         nrOfKernelPages++;
     }
+    // Pages needed by kernel in intRAM
     m_kernel->getRAMManager()->reservePages(INT_RAM, 0, nrOfKernelPages);
+    // Top page in intRAM for intvecs
     m_kernel->getRAMManager()->reservePages(INT_RAM, 15, 1);
 
     nrOfKernelPages = (((unsigned int)m_firstFreeInExtDDR - EXT_DDR_START) / 0x1000);
     if (((unsigned int)m_firstFreeInExtDDR - EXT_DDR_START) % 0x1000 > 0) {
         nrOfKernelPages++;
     }
+    
+    // Pages needed by kernel in extDDR
     m_kernel->getRAMManager()->reservePages(EXT_DDR, 0, nrOfKernelPages);
-                
+    // Top 768 pages in extDDR for frame buffer
+    m_kernel->getRAMManager()->reservePages(EXT_DDR, 0x01FFFD00, 768);
+
     initDomainAccess();
     
     address tableAddress = &kernelMasterTable;

@@ -8,7 +8,7 @@
 #define HEIGHT 768
 #define RES_WIDTH 1024
 #define RES_HEIGHT 768
-#define FBADDR ((char *)0x30000000)
+#define FBADDR ((char *)0x01FFFD00)
 
 
 /* NB: these mirror the omap modes */
