@@ -1,6 +1,7 @@
-#include "Display.h"
+#include "Service-API/Display/Display.h"
 
 void setColor(unsigned int rgb) {
+	int params[] = {SERVICE_SET_COLOR, rgb};
 }
 
 void moveTo(int x, int y) {

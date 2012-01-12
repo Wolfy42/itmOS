@@ -1,4 +1,3 @@
-
 #include "Service-API/LED/LED.h"
 
 extern volatile unsigned int messagesStart;
