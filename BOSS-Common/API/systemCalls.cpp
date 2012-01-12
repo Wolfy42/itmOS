@@ -14,7 +14,7 @@ void performServiceCall(int serviceId, int length, int params[])  {
 }
 
 void performServiceResponse(int callerId, int length, int params[])  {
-    enterSemaphore(SEMAPHORE_TASK_MESSAGE_QUEUE, callerId);
+    //enterSemaphore(SEMAPHORE_TASK_MESSAGE_QUEUE, callerId);
 	swi(WRITE_RESPONSE, callerId, length, params);
-    exitSemaphore(SEMAPHORE_TASK_MESSAGE_QUEUE, callerId);
+    //exitSemaphore(SEMAPHORE_TASK_MESSAGE_QUEUE, callerId);
 }
