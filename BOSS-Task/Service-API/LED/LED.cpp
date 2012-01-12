@@ -34,7 +34,7 @@ bool getLEDState(LED led) {
     //enterSemaphore(SEMAPHORE_OWN_MESAGE_QUEUE, 0);
 	while (messagesQueue->isEmpty()) {
         //exitSemaphore(SEMAPHORE_OWN_MESAGE_QUEUE, 0);
-		performSystemCall(SUSPEND);
+		//performSystemCall(SUSPEND);
         //enterSemaphore(SEMAPHORE_OWN_MESAGE_QUEUE, 0);
 	}
 

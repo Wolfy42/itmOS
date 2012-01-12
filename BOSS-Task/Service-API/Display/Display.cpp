@@ -17,8 +17,8 @@ void drawPixel() {
 }
 
 void drawRect(int w, int h) {
-	int params[] = {SERVICE_MOVE_TO, w, h};
-	performServiceCall(SERVICE_DRAW_RECT, 3, params);
+	int params[] = {SERVICE_DRAW_RECT, w, h};
+	performServiceCall(DISPLAY_SERVICE_ID, 3, params);
 }
 
 void drawChar(unsigned int c, int scale) {
