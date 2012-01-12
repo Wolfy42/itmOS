@@ -123,7 +123,7 @@ int SerialService::read(int count, char* buffer) {
 #define FBADDR ((char *)0x83000000)
 
 int printText(char* text)  {
-	RastPort *rp;
+	/*RastPort *rp;
 
 	HalDisplayDriver::video_init(); // --> video.c
 	rp = Graphics::graphics_init(FBADDR, RES_WIDTH, RES_HEIGHT, BM_RGB16); // graphics.c
@@ -136,7 +136,7 @@ int printText(char* text)  {
 	Graphics::setColour(rp, 0x00000000);
 
 	Graphics::moveTo(rp, 20, 20);
-	Graphics::drawString(rp, text, 6);
+	Graphics::drawString(rp, text, 6);*/
 	
 	return 0;
 }

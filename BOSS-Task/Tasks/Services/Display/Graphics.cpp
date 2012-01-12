@@ -1,15 +1,13 @@
 #include "Graphics.h"
 
-Graphics::Graphics()
-{
-}
-
-Graphics::~Graphics()
-{
-}
-
 struct RastPort defrp;
 struct BitMap fb;
+
+Graphics::Graphics() {
+	_rastPort = graphics_init(FBADDR, RES_WIDTH, RES_HEIGHT, BM_RGB16);
+}
+
+Graphics::~Graphics() {}
 
 /* can only be called once ... */
 struct RastPort* Graphics::graphics_init(char *fbaddr, int width, int height, int type) {
@@ -28,64 +26,64 @@ struct RastPort* Graphics::graphics_init(char *fbaddr, int width, int height, in
 	return &defrp;
 }
 
-void Graphics::setColour(struct RastPort *rp, unsigned int rgb) {
+void Graphics::setColour(unsigned int rgb) {
 	// TODO: switch rp->drawable->format ...
 
-	rp->colour = ((rgb & 0xf80000) >> 8)
+	_rastPort->colour = ((rgb & 0xf80000) >> 8)
 		| ((rgb & 0xfc00) >> 5)
 		| ((rgb & 0xf8) >> 3);
 }
 
 extern void fill_rect_565(void *addr, int width, int height, unsigned int colour, int stride);
 
-void Graphics::drawRect(struct RastPort *rp, int w, int h) {
-	unsigned int colour = rp->colour;
-	unsigned short *outp = (unsigned short *)rp->point;
+void Graphics::drawRect(int w, int h) {
+	unsigned int colour = _rastPort->colour;
+	unsigned short *outp = (unsigned short *)_rastPort->point;
 
-	if (w + rp->x > rp->drawable.bitmap->width)
-		w = rp->drawable.bitmap->width - rp->x;
-	if (h + rp->y > rp->drawable.bitmap->height)
-		h = rp->drawable.bitmap->height - rp->y;
+	if (w + _rastPort->x > _rastPort->drawable.bitmap->width)
+		w = _rastPort->drawable.bitmap->width - _rastPort->x;
+	if (h + _rastPort->y > _rastPort->drawable.bitmap->height)
+		h = _rastPort->drawable.bitmap->height - _rastPort->y;
 	int i, j;
 
 	for (j = 0;j<h;j++) {
 		for (i=0;i<w;i++) {
 			outp[i] = colour;
 		}
-		outp = (unsigned short *)((char *)outp + rp->drawable.bitmap->stride);
+		outp = (unsigned short *)((char *)outp + _rastPort->drawable.bitmap->stride);
 	}
 }
 
 
-void Graphics::moveTo(struct RastPort *rp, int x, int y) {
-	rp->x = x;
-	rp->y = y;
-	rp->point = ((unsigned char *)rp->drawable.bitmap->data)
+void Graphics::moveTo(int x, int y) {
+	_rastPort->x = x;
+	_rastPort->y = y;
+	_rastPort->point = ((unsigned char *)_rastPort->drawable.bitmap->data)
 		+ x * 2
-		+ y * rp->drawable.bitmap->stride;
+		+ y * _rastPort->drawable.bitmap->stride;
 }
 
-void Graphics::drawPixel(struct RastPort *rp) {
-	*((unsigned short *)rp->point) = rp->colour;
+void Graphics::drawPixel(void) {
+	*((unsigned short *)_rastPort->point) = _rastPort->colour;
 }
 
-void Graphics::drawChar(struct RastPort *rp, unsigned int c, int scale) {
+void Graphics::drawChar(unsigned int c, int scale) {
 	int i, j, s;
 	int w, h;
 	unsigned short *outp;
-	unsigned int colour = rp->colour;
+	unsigned int colour = _rastPort->colour;
 	unsigned const char *inp;
 
-	if (c < rp->font.romfont->first || c > rp->font.romfont->last)
+	if (c < _rastPort->font.romfont->first || c > _rastPort->font.romfont->last)
 		return;
 
-	w = rp->font.romfont->width;
-	h = rp->font.romfont->height;
+	w = _rastPort->font.romfont->width;
+	h = _rastPort->font.romfont->height;
 
-	c = (c - rp->font.romfont->first) * w;
+	c = (c - _rastPort->font.romfont->first) * w;
 
-	outp = ((unsigned short *)rp->point) - rp->font.romfont->baseline*scale*rp->drawable.bitmap->stride;
-	inp = rp->font.romfont->bitmap + c;
+	outp = ((unsigned short *)_rastPort->point) - _rastPort->font.romfont->baseline*scale*_rastPort->drawable.bitmap->stride;
+	inp = _rastPort->font.romfont->bitmap + c;
 
 	for (j=0;j<h;j++) {
 		for (s=0;s<scale;s++)  {
@@ -97,27 +95,31 @@ void Graphics::drawChar(struct RastPort *rp, unsigned int c, int scale) {
 					outp[i] = colour;
 				}
 			}
-			outp = (unsigned short *)((char *)outp + rp->drawable.bitmap->stride);
+			outp = (unsigned short *)((char *)outp + _rastPort->drawable.bitmap->stride);
 		}
-		inp += rp->font.romfont->stride;
+		inp += _rastPort->font.romfont->stride;
 	}
 
-	rp->point = ((unsigned short *)rp->point) + w*scale;
-	rp->x += w*scale;
+	_rastPort->point = ((unsigned short *)_rastPort->point) + w*scale;
+	_rastPort->x += w*scale;
 }
 
-void Graphics::drawString(struct RastPort *rp, const char *s, int scale) {
+void Graphics::drawString(const char *s, int scale) {
 	unsigned int c;
-	unsigned int x = rp->x;
+	unsigned int x = _rastPort->x;
 
 	while ((c = *s++)) {
 		if (c == '\n') {
-			if (rp->y + 20 > rp->drawable.bitmap->height*scale) {
-				//moveTo(rp, x, 20);
+			if (_rastPort->y + 20 > _rastPort->drawable.bitmap->height*scale) {
+				//moveTo(_rastPort, x, 20);
 				x = x;
 			} else
-				moveTo(rp, x, rp->y + rp->font.romfont->lineheight*scale);
+				moveTo(x, _rastPort->y + _rastPort->font.romfont->lineheight*scale);
 		} else
-			drawChar(rp, c, scale);
+			drawChar(c, scale);
 	}
+}
+
+RastPort* Graphics::getRastPort(void) {
+	return _rastPort;
 }

@@ -10,21 +10,28 @@ typedef unsigned int uint32;
 #define VENC_MODE_PAL 	(1)
 
 class HalDisplayDriver {
-	private:
+	private:		
+		Graphics* _graphics;
+		void omap_attach_framebuffer(int id, struct BitMap *bm);
+	
+		void omap_venc_init(int mode);
+		void omap_beagle_init(void);
+		void omap_clock_init(void);
+		void omap_dss_init(void);
+		void omap_dispc_init(void);
+		void omap_disable_display(int vid);
+		void omap_set_lcd_mode(int w, int h, int d);
+	
+	public:	
 		HalDisplayDriver();
 		virtual ~HalDisplayDriver();
-	
-		static void omap_venc_init(int mode);
-		static void omap_beagle_init(void);
-		static void omap_clock_init(void);
-		static void omap_dss_init(void);
-		static void omap_dispc_init(void);
-		static void omap_disable_display(int vid);
-		static void omap_set_lcd_mode(int w, int h, int d);
-	
-	public:		
-		static void video_init(void);
-		static void omap_attach_framebuffer(int id, struct BitMap *bm);
+		
+		void setColour(unsigned int rgb);
+		void moveTo(int x, int y);
+		void drawPixel(void);
+		void drawRect(int w, int h);
+		void drawChar(unsigned int c, int scale);
+		void drawString(const char* s, int scale);
 };
 
 #endif /*HALDISPLAYDRIVER_H_*/
