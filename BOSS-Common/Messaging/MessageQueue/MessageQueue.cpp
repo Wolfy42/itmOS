@@ -1,4 +1,4 @@
-
+#include "API/Semaphore.h"
 #include "MessageQueue.h"
 
 MessageQueue::MessageQueue() {
@@ -29,12 +29,11 @@ bool MessageQueue::pushMessage(Message* message) {
 
 Message* MessageQueue::popMessage(void) {
 	// Suspend, if Empty
-	if (isEmpty()) {
+    enterSemaphore(SEMAPHORE_OWN_MESAGE_QUEUE, 0);
+	while (isEmpty()) {
+        exitSemaphore(SEMAPHORE_OWN_MESAGE_QUEUE, 0);
 		performSystemCall(SUSPEND);
-	}
-	
-	while(isEmpty())  {
-		// The kernel can insert messages into the queue
+        enterSemaphore(SEMAPHORE_OWN_MESAGE_QUEUE, 0);
 	}
 	
 	// Get Message* at position _first
@@ -49,7 +48,7 @@ Message* MessageQueue::popMessage(void) {
 	} else {
 		_first = 0;
 	}
-	
+    exitSemaphore(SEMAPHORE_OWN_MESAGE_QUEUE, 0);
 	return message;
 }
 

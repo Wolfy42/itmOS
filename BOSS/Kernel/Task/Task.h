@@ -5,6 +5,8 @@
 #include "API/dataTypes.h"
 #include "Messaging/MemoryManager/MemoryManager.h"
 
+class Semaphore;
+
 typedef int TID_t;
 enum Status { Ready, Running, Blocked, Wait };
 
@@ -50,6 +52,8 @@ class Task {
         int priority;
         // registers
         TCB tcb;
+        
+        Semaphore* semaphore;
         
         // Code Location
         address codeLocation;
