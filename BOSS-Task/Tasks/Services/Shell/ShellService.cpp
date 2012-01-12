@@ -46,6 +46,7 @@ void ShellService::executeCommand(std::string command) {
 
 void ShellService::echo(std::string echo) {
 	
+<<<<<<< HEAD
 	int length = echo.size();
 	int params[length + 1];
 	params[0] = 0; //  HDMI WRITE COMMAND :)
@@ -54,6 +55,10 @@ void ShellService::echo(std::string echo) {
 		array[i + 1] = (int)(echo.c_str()[i]);
 	}
 	performServiceCall(HDMI_SERVICE_ID, 2, params);
+=======
+	int params[] = { (int)echo.c_str() };
+	performServiceCall(DISPLAY_SERVICE_ID, 2, params);
+>>>>>>> 6f373fc43a6f04f51a3ed5ad18eafe186a80d0f1
 }
 
 ShellService::ShellService()

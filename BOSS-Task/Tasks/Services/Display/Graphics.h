@@ -3,6 +3,14 @@
 
 #include <stdarg.h>
 
+// Settings
+#define WIDTH 1024
+#define HEIGHT 768
+#define RES_WIDTH 1024
+#define RES_HEIGHT 768
+#define FBADDR ((char *)0x83000000)
+
+
 /* NB: these mirror the omap modes */
 #define BM_BITMAP1 		0
 #define BM_BITMAP2 		1
@@ -13,6 +21,7 @@
 #define BM_ARGB32 		12
 #define BM_YUV2 		10
 #define BM_UYVY 		11
+
 
 struct RomFont {
 	const char* name;
@@ -49,20 +58,24 @@ struct RastPort {
 extern struct RomFont const font_misc_fixed;		
 
 
-class Graphics {
+class Graphics {	
 	private:
+		RastPort* _rastPort;
+		/* can only be called once ... */
+		struct RastPort* graphics_init(char* fbaddr, int width, int height, int type);
+	
+	public:		
 		Graphics();
 		virtual ~Graphics();
 	
-	public:		
-		/* can only be called once ... */
-		static struct RastPort* graphics_init(char* fbaddr, int width, int height, int type);
-		static void setColour(struct RastPort* rp, unsigned int rgb);
-		static void moveTo(struct RastPort* rp, int x, int y);
-		static void drawPixel(struct RastPort* rp);
-		static void drawRect(struct RastPort* rp, int w, int h);
-		static void drawChar(struct RastPort* rp, unsigned int c, int scale);
-		static void drawString(struct RastPort* rp, const char* s, int scale);
+		void setColour(unsigned int rgb);
+		void moveTo(int x, int y);
+		void drawPixel(void);
+		void drawRect(int w, int h);
+		void drawChar(unsigned int c, int scale);
+		void drawString(const char* s, int scale);
+		
+		RastPort* getRastPort(void);
 };
 
 #endif /*GRAPHICS_H_*/

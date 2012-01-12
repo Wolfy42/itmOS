@@ -114,8 +114,8 @@ int SerialService::read(int count, char* buffer) {
 /** delete THIS!!!!!!!!!!!!!!! **/
 
 
-#include "Video/graphics.h"
-#include "Video/video.h"
+#include "Tasks/Services/Display/Graphics.h"
+#include "HAL/Display/HalDisplayDriver.h"
 #define WIDTH 1024
 #define HEIGHT 768
 #define RES_WIDTH 1024
@@ -123,36 +123,20 @@ int SerialService::read(int count, char* buffer) {
 #define FBADDR ((char *)0x83000000)
 
 int printText(char* text)  {
+	/*RastPort *rp;
 
-//	_enable_interrupts();
+	HalDisplayDriver::video_init(); // --> video.c
+	rp = Graphics::graphics_init(FBADDR, RES_WIDTH, RES_HEIGHT, BM_RGB16); // graphics.c
+	HalDisplayDriver::omap_attach_framebuffer(0, rp->drawable.bitmap); // --> video.c
 
-	int i = 0;
-	int x, y, u;
-	RastPort *rp;
+	Graphics::moveTo(rp, 0, 0);
+	Graphics::setColour(rp, 0xFF007F);
+	Graphics::drawRect(rp, WIDTH, HEIGHT);
 
-	video_init(); // --> video.c
-	rp = graphics_init(FBADDR, RES_WIDTH, RES_HEIGHT, BM_RGB16); // graphics.c
-	omap_attach_framebuffer(0, rp->drawable.bitmap); // --> video.c
+	Graphics::setColour(rp, 0x00000000);
 
-	moveTo(rp, 0, 0);
-	setColour(rp, 0xFF007F);
-	drawRect(rp, WIDTH, HEIGHT);
-
-	int l = 0;
-	setColour(rp, 0x00000000);
-//	while (1)  {
-//		int j = 0;
-//		while (j < 80000) {
-//			j++;
-//		}
-//		moveTo(rp, 20, 300*l);
-//		drawString(rp, "Gugus!0123445 6 7 \n test 7 8 8", 4);
-//		l++;
-//	}
-
-	moveTo(rp, 20, 20);
-	drawString(rp, text, 6);
-
-
-//	while(1);
+	Graphics::moveTo(rp, 20, 20);
+	Graphics::drawString(rp, text, 6);*/
+	
+	return 0;
 }

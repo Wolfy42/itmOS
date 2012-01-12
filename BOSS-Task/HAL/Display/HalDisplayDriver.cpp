@@ -1,12 +1,46 @@
 #include "HalDisplayDriver.h"
 
-HalDisplayDriver::HalDisplayDriver()
-{
+// ~~~~~~~~~~ STATICS ~~~~~~~~~~~
+static inline void Write32(void *base, unsigned int reg, unsigned int v) {
+	*((volatile unsigned int *)((unsigned int)base+reg)) = v;
 }
 
-HalDisplayDriver::~HalDisplayDriver()
-{
+static inline uint32 Read32(void *base, unsigned int reg) {
+	return *((volatile unsigned int *)((unsigned int)base+reg));
 }
+
+static inline void Set32(void *base, unsigned int reg, unsigned int m, unsigned int v) {
+	unsigned int o;
+
+	o = *((volatile unsigned int *)((unsigned int)base+reg));
+	o &= ~m;
+	o |= v;
+	*((volatile unsigned int *)((unsigned int)base+reg)) = o;
+}
+
+
+
+
+// ~~~~~~~~~~ CONSTRUCTORS AND INIT ~~~~~~~~~~
+HalDisplayDriver::HalDisplayDriver() {
+	Write32(DISPC_BASE, DISPC_IRQENABLE, 0x00000);
+	Write32(DISPC_BASE, DISPC_IRQSTATUS, 0x1ffff);
+
+	omap_clock_init();
+	omap_dss_init();
+
+	omap_venc_init(VENC_MODE_PAL);
+	omap_dispc_init();
+
+	omap_set_lcd_mode(1024, 768, 16);
+	
+	_graphics = new Graphics();
+	omap_attach_framebuffer(0, _graphics->getRastPort()->drawable.bitmap);
+}
+
+HalDisplayDriver::~HalDisplayDriver() {}
+
+
 
 
 // ~~~~~~~~~~ STRUCTS AND STUFF ~~~~~~~~~~
@@ -113,39 +147,9 @@ struct {
 };
 
 
-// ~~~~~~~~~~ STATICS ~~~~~~~~~~~
-static inline void Write32(void *base, unsigned int reg, unsigned int v) {
-	*((volatile unsigned int *)((unsigned int)base+reg)) = v;
-}
-
-static inline uint32 Read32(void *base, unsigned int reg) {
-	return *((volatile unsigned int *)((unsigned int)base+reg));
-}
-
-static inline void Set32(void *base, unsigned int reg, unsigned int m, unsigned int v) {
-	unsigned int o;
-
-	o = *((volatile unsigned int *)((unsigned int)base+reg));
-	o &= ~m;
-	o |= v;
-	*((volatile unsigned int *)((unsigned int)base+reg)) = o;
-}
 
 
 // ~~~~~~~~~~ PUBLIC ~~~~~~~~~~
-void HalDisplayDriver::video_init(void) {
-	Write32(DISPC_BASE, DISPC_IRQENABLE, 0x00000);
-	Write32(DISPC_BASE, DISPC_IRQSTATUS, 0x1ffff);
-
-	omap_clock_init();
-	omap_dss_init();
-
-	omap_venc_init(VENC_MODE_PAL);
-	omap_dispc_init();
-
-	omap_set_lcd_mode(1024, 768, 16);
-}
-
 // set a bitmap on the given video source
 // vid 0 = gfx, 1 = vid1, 2 = vid2
 void HalDisplayDriver::omap_attach_framebuffer(int id, struct BitMap *bm) {
@@ -386,4 +390,32 @@ found:
 
 	while ((Read32(DISPC, DISPC_CONTROL) & DISPC_GOLCD))
 		;
+}
+
+
+
+
+// ~~~~~~~~~~ Delegation to Graphics ~~~~~~~~~~
+void HalDisplayDriver::setColour(unsigned int rgb) {
+	_graphics->setColour(rgb);
+}
+
+void HalDisplayDriver::moveTo(int x, int y) {
+	_graphics->moveTo(x, y);
+}
+
+void HalDisplayDriver::drawPixel(void) {
+	_graphics->drawPixel();
+}
+
+void HalDisplayDriver::drawRect(int w, int h) {
+	_graphics->drawRect(w, h);
+}
+
+void HalDisplayDriver::drawChar(unsigned int c, int scale) {
+	_graphics->drawChar(c, scale);
+}
+
+void HalDisplayDriver::drawString(const char* s, int scale) {
+	_graphics->drawString(s, scale);
 }

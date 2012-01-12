@@ -20,7 +20,7 @@
   misc-fixed 6x13, a public-domain font.
 */
 
-#include "DisplayService/Graphics.h"
+#include "Tasks/Services/Display/Graphics.h"
 
 static unsigned const char misc_fixed_bitmap[] = {
         0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
