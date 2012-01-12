@@ -2,7 +2,7 @@
 #define HALDISPLAYDRIVER_H_
 
 #include "HAL/video.h"
-#include "Tasks/Services/Display/Graphics.h"
+#include "HAL/Display/Graphics.h"
 
 typedef unsigned int uint32;
 
@@ -26,7 +26,7 @@ class HalDisplayDriver {
 		HalDisplayDriver();
 		virtual ~HalDisplayDriver();
 		
-		void setColour(unsigned int rgb);
+		void setColor(unsigned int rgb);
 		void moveTo(int x, int y);
 		void drawPixel(void);
 		void drawRect(int w, int h);

@@ -1,6 +1,6 @@
 #include "Display.h"
 
-void setColour(unsigned int rgb) {
+void setColor(unsigned int rgb) {
 }
 
 void moveTo(int x, int y) {

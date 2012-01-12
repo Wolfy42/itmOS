@@ -66,7 +66,9 @@ void SerialService::init() {
 	}
 	return;
 }
+
 int printText(char* text);
+
 void SerialService::run() {
 	char buffer[1];
 	buffer[0] = ' ';
@@ -114,29 +116,19 @@ int SerialService::read(int count, char* buffer) {
 /** delete THIS!!!!!!!!!!!!!!! **/
 
 
-#include "Tasks/Services/Display/Graphics.h"
 #include "HAL/Display/HalDisplayDriver.h"
-#define WIDTH 1024
-#define HEIGHT 768
-#define RES_WIDTH 1024
-#define RES_HEIGHT 768
-#define FBADDR ((char *)0x83000000)
 
 int printText(char* text)  {
-	/*RastPort *rp;
+	HalDisplayDriver* displayDriver = new HalDisplayDriver;
 
-	HalDisplayDriver::video_init(); // --> video.c
-	rp = Graphics::graphics_init(FBADDR, RES_WIDTH, RES_HEIGHT, BM_RGB16); // graphics.c
-	HalDisplayDriver::omap_attach_framebuffer(0, rp->drawable.bitmap); // --> video.c
+	displayDriver->moveTo(0, 0);
+	displayDriver->setColor(0xFF007F);
+	displayDriver->drawRect(WIDTH, HEIGHT);
 
-	Graphics::moveTo(rp, 0, 0);
-	Graphics::setColour(rp, 0xFF007F);
-	Graphics::drawRect(rp, WIDTH, HEIGHT);
+	displayDriver->setColor(0x00000000);
 
-	Graphics::setColour(rp, 0x00000000);
-
-	Graphics::moveTo(rp, 20, 20);
-	Graphics::drawString(rp, text, 6);*/
+	displayDriver->moveTo(20, 20);
+	displayDriver->drawString(text, 6);
 	
 	return 0;
 }
