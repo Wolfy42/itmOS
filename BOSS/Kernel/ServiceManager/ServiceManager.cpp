@@ -10,15 +10,25 @@ ServiceManager::~ServiceManager() {}
 void ServiceManager::startServices()  {
 
 	LedBytes ld;
-	CodeBytes* cb = ld.getCodeBytes();
+	CodeBytes* cb_led = ld.getCodeBytes();
+	LEDConfig* c_led = new LEDConfig();
+	startService("LED", LED_SERVICE_ID, cb_led, c_led);
+	delete cb_led;
+	delete c_led;
+
 	SerialBytes serialBytes;
 	CodeBytes* cb_serial = serialBytes.getCodeBytes();
-	LEDConfig* lc = new LEDConfig();
-	startService("LED", LED_SERVICE_ID, cb, lc);
-	SerialConfig* sc = new SerialConfig();
-	startService("Serial", SERIAL_SERVICE_ID, cb_serial, sc);
-	delete cb;
-	delete lc;
+	SerialConfig* c_serial = new SerialConfig();
+	startService("Serial", SERIAL_SERVICE_ID, cb_serial, c_serial);
+	delete cb_serial;
+	delete c_serial;
+
+	DisplayBytes displayBytes;
+	CodeBytes* cb_display = displayBytes.getCodeBytes();
+	DisplayConfig* c_display = new DisplayConfig();
+	startService("Display", DISPLAY_SERVICE_ID, cb_display, c_display);
+	delete cb_display;
+	delete c_display;
 }
 
 void ServiceManager::startService(char* serviceName, int serviceId, CodeBytes* codeBytes, ServiceConfig* config) {

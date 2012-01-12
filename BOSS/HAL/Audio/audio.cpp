@@ -28,6 +28,9 @@ char mary[] =
         "BAGABB4BAA4ABD4DBAGABBBBAABA7G"
         "BAGABB4BAA4ABD4DBAGABBBBAABA7G";
 
+char smoke[] =
+		"GH2CGHI4CGH2CH4G";
+
 // wavelengths of various basic notes
 int ftable[] = {
         (int)(SRATE / 220.000),  /* a3 */
@@ -36,10 +39,10 @@ int ftable[] = {
         (int)(SRATE / 293.665),
         (int)(SRATE / 329.628),
         (int)(SRATE / 349.228),
-
         (int)(SRATE / 195.998),  /* g2 */
+        (int)(SRATE / 233.080),  /* h3 */
+        (int)(SRATE / 277.180) 	 /* cis */
 };
-
 
 Audio::Audio() {
 	//	init McBSP2
@@ -62,21 +65,25 @@ void Audio::playSample() {
 	// first parameter: wavelength of the note -> http://www.phy.mtu.edu/~suits/notefreqs.html -> 220 is A3
 	// second parameter: channel -> use 3 (both)
 	// third parameter: length of the tone
-	playnote(220, 3, 400);
+	//playnote(220, 3, 400);
 
-	// plays a litte mary sound.... super dupper...
-	char *np = mary;
-	char n;
-	int len = 256;
+	int i = 0;
+	while (i++ < 3) {
+		//char *np = mary;
+		char *np = smoke;
+		char n;
+		int len = 256;
 
-	while ( (n = *np++) ) {
-			if (n >= '0' && n <= '9') {
-					len = (n - '0') * 128;
-			} else {
-					playnote(ftable[n - 'A'], 3, len);
-					len = 256;
-			}
+		while ( (n = *np++) ) {
+				if (n >= '0' && n <= '9') {
+						len = (n - '0') * 128;
+				} else {
+						playnote(ftable[n - 'A'], 3, len);
+						len = 256;
+				}
+		}
 	}
+
 }
 
 /* play one note with wavelength wvlen to channels lr (bits [1:0]) for sustain length len */
