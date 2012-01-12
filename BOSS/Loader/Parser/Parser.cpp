@@ -72,7 +72,7 @@ std::list<Code*>* Parser::parse(CodeBytes* codeBytes)  {
 				}
 				addressOffset *= 0x10000;
 			}  else  {
-				printf("Something bad happened! (Intel Hex-RecordType %i unknown", recType);
+//				printf("Something bad happened! (Intel Hex-RecordType %i unknown", recType);
 				return new std::list<Code*>;
 			}
 		}

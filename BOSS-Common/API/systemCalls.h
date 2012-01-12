@@ -1,8 +1,6 @@
 #ifndef SYSTEMCALLS_H_
 #define SYSTEMCALLS_H_
 
-#include "API/dataTypes.h"
-
 //--------------------------------System - Calls ----------------------
 #define EXIT                0x1
 #define KILL                0x2
@@ -25,6 +23,7 @@
 #define BUTTON_SERVICE_ID 0xB
 #define LED_SERVICE_ID 0xED
 #define SERIAL_SERVICE_ID 0x11
+#define DISPLAY_SERVICE_ID 0xD1
 
 //--------------------------------SWI to Kernel------------------------
 #pragma SWI_ALIAS(0);

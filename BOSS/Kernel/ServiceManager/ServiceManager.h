@@ -3,13 +3,18 @@
 
 #include <map>
 
-#include "Messaging/MessageQueue/MessageQueue.h"
-#include "Messaging/Message/Message.h"
+#include "Kernel/ServiceManager/Configs/LED/LEDConfig.h"
+#include "Kernel/ServiceManager/Configs/Serial/SerialConfig.h"
+#include "Kernel/ServiceManager/Configs/Display/DisplayConfig.h"
+
 #include "Kernel/Task/Task.h"
 #include "Kernel/Task/TaskManager.h"
+
 #include "Loader/Loader.h"
 #include "Loader/TasksHex.h"
+#include "Loader/TasksHex/SerialBytes.h"
 #include "Loader/TasksHex/LedBytes.h"
+#include "Loader/TasksHex/DisplayBytes.h"
 
 class ServiceManager
 {	

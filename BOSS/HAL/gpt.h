@@ -1,9 +1,6 @@
 #ifndef GPT_H_
 #define GPT_H_
 
-#include "API/dataTypes.h"
-
-
 enum Timer {
 	GPTIMER1 = 1,
 	GPTIMER2 = 2,

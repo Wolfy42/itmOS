@@ -15,7 +15,6 @@
 #include "Lib/Rand.h"
 #include "Lib/Time.h"
 
-
 #include "Messaging/Message/Message.h"
 #include "Messaging/MessageQueue/MessageQueue.h"
 
@@ -34,6 +33,7 @@ class Kernel {
         Loader* _loader;
 	
 		void initScheduler(void);
+		void writeIntoMessageQueue(Task* task, int length, int params[]);
 	
 	public:
 		Kernel();

@@ -17,6 +17,7 @@ BOSS-Task/.launches/*
 BOSS-Task/.settings/*
 BOSS-Task/.project
 BOSS-Task/.cproject
+BOSS-Task/*.ccxml
 
 BOSS-Common/Debug/*	
 BOSS-Common/.*
@@ -30,3 +31,4 @@ BOSS-Task/Messaging
 
 .metadata/*
 HexToClass.exe
+HexToClass

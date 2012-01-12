@@ -84,6 +84,7 @@
 #define RDATDLY_ONE_BIT			0
 #define RFRLEN2_BIT				8
 #define MCBSP_WDLEN_16_BIT		6
+#define MCBSP_XRDY 				(1<<1)
 
 // MCBSPLP_XCCR
 #define XDISABLE_BIT			0

@@ -4,11 +4,6 @@
 #include "TaskRoutines.h"
 #include "Kernel/MMU/mmu.h"
 
-// needed for NULL :P
-#include <stdio.h>
-// needed for RAND_MAX o_O
-#include <stdlib.h>
-
 /*
  * 	Constructor inits member variables and TaskRoutines
  */

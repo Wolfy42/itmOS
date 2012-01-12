@@ -1,5 +1,4 @@
-#include <string.h>
-#include "Lib/bitOperations.h"
+
 #include "RAMManager.h"
 
 bool occupiedPagesIntRam[MAX_PAGES_IN_INT_RAM / 8];
