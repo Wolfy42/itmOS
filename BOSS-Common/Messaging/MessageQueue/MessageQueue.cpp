@@ -32,7 +32,7 @@ Message* MessageQueue::popMessage(void) {
     //enterSemaphore(SEMAPHORE_OWN_MESAGE_QUEUE, 0);
 	while (isEmpty()) {
         //exitSemaphore(SEMAPHORE_OWN_MESAGE_QUEUE, 0);
-		performSystemCall(SUSPEND);
+		//performSystemCall(SUSPEND);
         //enterSemaphore(SEMAPHORE_OWN_MESAGE_QUEUE, 0);
 	}
 	
