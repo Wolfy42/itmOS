@@ -24,6 +24,7 @@
 #define LED_SERVICE_ID 0xED
 #define SERIAL_SERVICE_ID 0x11
 #define DISPLAY_SERVICE_ID 0xD1
+#define SHELL_SERVICE_ID 0x01
 
 //--------------------------------SWI to Kernel------------------------
 #pragma SWI_ALIAS(0);

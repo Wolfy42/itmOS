@@ -1,7 +1,7 @@
 #include "SerialService.h"
 
 #include "HAL/UART/UART_HAL.h"
-
+#include "Service-API/Shell/Shell.h"
 
 // TODO: delete define
 #define FALSE 0
@@ -67,13 +67,15 @@ void SerialService::init() {
 	return;
 }
 
-int printText(char* text);
+
 
 void SerialService::run() {
+	
 	char buffer[1];
 	buffer[0] = ' ';
 	read(1, buffer);
-	printText(&buffer[0]);
+	nextChar(&buffer[0]);
+	//printText(&buffer[0]);
 	
 }
 
@@ -114,21 +116,21 @@ int SerialService::read(int count, char* buffer) {
 
 
 /** delete THIS!!!!!!!!!!!!!!! **/
-
-
-#include "HAL/Display/HalDisplayDriver.h"
-
-int printText(char* text)  {
-	HalDisplayDriver* displayDriver = new HalDisplayDriver;
-
-	displayDriver->moveTo(0, 0);
-	displayDriver->setColor(0xFF007F);
-	displayDriver->drawRect(WIDTH, HEIGHT);
-
-	displayDriver->setColor(0x00000000);
-
-	displayDriver->moveTo(20, 20);
-	displayDriver->drawString(text, 6);
-	
-	return 0;
-}
+//
+//
+//#include "HAL/Display/HalDisplayDriver.h"
+//
+//int printText(char* text)  {
+//	HalDisplayDriver* displayDriver = new HalDisplayDriver;
+//
+//	displayDriver->moveTo(0, 0);
+//	displayDriver->setColor(0xFF007F);
+//	displayDriver->drawRect(WIDTH, HEIGHT);
+//
+//	displayDriver->setColor(0x00000000);
+//
+//	displayDriver->moveTo(20, 20);
+//	displayDriver->drawString(text, 6);
+//	
+//	return 0;
+//}
