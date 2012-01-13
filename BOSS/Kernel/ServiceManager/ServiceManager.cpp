@@ -29,6 +29,13 @@ void ServiceManager::startServices()  {
 	startService("Display", DISPLAY_SERVICE_ID, cb_display, c_display);
 	delete cb_display;
 	delete c_display;
+	
+	ShellBytes displayBytes;
+	CodeBytes* cb_shell = ShellBytes.getCodeBytes();
+	ShellConfig* c_display = new ShellConfig();
+	startService("Shell", SHELL_SERVICE_ID, cb_shell, c_shell);
+	delete cb_shell;
+	delete c_shell;
 }
 
 void ServiceManager::startService(char* serviceName, int serviceId, CodeBytes* codeBytes, ServiceConfig* config) {
