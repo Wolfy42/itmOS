@@ -6,6 +6,7 @@
 #include "Kernel/ServiceManager/Configs/LED/LEDConfig.h"
 #include "Kernel/ServiceManager/Configs/Serial/SerialConfig.h"
 #include "Kernel/ServiceManager/Configs/Display/DisplayConfig.h"
+#include "Kernel/ServiceManager/Configs/Shell/ShellConfig.h"
 
 #include "Kernel/Task/Task.h"
 #include "Kernel/Task/TaskManager.h"
@@ -15,6 +16,7 @@
 #include "Loader/TasksHex/SerialBytes.h"
 #include "Loader/TasksHex/LedBytes.h"
 #include "Loader/TasksHex/DisplayBytes.h"
+#include "Loader/TasksHex/ShellBytes.h"
 
 class ServiceManager
 {	

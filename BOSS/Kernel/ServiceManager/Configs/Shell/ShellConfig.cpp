@@ -1,4 +1,4 @@
-#include "SerialConfig.h"
+#include "ShellConfig.h"
 
 ShellConfig::ShellConfig() : ServiceConfig() {
 	initRegistersForMmuMapping();

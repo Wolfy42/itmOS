@@ -1,5 +1,5 @@
 
-#include "API/SystemCalls.h"
+#include "API/systemCalls.h"
 #include "Semaphore.h"
 
 void enterSemaphore(int semaphoreType, int id) {
