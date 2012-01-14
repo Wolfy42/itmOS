@@ -36,15 +36,21 @@ void MMU::initKernelMMU() {
     if (((unsigned int)m_firstFreeInIntRam - INT_RAM_START) % 0x1000 > 0) {
         nrOfKernelPages++;
     }
+    // Pages needed by kernel in intRAM
     m_kernel->getRAMManager()->reservePages(INT_RAM, 0, nrOfKernelPages);
+    // Top page in intRAM for intvecs
     m_kernel->getRAMManager()->reservePages(INT_RAM, 15, 1);
 
     nrOfKernelPages = (((unsigned int)m_firstFreeInExtDDR - EXT_DDR_START) / 0x1000);
     if (((unsigned int)m_firstFreeInExtDDR - EXT_DDR_START) % 0x1000 > 0) {
         nrOfKernelPages++;
     }
+    
+    // Pages needed by kernel in extDDR
     m_kernel->getRAMManager()->reservePages(EXT_DDR, 0, nrOfKernelPages);
-                
+    // Top 768 pages in extDDR for frame buffer
+    m_kernel->getRAMManager()->reservePages(EXT_DDR, 0x1CFF, 768);
+
     initDomainAccess();
     
     address tableAddress = &kernelMasterTable;
@@ -132,15 +138,15 @@ unsigned char MMU::getAccessFlagForDomain(unsigned char domainNumber) {
     }
     return result;
 }
-address MMU::createMappedPage(address masterTableAddress, address virtualAddress, unsigned char domainNumber) {
+address MMU::createMappedPage(address masterTableAddress, address virtualAddress, unsigned char domainNumber, bool cached) {
     address newPage = m_kernel->getRAMManager()->findFreeMemory(1, true, true);
     std::memset((void*)newPage, 0x0, 4096);
     
-    mapDirectly(masterTableAddress, virtualAddress, newPage, domainNumber);
+    mapDirectly(masterTableAddress, virtualAddress, newPage, domainNumber, cached);
     return newPage;
 }
 
-void MMU::mapDirectly(address masterTableAddress, address virtualAddress, address physicalAddress, unsigned char domainNumber) {
+void MMU::mapDirectly(address masterTableAddress, address virtualAddress, address physicalAddress, unsigned char domainNumber, bool cached) {
     unsigned int masterTableEntryNumber = (unsigned int)virtualAddress >> 20;
     address l2TableAddress = createOrGetL2Table(masterTableAddress, masterTableEntryNumber, domainNumber);
     if (l2TableAddress != 0x0) {
@@ -151,6 +157,8 @@ void MMU::mapDirectly(address masterTableAddress, address virtualAddress, addres
         // 0x2 means small page (0b10)
         unsigned int tableEntry = (unsigned int)pageAddress | 0x00000002;
         
+        // Set the cache bit
+        tableEntry |= (cached << 3);
         unsigned char accessFlag = getAccessFlagForDomain(domainNumber);
         // Set the AP bits
         tableEntry |= (accessFlag << 4);
@@ -164,11 +172,11 @@ void MMU::mapDirectly(address masterTableAddress, address virtualAddress, addres
     }
 }
 
-void MMU::mapOneToOne(address masterTableAddress, address startAddress, unsigned int length, unsigned char domainNumber) {
+void MMU::mapOneToOne(address masterTableAddress, address startAddress, unsigned int length, unsigned char domainNumber, bool cached) {
     // Each entry maps 4096 bytes = 0x1000
     for (int i = 0; i < length; i += 0x1000) {
         // Map the next page. because startAddress is of type address, it adds 4 * i automatically => take i / 4
-        mapDirectly(masterTableAddress, startAddress + (i / 4), startAddress + (i / 4), domainNumber);
+        mapDirectly(masterTableAddress, startAddress + (i / 4), startAddress + (i / 4), domainNumber, cached);
     }
 }
 
@@ -189,12 +197,12 @@ void MMU::initMemoryForTask(Task* task) {
     if (task->masterTableAddress == NULL) {
         task->masterTableAddress = createMasterTable();
         
-        mapOneToOne(task->masterTableAddress, (address)ROM_INTERRUPT_ENTRIES, ROM_INTERRUPT_LENGTH, 0);
-        mapOneToOne(task->masterTableAddress, (address)INT_RAM_START, (unsigned int)m_firstFreeInIntRam - INT_RAM_START, 0);
-        mapOneToOne(task->masterTableAddress, &intvecsStart, 0x3B, 0);
-        mapOneToOne(task->masterTableAddress, (address)EXT_DDR_START, (unsigned int)m_firstFreeInExtDDR - EXT_DDR_START, 0);
+        mapOneToOne(task->masterTableAddress, (address)ROM_INTERRUPT_ENTRIES, ROM_INTERRUPT_LENGTH, 0, true);
+        mapOneToOne(task->masterTableAddress, (address)INT_RAM_START, (unsigned int)m_firstFreeInIntRam - INT_RAM_START, 0, true);
+        mapOneToOne(task->masterTableAddress, &intvecsStart, 0x3B, 0, true);
+        mapOneToOne(task->masterTableAddress, (address)EXT_DDR_START, (unsigned int)m_firstFreeInExtDDR - EXT_DDR_START, 0, true);
         
-        task->memoryManager = (MemoryManager*)createMappedPage(task->masterTableAddress, (address)MESSAGE_QUEUE_VIRTUAL_ADDRESS, 0);
+        task->memoryManager = (MemoryManager*)createMappedPage(task->masterTableAddress, (address)MESSAGE_QUEUE_VIRTUAL_ADDRESS, 0, true);
         int virtualOffset = (int)MESSAGE_QUEUE_VIRTUAL_ADDRESS - (int)task->memoryManager;
         MemoryManager::getInstanceAt((address)task->memoryManager, virtualOffset);
         
@@ -206,7 +214,7 @@ void MMU::initMemoryForTask(Task* task) {
             address virtualAddress = (address)(task->tcb.restartAddress + (i * 4096));
             // The next physical address is the first address plus 4096 bytes (4KB)
             address physicalAddress = (address)(((unsigned int)(task->codeLocation)) + (i * 4096));
-            mapDirectly(task->masterTableAddress, virtualAddress, physicalAddress, 0);
+            mapDirectly(task->masterTableAddress, virtualAddress, physicalAddress, 0, true);
         }
         
         setMasterTablePointerTo(task->masterTableAddress);
@@ -223,7 +231,7 @@ void MMU::mapHardwareRegisters(Task* task) {
         std::list<address>::const_iterator iter;
         
         for (iter = taskRegisters->begin(); iter != taskRegisters->end(); iter++) {
-            mapOneToOne(task->masterTableAddress, *iter, 1, 0);
+            mapOneToOne(task->masterTableAddress, *iter, 1, 0, false);
         }
     }
 }
@@ -327,7 +335,7 @@ bool MMU::handleDataAbort() {
     if (isLegal(accessedAddress, faultStatus)) {
         Task* currentTask = m_currentTask;
         switchToKernelMMU();
-        createMappedPage(currentTask->masterTableAddress, (address)accessedAddress, 0);
+        createMappedPage(currentTask->masterTableAddress, (address)accessedAddress, 0, true);
         initMemoryForTask(currentTask);
         doContextSwitch = false;
     } else {

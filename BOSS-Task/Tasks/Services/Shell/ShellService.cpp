@@ -13,12 +13,12 @@ void ShellService::executeMessage(Message* message)  {
 	}
 
 	// read or write?
-	ShellCommand command = (ShellCommand)params[0];
+	ShellServiceCommand command = (ShellServiceCommand)params[0];
 	
 
 
 	switch (command) {
-		case NEXT_LETTER:
+		case NEXT_CHAR:
 		
 			if (char_params[0] == '\n' || char_params[0] == '\r') {
 			
@@ -45,14 +45,15 @@ void ShellService::executeCommand(std::string command) {
 }
 
 void ShellService::echo(std::string echo) {
-	int length = echo.size();
-	int* params = new int[length + 1];
-	params[0] = 0; //  HDMI WRITE COMMAND :)
-	char* test = "test";
-	for (int i = 0; i < length; i++) {
-		params[i + 1] = (int)(echo.c_str()[i]);
-	}
-	performServiceCall(DISPLAY_SERVICE_ID, 2, params);
+	
+//	int length = echo.size();
+//	int* params = new int[length + 1];
+	drawString(echo.c_str(), 7);
+//	params[0] = 0; //  HDMI WRITE COMMAND :)
+//	for (int i = 0; i < length; i++) {
+//		params[i + 1] = (int)(echo.c_str()[i]);
+//	}
+//	performServiceCall(DISPLAY_SERVICE_ID, 2, params);
 }
 
 ShellService::ShellService()

@@ -2,13 +2,11 @@
 #define SHELLSERVICE_H_
 
 #include "Tasks/Services/Service.h"
+#include "Service-API/Display/Display.h"
+#include "Service-API/Shell/Shell.h"
 #include <string>
 
 
-
-enum ShellCommand {
-	NEXT_LETTER
-};
 
 class ShellService : public Service
 {

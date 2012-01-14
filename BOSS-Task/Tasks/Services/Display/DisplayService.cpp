@@ -23,7 +23,6 @@ DisplayService::DisplayService() : Service() {
 DisplayService::~DisplayService() {}
 
 void DisplayService::executeMessage(Message* message)  {
-
 	int* params = message->getParams();
 	DisplayServiceCommand command = (DisplayServiceCommand)params[0];
 

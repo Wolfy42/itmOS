@@ -17,7 +17,7 @@ int main() {
 
 	// Audio Test -> "berühr dass, und deine Zahnbürste fährt morgens ins Leere!"
 	Audio* audio = new Audio();
-	audio->playSample();
+	//audio->playSample();
 	delete audio;
 
 	//printBOSS();

@@ -41,9 +41,9 @@ class MMU {
         unsigned char getAccessFlagForDomain(unsigned char domainNumber);
         address createMasterTable();
         address createOrGetL2Table(address masterTableAddress, int masterTableEntryNumber, unsigned char domainNumber);
-        address createMappedPage(address masterTableAddress, address virtualAddress, unsigned char domainNumber);
-        void mapDirectly(address masterTableAddress, address virtualAddress, address physicalAddress, unsigned char domainNumber);
-        void mapOneToOne(address masterTableAddress, address startAddress, unsigned int length, unsigned char domainNumber);
+        address createMappedPage(address masterTableAddress, address virtualAddress, unsigned char domainNumber, bool cached);
+        void mapDirectly(address masterTableAddress, address virtualAddress, address physicalAddress, unsigned char domainNumber, bool cached);
+        void mapOneToOne(address masterTableAddress, address startAddress, unsigned int length, unsigned char domainNumber, bool cached);
         void mapHardwareRegisters(Task* task);
         void clearTLB();
         
