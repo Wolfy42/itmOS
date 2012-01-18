@@ -61,7 +61,7 @@ void MemoryManager::remove(Message* message, bool isVirtual)  {
 		pa = (int*)((int)pa - _virtualOffset);
 	}
 
-	MemoryHeader* mh = getHeaderForObjectAt(message->getParams());
+	MemoryHeader* mh = getHeaderForObjectAt(pa);
 	mh->memoryState = BOSS_MEMORY_FREE;
 
 	mh = getHeaderForObjectAt(message);
