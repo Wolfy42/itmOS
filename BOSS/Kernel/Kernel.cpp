@@ -40,7 +40,9 @@ void Kernel::write(int* parameters)  {
 	int* params = &parameters[2];
 
 	Task* task = _serviceManager->getTaskForService(serviceId);
-	writeIntoMessageQueue(task, length, params);
+	if (task != NULL)  {
+		writeIntoMessageQueue(task, length, params);
+	}
 }
 
 void Kernel::writeResponse(int* parameters)  {
@@ -49,7 +51,9 @@ void Kernel::writeResponse(int* parameters)  {
 	int* params = &parameters[2];
 
 	Task* task = getTaskManager()->getTaskFor(taskId);
-	writeIntoMessageQueue(task, length, params);
+	if (task != NULL)  {
+		writeIntoMessageQueue(task, length, params);
+	}
 }
 
 void Kernel::writeIntoMessageQueue(Task* task, int length, int params[])  {
