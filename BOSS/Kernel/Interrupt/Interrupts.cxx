@@ -4,8 +4,6 @@
  * 	Defines for SoftwareInterrupt
  */
 #define SAVED_REGISTERS_SPACE (14 * 4)
-#define USED_EXTRA_SPACE (2 * 4)
-#define SWI_PARAMETERS_SPACE (4 * 4)
 
 /*
  * 	static Handlers for the Interrupts
@@ -77,8 +75,9 @@ void initInterruptHandler(IRQHandler* irq, SWIHandler* swi, TaskManager* tm, MMU
     
 #define SAVECONTEXT_SWI \
 	asm(" STMFD   R13!, {R0-R12, R14} ; Save Process-Registers "); \
-	asm(" LDR     R10, stack_pointer_saved_context"); \
-	asm(" STR     R13, [R10], #0");
+	asm(" LDR     R0, stack_pointer_saved_context"); \
+	asm(" STR     R13, [R0], #0"); \
+	stack_pointer_original = stack_pointer_saved_context + SAVED_REGISTERS_SPACE;
 
 /*
  * 	Context Switch Routine
@@ -176,6 +175,9 @@ extern "C" void c_intIRQ()  {
 #pragma TASK
 extern "C" void c_intSWI(int swiNumber, int receiver, int length, int params[])  {
 
+	asm(" STMFD   R13!, {R0-R12, R14} ; Save Process-Registers ");
+	asm("	SUB     R13, R13, #60 ");
+
 	tempVariableForAsmAndCpp2 = (unsigned int)&swiParameterAddress;
 
 	((int*)tempVariableForAsmAndCpp2)[0] = swiNumber;
@@ -186,15 +188,19 @@ extern "C" void c_intSWI(int swiNumber, int receiver, int length, int params[]) 
 	int* newParamAddress = &swiParameterAddress + 3;
 	memcpy(newParamAddress, params, length * sizeof(int));
 
+	asm("	ADD     R13, R13, #60 ");
+	asm(" LDMFD     R13!, {R0-R12, R14}");
+
 	asm("	LDR		R0, [R13]		;");
 	asm("	LDR		R1, [R13, #4]	;");
 	asm("	LDR		R2, [R13, #8]	;");
 	asm("	LDR		R3, [R13, #12]	;");
 
+	// Save the stack
+	asm("	ADD     R13, R13, #24 ");
+
 	// save context
 	SAVECONTEXT_SWI
-
-    stack_pointer_original = stack_pointer_saved_context + SAVED_REGISTERS_SPACE + SWI_PARAMETERS_SPACE + USED_EXTRA_SPACE;
 
     _mmu->switchToKernelMMU();
 	// if cs is true a context switch is gonna happen
@@ -207,8 +213,7 @@ extern "C" void c_intSWI(int swiNumber, int receiver, int length, int params[]) 
     }
     _mmu->initMemoryForTask(_TaskManager->getActiveTask());
 
-	// Save the stack
-	asm("	ADD     R13, R13, #24 ");
+
 	// restore stackpointer of swi
 	asm(" LDMFD   R13!, {R0-R12, PC}^");
 }
