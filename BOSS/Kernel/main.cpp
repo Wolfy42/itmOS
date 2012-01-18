@@ -2,6 +2,7 @@
 #include "API/systemCalls.h"
 #include "HAL/Audio/audio.h"
 #include "Loader/TasksHex/TestBytes.h"
+#include "Loader/TasksHex/TestLed1Bytes.h"
 
 //#include "HAL/Display/HalDisplayDriver.h"
 //#include "DisplayService/Graphics.h"
@@ -36,6 +37,11 @@ int main() {
 	Task* task = kernel->getTaskManager()->create("test", false);
 	TestBytes tb;
 	kernel->getLoader()->loadTaskCode(task, tb.getCodeBytes());
+
+	// Start Test-Task to toggle LED1
+	Task* taskLed1 = kernel->getTaskManager()->create("testLed1", false);
+	TestLed1Bytes tbLed1;
+	kernel->getLoader()->loadTaskCode(taskLed1, tbLed1.getCodeBytes());
 
 	// Init
 	_enable_interrupts();

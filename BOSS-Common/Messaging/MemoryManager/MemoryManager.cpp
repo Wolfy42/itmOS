@@ -52,16 +52,14 @@ MessageQueue* MemoryManager::getMessageQueueWithoutVirtualOffset()  {
 
 void MemoryManager::remove(Message* message, bool isVirtual)  {
 
+	int* pa = message->getParams();
+
 	if (!isVirtual)  {
+		pa = (int*)((int)pa - _virtualOffset);
 		message = (Message*)((int)message - _virtualOffset);
 	}
 
-	int* pa = message->getParams();
-	if (!isVirtual)  {
-		pa = (int*)((int)pa - _virtualOffset);
-	}
-
-	MemoryHeader* mh = getHeaderForObjectAt(message->getParams());
+	MemoryHeader* mh = getHeaderForObjectAt(pa);
 	mh->memoryState = BOSS_MEMORY_FREE;
 
 	mh = getHeaderForObjectAt(message);

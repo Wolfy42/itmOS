@@ -175,8 +175,8 @@ extern "C" void c_intIRQ()  {
 #pragma TASK
 extern "C" void c_intSWI(int swiNumber, int receiver, int length, int params[])  {
 
-	asm(" STMFD   R13!, {R0-R12, R14} ; Save Process-Registers ");
-	asm("	SUB     R13, R13, #60 ");
+	asm(" STMFD   R13!, {R0-R12, R14} ; Save Process-Registers ;");
+	asm("	SUB     R13, R13, #60 ;");
 	asm(" STMFD   R13!, {R0-R4} ; Save (again) ");
 
 	tempVariableForAsmAndCpp2 = (unsigned int)&swiParameterAddress;
@@ -189,9 +189,9 @@ extern "C" void c_intSWI(int swiNumber, int receiver, int length, int params[]) 
 	int* newParamAddress = &swiParameterAddress + 3;
 	memcpy(newParamAddress, params, length * sizeof(int));
 
-	asm(" LDMFD     R13!, {R0-R4}");
-	asm("	ADD     R13, R13, #60 ");
-	asm(" LDMFD     R13!, {R0-R12, R14}");
+	asm(" LDMFD     R13!, {R0-R4} ;");
+	asm("	ADD     R13, R13, #60  ;");
+	asm(" LDMFD     R13!, {R0-R12, R14} ;");
 
 	asm("	LDR		R0, [R13]		;");
 	asm("	LDR		R1, [R13, #4]	;");
