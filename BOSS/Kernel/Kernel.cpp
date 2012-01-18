@@ -60,10 +60,10 @@ void Kernel::writeIntoMessageQueue(Task* task, int length, int params[])  {
 	MemoryManager* memoryManager = task->memoryManager;
 	MessageQueue* messageQueue = memoryManager->getMessageQueueWithoutVirtualOffset();
 
-	Message* message = memoryManager->createMessage(activeTaskId, length, params);
-	if (!messageQueue->pushMessage(message))  {
-		task->memoryManager->remove(message, false);
-	}
+	if (!messageQueue->isFull())  {
+		Message* message = memoryManager->createMessage(activeTaskId, length, params);
+		messageQueue->pushMessage(message);
+	};
 }
 
 TaskManager* Kernel::getTaskManager(void) {
