@@ -4,8 +4,8 @@
  * 	Defines for SoftwareInterrupt
  */
 #define SAVED_REGISTERS_SPACE (14 * 4)
-#define WEIRD_EXTRA_SPACE (1 * 4)
-#define SWI_PARAMETERS_SPACE (2 * 4)
+#define USED_EXTRA_SPACE (2 * 4)
+#define SWI_PARAMETERS_SPACE (4 * 4)
 
 /*
  * 	static Handlers for the Interrupts
@@ -175,21 +175,26 @@ extern "C" void c_intIRQ()  {
  */
 #pragma TASK
 extern "C" void c_intSWI(int swiNumber, int receiver, int length, int params[])  {
-	// Save the stack
-	asm("	ADD     R13, R13, #24 ");
-	// copy R0 into R8 --> R0 is needed
-	asm("\t MOV r8, r0\n");
+
+	tempVariableForAsmAndCpp2 = (unsigned int)&swiParameterAddress;
+
+	((int*)tempVariableForAsmAndCpp2)[0] = swiNumber;
+	((int*)tempVariableForAsmAndCpp2)[1] = receiver;
+	((int*)tempVariableForAsmAndCpp2)[2] = length;
+	((int*)tempVariableForAsmAndCpp2)[3] = (int)params;
+
+	int* newParamAddress = &swiParameterAddress + 3;
+	memcpy(newParamAddress, params, length * sizeof(int));
+
+	asm("	LDR		R0, [R13]		;");
+	asm("	LDR		R1, [R13, #4]	;");
+	asm("	LDR		R2, [R13, #8]	;");
+	asm("	LDR		R3, [R13, #12]	;");
+
 	// save context
 	SAVECONTEXT_SWI
-    tempVariableForAsmAndCpp2 = (unsigned int)&swiParameterAddress;
-    asm("\t LDR r11, tempVariableForAsmAndCpp2\n");
-    asm("\t LDR r11, [r11], #0\n");
-    asm("\t STR r8, [r11]\n");
-    asm("\t STMFA r11, {R1-R2}\n");
-    length = (&swiParameterAddress)[2];
-    int* newParamAddress = &swiParameterAddress + 3; 
-    memcpy(newParamAddress, params, length * sizeof(int));
-    stack_pointer_original = stack_pointer_saved_context + SAVED_REGISTERS_SPACE + SWI_PARAMETERS_SPACE + WEIRD_EXTRA_SPACE;
+
+    stack_pointer_original = stack_pointer_saved_context + SAVED_REGISTERS_SPACE + SWI_PARAMETERS_SPACE + USED_EXTRA_SPACE;
 
     _mmu->switchToKernelMMU();
 	// if cs is true a context switch is gonna happen
@@ -201,6 +206,9 @@ extern "C" void c_intSWI(int swiNumber, int receiver, int length, int params[]) 
     	contextSwitch();
     }
     _mmu->initMemoryForTask(_TaskManager->getActiveTask());
+
+	// Save the stack
+	asm("	ADD     R13, R13, #24 ");
 	// restore stackpointer of swi
 	asm(" LDMFD   R13!, {R0-R12, PC}^");
 }
