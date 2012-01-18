@@ -15,8 +15,6 @@ public:
 	int getTaskId();
 	int getParamsLength();
 	int* getParams();
-
-	void addPointerAddressOffset(int virtualOffset);
 };
 
 #endif /* MESSAGE_H_ */

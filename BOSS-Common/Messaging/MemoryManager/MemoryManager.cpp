@@ -68,6 +68,7 @@ void MemoryManager::remove(Message* message, bool isVirtual)  {
 
 address MemoryManager::getNextFreeAddressWith(int size)  {
 
+	int sizeBefore;
 	MemoryHeader* mh = (MemoryHeader*)_memoryStartAddress;
 	while (!hasEnoughSpaceFor(size, mh))  {
 		mh = getNextHeader(mh);
@@ -80,9 +81,7 @@ address MemoryManager::getNextFreeAddressWith(int size)  {
 		end->memoryState = BOSS_MEMORY_FREE;
 		end->size = 0;
 	}
-	new ((void*)mh) MemoryHeader();
 	mh->memoryState = BOSS_MEMORY_RESERVED;
-	mh->size = size;
 
 	return (address) ((int)mh + sizeof(MemoryHeader));
 }
