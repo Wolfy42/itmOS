@@ -11,7 +11,7 @@
 #include "HAL/Audio/OMAP/McBSP2.h"
 #include "HAL/Audio/TPS65950/TPS65950.h"
 
-#define MAX 32767
+#define MAX 32767 // maybe already defined?
 #define SUS ((unsigned int )(MAX * 0.8))
 // sample rate 48kHz
 #define SRATE 48000
