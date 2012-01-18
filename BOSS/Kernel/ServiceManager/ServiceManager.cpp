@@ -52,5 +52,8 @@ void ServiceManager::stopService(int serviceId) {
 }
 
 Task* ServiceManager::getTaskForService(int serviceId) {
+	if (_serviceTaskMapping.find(serviceId) == NULL)  {
+		return NULL;
+	}
 	return _serviceTaskMapping.find(serviceId)->second;
 }
