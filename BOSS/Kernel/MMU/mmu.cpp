@@ -182,10 +182,14 @@ void MMU::mapOneToOne(address masterTableAddress, address startAddress, unsigned
 
 bool MMU::isTaskPage(address pageAddress) {
     address intVecsPageStart = (address)((((unsigned int)&intvecsStart) >> 12) << 12);
-    return !(((pageAddress >= (address)INT_RAM_START) && (pageAddress < m_firstFreeInIntRam))
-        || ((pageAddress >= (address)EXT_DDR_START) && (pageAddress < m_firstFreeInExtDDR))
-        || ((pageAddress >= (address)ROM_INTERRUPT_ENTRIES) && (pageAddress < (address)(ROM_INTERRUPT_ENTRIES + ROM_INTERRUPT_LENGTH)))
-        || ((pageAddress >= intVecsPageStart) && (pageAddress < (address)(INT_RAM_START + INT_RAM_SIZE))));
+    return (
+            (((pageAddress >= (address)INT_RAM_START) && (pageAddress < (address)(INT_RAM_START + INT_RAM_SIZE)))
+          || ((pageAddress >= (address)EXT_DDR_START) && (pageAddress < (address)(EXT_DDR_START + EXT_DDR_SIZE))))
+        && !(((pageAddress >= (address)INT_RAM_START) && (pageAddress < m_firstFreeInIntRam))
+          || ((pageAddress >= (address)EXT_DDR_START) && (pageAddress < m_firstFreeInExtDDR))
+          || ((pageAddress >= (address)ROM_INTERRUPT_ENTRIES) && (pageAddress < (address)(ROM_INTERRUPT_ENTRIES + ROM_INTERRUPT_LENGTH)))
+          || ((pageAddress >= intVecsPageStart) && (pageAddress < (address)(INT_RAM_START + INT_RAM_SIZE))))
+          );
 }
 
 void MMU::switchToKernelMMU() {
