@@ -1,6 +1,6 @@
 #include "DisplayService.h"
 
-DisplayService::DisplayService() : Service() {	
+DisplayService::DisplayService() : Service(), _currentTaskId(-1) {	
 	// Background
 	_driver.moveTo(0, 0);
 	_driver.setColor(0xFF007F);
@@ -24,31 +24,48 @@ DisplayService::~DisplayService() {}
 
 void DisplayService::executeMessage(Message* message)  {
 	int* params = message->getParams();
-	DisplayServiceCommand command = (DisplayServiceCommand)params[0];
+    if (!hasDisplay(message->getTaskId())) {
+        _driver.moveTo(0, 0);
+        _driver.drawString("Task " + message->getTaskId() + " wants the screen", 3);
+        
+        // TODO change?
+    }
+    if (hasDisplay(message->getTaskId()) {
+    	DisplayServiceCommand command = (DisplayServiceCommand)params[0];
+    
+    	switch (command) {
+    		case SERVICE_SET_COLOR:
+    			_driver.setColor(params[1]);
+    			break;
+    			
+    		case SERVICE_MOVE_TO:
+    			_driver.moveTo(params[1], params[2]);
+    			break;
+    			
+    		case SERVICE_DRAW_PIXEL:
+    			_driver.drawPixel();
+    			break;
+    			
+    		case SERVICE_DRAW_RECT:
+    			_driver.drawRect(params[1], params[2]);
+    			break;
+    			
+    		case SERVICE_DRAW_CHAR:
+    			_driver.drawChar(params[1], params[2]);
+    			break;
+    			
+    		case SERVICE_DRAW_STRING:
+    			_driver.drawString(((const char*)params + 2), params[1]);
+    			break;
+    	}
+    }
+}
 
-	switch (command) {
-		case SERVICE_SET_COLOR:
-			_driver.setColor(params[1]);
-			break;
-			
-		case SERVICE_MOVE_TO:
-			_driver.moveTo(params[1], params[2]);
-			break;
-			
-		case SERVICE_DRAW_PIXEL:
-			_driver.drawPixel();
-			break;
-			
-		case SERVICE_DRAW_RECT:
-			_driver.drawRect(params[1], params[2]);
-			break;
-			
-		case SERVICE_DRAW_CHAR:
-			_driver.drawChar(params[1], params[2]);
-			break;
-			
-		case SERVICE_DRAW_STRING:
-			_driver.drawString(((const char*)params + 2), params[1]);
-			break;
-	}
+void DisplayService::hasDisplay(int taskId) {
+    return ((_currentTaskId >= 0) && (_currentTaskId == taskId));
+}
+
+void DisplayService::changeTo(int taskId) {
+    std::memset(FBADDR, 0, 1024*768*4);
+    _currentTaskId = taskId;
 }

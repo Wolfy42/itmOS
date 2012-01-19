@@ -8,11 +8,15 @@
 class DisplayService : public Service {
 	private:	
 		HalDisplayDriver _driver;
+        int _currentTaskId;
 		virtual void executeMessage(Message* message);
 	
 	public:
 		DisplayService();
 		virtual ~DisplayService();
+        
+        hasDisplay(int taskId);
+        changeTo(int taskId);
 };
 
 #endif /*DISPLAYSERVICE_H_*/
