@@ -26,7 +26,8 @@ void ShellService::executeMessage(Message* message)  {
 				input = "";
 			} else {
 			
-				input.append(&char_params[0]);	
+				input.append(&char_params[0]);
+				echo(char_params[0]);
 			}
 			break;
 	}
