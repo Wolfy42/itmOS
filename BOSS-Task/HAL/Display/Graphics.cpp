@@ -33,6 +33,12 @@ void Graphics::setColour(unsigned int rgb) {
 		| ((rgb & 0xfc00) >> 5)
 		| ((rgb & 0xf8) >> 3);
 }
+void Graphics::restoreColour(unsigned int colour) {
+    _rastPort->colour = colour;
+}
+unsigned int Graphics::getColour() {
+    return _rastPort->colour;
+}
 
 extern void fill_rect_565(void *addr, int width, int height, unsigned int colour, int stride);
 
@@ -61,6 +67,12 @@ void Graphics::moveTo(int x, int y) {
 	_rastPort->point = ((unsigned char *)_rastPort->drawable.bitmap->data)
 		+ x * 2
 		+ y * _rastPort->drawable.bitmap->stride;
+}
+
+int* Graphics::getPosition() {
+    int pos[] = {_rastPort->x, _rastPort->y};
+    int* pointer = pos;
+    return pointer;
 }
 
 void Graphics::drawPixel(void) {

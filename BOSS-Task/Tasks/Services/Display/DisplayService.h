@@ -11,12 +11,12 @@ class DisplayService : public Service {
         int _currentTaskId;
 		virtual void executeMessage(Message* message);
 	
+        bool checkScreenRights(int taskId);
+        void changeTo(int taskId);
 	public:
 		DisplayService();
 		virtual ~DisplayService();
         
-        hasDisplay(int taskId);
-        changeTo(int taskId);
 };
 
 #endif /*DISPLAYSERVICE_H_*/

@@ -12,9 +12,6 @@ private:
 	MemoryManager* _memoryManager;
 	MessageQueue* _messagesQueue;
 
-protected:
-	void writeResponse(int* response);
-
 public:
 
 	UserModeTask();

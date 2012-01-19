@@ -26,7 +26,7 @@ void ServiceManager::startServices()  {
 	DisplayBytes displayBytes;
 	CodeBytes* cb_display = displayBytes.getCodeBytes();
 	DisplayConfig* c_display = new DisplayConfig();
-	startService("Display", DISPLAY_SERVICE_ID, cb_display, c_display);
+	startService("Display", DISPLAY_SERVICE_ID, cb_display, c_display, 100);
 	delete cb_display;
 	delete c_display;
 	
@@ -39,12 +39,17 @@ void ServiceManager::startServices()  {
 }
 
 void ServiceManager::startService(char* serviceName, int serviceId, CodeBytes* codeBytes, ServiceConfig* config) {
-
-	Task* task = _taskManager->create(serviceName, false, 100);
-	_serviceTaskMapping.insert(std::pair<int, Task*>(serviceId, task));
-
-	_loader->loadServiceCode(task, codeBytes, config);
+    startService(serviceName, serviceId, codeBytes, config, 80);
 }
+
+void ServiceManager::startService(char* serviceName, int serviceId, CodeBytes* codeBytes, ServiceConfig* config, int priority) {
+    
+    Task* task = _taskManager->create(serviceName, false, priority);
+    _serviceTaskMapping.insert(std::pair<int, Task*>(serviceId, task));
+
+    _loader->loadServiceCode(task, codeBytes, config);
+}
+
 
 void ServiceManager::stopService(int serviceId) {
 	_taskManager->kill(getTaskForService(serviceId)->id);

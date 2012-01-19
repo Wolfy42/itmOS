@@ -31,6 +31,7 @@ class ServiceManager
 		
 		void startServices();
 		void startService(char* serviceName, int serviceId, CodeBytes* codeBytes, ServiceConfig* config);
+        void startService(char* serviceName, int serviceId, CodeBytes* codeBytes, ServiceConfig* config, int priority);
 		void stopService(int serviceId);
 
 		Task* getTaskForService(int serviceId);

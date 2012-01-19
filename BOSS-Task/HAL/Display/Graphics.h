@@ -69,7 +69,10 @@ class Graphics {
 		virtual ~Graphics();
 	
 		void setColour(unsigned int rgb);
+        void restoreColour(unsigned int colour);
+        unsigned int getColour();
 		void moveTo(int x, int y);
+        int* getPosition();
 		void drawPixel(void);
 		void drawRect(int w, int h);
 		void drawChar(unsigned int c, int scale);

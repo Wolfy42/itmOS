@@ -400,8 +400,19 @@ void HalDisplayDriver::setColor(unsigned int rgb) {
 	_graphics->setColour(rgb);
 }
 
+unsigned int HalDisplayDriver::getColour() {
+    return _graphics->getColour();
+}
+
+void HalDisplayDriver::restoreColour(unsigned int colour) {
+    _graphics->restoreColour(colour);
+}
 void HalDisplayDriver::moveTo(int x, int y) {
 	_graphics->moveTo(x, y);
+}
+
+int* HalDisplayDriver::getPosition() {
+    return _graphics->getPosition();
 }
 
 void HalDisplayDriver::drawPixel(void) {
