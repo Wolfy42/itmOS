@@ -20,13 +20,14 @@ void ShellService::executeMessage(Message* message)  {
 	switch (command) {
 		case NEXT_CHAR:
 		
-			if (char_params[0] == '\n' || char_params[0] == '\r') {
+			if (char_params[0] == '\n' || char_params[0] == '\r' || char_params[0] == 13) {
 			
 				executeCommand(input);
 				input = "";
 			} else {
 			
-				input.append(&char_params[0]);	
+				input.append(&char_params[0]);
+				echo(char_params[0]);
 			}
 			break;
 	}
@@ -48,6 +49,8 @@ void ShellService::echo(std::string echo) {
 	
 //	int length = echo.size();
 //	int* params = new int[length + 1];
+	setColor(0);
+	moveTo(50, 50);
 	drawString(echo.c_str(), 7);
 //	params[0] = 0; //  HDMI WRITE COMMAND :)
 //	for (int i = 0; i < length; i++) {
