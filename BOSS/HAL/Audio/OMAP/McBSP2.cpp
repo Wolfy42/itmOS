@@ -68,8 +68,8 @@ void McBSP2::init_mcbsp2() {
 
 // clock polarity
 	// receiver
-	setBit( (address) (MCBSP1_BASE + MCBSPLP_PCR_REG), MCBSP_CLKRP_BIT); // rising edge
-	setBit( (address) (MCBSP1_BASE + MCBSPLP_PCR_REG), MCBSP_CLKXP_BIT); // falling edge
+//	setBit( (address) (MCBSP1_BASE + MCBSPLP_PCR_REG), MCBSP_CLKRP_BIT); // rising edge
+//	setBit( (address) (MCBSP1_BASE + MCBSPLP_PCR_REG), MCBSP_CLKXP_BIT); // falling edge
 
 	// Delay to allow settings to sync (hopefully 2 SRG clock cycles)
 	for (int loop=0; loop < 0XFF; loop++);
