@@ -1,9 +1,12 @@
 #include "Service-API/LED/LED.h"
 #include "Service-API/Display/Display.h"
 
-int main() {
+int main__() {
 
-    bool hasScreen = moveTo(60, 60);
+    bool hasScreen = moveTo(0, 0);
+    if (hasScreen) {
+        drawRect(1023, 767);
+    }
 	switchLEDOff(LED1);
 	int i=0;
 	

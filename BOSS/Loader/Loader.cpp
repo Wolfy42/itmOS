@@ -29,7 +29,7 @@ bool Loader::reserveMemory(std::list<Code*>* code) {
 	// Check if pageNr-Logic fails
 	if (_startPageNr <= _endPageNr) {
 		// Reserve the needed pages and return true		
-		_memoryStart = _ramManager->findFreeMemory(_endPageNr - _startPageNr + 1, false, true);
+		_memoryStart = _ramManager->findFreeMemory(_endPageNr - _startPageNr + 2, false, true);
 		return true;
 	} else {
 		return false; 
@@ -86,7 +86,7 @@ void Loader::loadServiceCode(Task* task, CodeBytes* codeBytes, ServiceConfig* co
 		
 		// Create new Task
 		task->codeLocation = _memoryStart;
-		task->pageCount = _endPageNr - _startPageNr + 1;
+		task->pageCount = _endPageNr - _startPageNr + 2;
 		
 		if (config != NULL) {
 			task->taskRegisters = config->getRegistersForMmuMapping();

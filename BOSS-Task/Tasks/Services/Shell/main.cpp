@@ -1,7 +1,7 @@
 
 #include "Tasks/Services/Shell/ShellService.h"
 
-int main_(void) {
+int main___(void) {
 	ShellService shellService;
 	shellService.run();
 }

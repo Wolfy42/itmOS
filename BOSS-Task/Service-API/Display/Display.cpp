@@ -66,3 +66,8 @@ bool drawString(const char* s, int scale) {
 	performServiceCall(DISPLAY_SERVICE_ID, stringLength / 4 + 2, params);
     return hasScreen();
 }
+
+void switchTask() {
+    int params[] = {SERVICE_SWITCH_TASK, 0};
+    performServiceCall(DISPLAY_SERVICE_ID, 2, params);
+}
