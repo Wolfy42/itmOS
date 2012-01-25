@@ -52,6 +52,10 @@ void DisplayService::executeMessage(Message* message)  {
     		case SERVICE_DRAW_STRING:
     			_driver.drawString(((const char*)params + 2), params[1]);
     			break;
+            case SERVICE_SWITCH_TASK:
+                if ((message->getTaskId() == -1) && (params >= 0)) {
+                    changeTo(params[1]);
+                }
     	}
     } else {
         int* position = _driver.getPosition();
@@ -59,7 +63,7 @@ void DisplayService::executeMessage(Message* message)  {
         unsigned int colour = _driver.getColour();
         
         _driver.setColor(0x0);
-        _driver.moveTo(0, 60);
+        _driver.moveTo(30, 48);
         _driver.drawRect(153, 30);
         _driver.setColor(0xFFFFFF);
         _driver.moveTo(30, 60);
@@ -68,6 +72,9 @@ void DisplayService::executeMessage(Message* message)  {
         
         _driver.moveTo(90, 60);
         char infoCharArray[] = {(char)(message->getTaskId() + (unsigned int)'0'), '\0'};
+        if (infoCharArray[0] > 255) {
+            infoCharArray[0] -= 256;
+        }
         _driver.drawString(infoCharArray, 2);
         
         infoString = " wants the screen";
@@ -77,14 +84,22 @@ void DisplayService::executeMessage(Message* message)  {
         _driver.moveTo(pos[0], pos[1]);
         _driver.restoreColour(colour);
     }
-    writeResponse(message->getTaskId(), 1, response);
+    if (message->getTaskId() >= 0) {
+        writeResponse(message->getTaskId(), 1, response);
+    }
 }
 
 bool DisplayService::checkScreenRights(int taskId) {
-    bool isCurrentTask = (_currentTaskId == taskId); 
-    if ((!isCurrentTask) && (_currentTaskId < 0)) {
-        changeTo(taskId);
+    bool isCurrentTask = false;
+    if (taskId < 0) {
         isCurrentTask = true;
+    } else {
+        if (_currentTaskId < 0) {
+            changeTo(taskId);
+            isCurrentTask = true;
+        } else if (_currentTaskId == taskId) {
+            isCurrentTask = true;
+        }
     }
     return isCurrentTask;
 }
@@ -92,4 +107,23 @@ bool DisplayService::checkScreenRights(int taskId) {
 void DisplayService::changeTo(int taskId) {
     std::memset(FBADDR, 0x0, 1024*768*4);
     _currentTaskId = taskId;
+    
+    int* position = _driver.getPosition();
+    int pos[] = {position[0], position[1]};
+    unsigned int colour = _driver.getColour();
+    
+    _driver.setColor(0x0);
+    _driver.moveTo(994, 48);
+    _driver.drawRect(5, 30);
+    _driver.setColor(0xFFFFFF);
+    _driver.moveTo(994, 60);
+    char infoCharArray[] = {(char)(taskId + (unsigned int)'0'), '\0'};
+    if (infoCharArray[0] > 255) {
+        infoCharArray[0] -= 256;
+    }
+    _driver.drawString(infoCharArray, 2);
+    
+    _driver.moveTo(pos[0], pos[1]);
+    _driver.restoreColour(colour);
+
 }

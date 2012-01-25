@@ -21,6 +21,8 @@ private:
 	Task* _tasks[MAX_TASKS];
 	int _activeTask;
     MMU* _mmu;
+    
+    int _nrOfTasks;
 	
 	int getNextFreeSlot();
 
@@ -46,6 +48,8 @@ public:
 	
 	// get list of all Tasks
 	Task** getTaskList();
+    
+    int getNrOfTasks();
 };
 
 #endif /* TASKMANAGER_H_ */

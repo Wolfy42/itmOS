@@ -7,6 +7,7 @@
 #include "Kernel/ServiceManager/Configs/Serial/SerialConfig.h"
 #include "Kernel/ServiceManager/Configs/Display/DisplayConfig.h"
 #include "Kernel/ServiceManager/Configs/Shell/ShellConfig.h"
+#include "Kernel/ServiceManager/Configs/Button/ButtonConfig.h"
 
 #include "Kernel/Task/Task.h"
 #include "Kernel/Task/TaskManager.h"
@@ -17,6 +18,8 @@
 #include "Loader/TasksHex/LedBytes.h"
 #include "Loader/TasksHex/DisplayBytes.h"
 #include "Loader/TasksHex/ShellBytes.h"
+#include "Loader/TasksHex/ButtonBytes.h"
+#include "Loader/TasksHex/ScSwBytes.h"
 
 class ServiceManager
 {	

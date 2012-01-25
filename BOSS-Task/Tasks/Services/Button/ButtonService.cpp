@@ -8,9 +8,7 @@ ButtonService::~ButtonService() {
 }
 
 
-void ButtonService::execute(int params[]) {
-	HalButtonDriver buttonDriver;
-	bool isPressed = buttonDriver.isPressed();
-
-	while (!isPressed);
+void ButtonService::executeMessage(Message* message) {
+	int response[] = {_buttonDriver.isPressed()};
+    writeResponse(message->getTaskId(), 1, response);
 }

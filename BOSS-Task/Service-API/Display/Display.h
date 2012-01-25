@@ -13,7 +13,8 @@ enum DisplayServiceCommand {
     SERVICE_DRAW_PIXEL,
     SERVICE_DRAW_RECT,
     SERVICE_DRAW_CHAR,
-    SERVICE_DRAW_STRING
+    SERVICE_DRAW_STRING,
+    SERVICE_SWITCH_TASK = 398
 };
 
 bool setColor(unsigned int rgb);
@@ -22,5 +23,6 @@ bool drawPixel();
 bool drawRect(int w, int h);
 bool drawChar(unsigned int c, int scale);
 bool drawString(const char* s, int scale);
+void switchTask();
 
 #endif /*DISPLAY_H_*/

@@ -36,6 +36,18 @@ void ServiceManager::startServices()  {
 	startService("Shell", SHELL_SERVICE_ID, cb_shell, c_shell);
 	delete cb_shell;
 	delete c_shell;
+
+    ButtonBytes buttonBytes;
+    CodeBytes* cb_button = buttonBytes.getCodeBytes();
+    ButtonConfig* c_button= new ButtonConfig();
+    startService("Button", BUTTON_SERVICE_ID, cb_button, c_button);
+    delete cb_button;
+    delete c_button;
+    
+    Task* scSw = _taskManager->create("ScreenSwitcher", false);
+    ScSwBytes sb;
+    _loader->loadTaskCode(scSw, sb.getCodeBytes());
+
 }
 
 void ServiceManager::startService(char* serviceName, int serviceId, CodeBytes* codeBytes, ServiceConfig* config) {

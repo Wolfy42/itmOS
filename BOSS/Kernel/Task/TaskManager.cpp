@@ -107,6 +107,7 @@ Task* TaskManager::create(char* name, bool blockParent, int priority) {
 	t->tcb.R12 = 0;
 	t->tcb.R14 = (int)exitTask;
 
+    _nrOfTasks++;
 	// add Task
 	_tasks[nextTask] = t;
 
@@ -136,7 +137,7 @@ void TaskManager::kill(int taskId) {
 	
 		kill(_tasks[taskId]->child->id);
 	}
-	
+	_nrOfTasks--;
     _mmu->deleteTaskMemory(_tasks[taskId]);
 	delete _tasks[taskId];
 	_tasks[taskId] = NULL;
@@ -233,3 +234,6 @@ int TaskManager::getNextFreeSlot() {
 	return -1;
 }
 
+int TaskManager::getNrOfTasks() {
+    return _nrOfTasks;
+}

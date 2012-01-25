@@ -32,6 +32,8 @@ class Kernel {
         RAMManager* _ramManager;
         Loader* _loader;
 	
+        int _displayTaskId;
+        
 		void initScheduler(void);
 		void writeIntoMessageQueue(Task* task, int length, int params[]);
 	

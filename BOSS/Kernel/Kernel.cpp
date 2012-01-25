@@ -9,6 +9,7 @@ Kernel::Kernel() {
     _executor = new SystemCallExec(this, _taskManager);
 	_handlerManager = new HandlerManager(this);
     
+    _displayTaskId = 0;
 	initInterruptHandler(
 			_handlerManager->getIrqHandler(), 
 			_handlerManager->getSwiHandler(), 
@@ -58,6 +59,24 @@ void Kernel::writeResponse(int* parameters)  {
 
 void Kernel::writeIntoMessageQueue(Task* task, int length, int params[])  {
 	int activeTaskId = _taskManager->getActiveTask()->id;
+
+    if ((activeTaskId == 6) && (params[0] == 398)) {
+        activeTaskId = -1;
+        int nextTaskId = -1;
+        Task** tasks = _taskManager->getTaskList();
+        
+        for (int i = _displayTaskId + 1; nextTaskId < 0; i++) {
+            if (i >= MAX_TASKS) {
+                i = 0;
+            }
+            if (tasks[i] != NULL) {
+                nextTaskId = i;
+            }
+        }
+        
+        _displayTaskId = nextTaskId;
+        params[1] = _displayTaskId;
+    }
 
 	task->status = Ready;
 
