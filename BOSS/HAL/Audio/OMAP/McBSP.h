@@ -92,6 +92,7 @@
 // MCBSPLP_PCR
 #define MCBSP_CLKRP_BIT			0
 #define MCBSP_CLKXP_BIT			1
+#define MCBSP_CLKRM_BIT			8
 
 // Wordlength
 #define MCBSP_WDLEN_8 			0
@@ -100,5 +101,6 @@
 #define MCBSP_WDLEN_20 			3
 #define MCBSP_WDLEN_24 			4
 #define MCBSP_WDLEN_32 			5
+
 
 #endif /* MCBSP_H_ */
