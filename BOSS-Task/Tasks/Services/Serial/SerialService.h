@@ -17,7 +17,7 @@ private:
 	
 	void init();
     void write(int count, char* buffer);
-	int read(int count, char* buffer);
+	int read(int count, int* buffer);
 	
 	
 	

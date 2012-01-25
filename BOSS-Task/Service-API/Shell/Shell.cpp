@@ -2,8 +2,8 @@
 #include "API/systemCalls.h"
 
 
-void nextChar(char* ch) {
+void nextChar(int ch) {
 	
-	int params[] = {NEXT_CHAR, (int)(*ch)};
+	int params[] = {NEXT_CHAR, ch};
 	performServiceCall(SHELL_SERVICE_ID, 2, params);
 }

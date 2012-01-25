@@ -8,10 +8,9 @@
 
 class UserModeTask {
 
-private:
+protected:
 	MemoryManager* _memoryManager;
 	MessageQueue* _messagesQueue;
-
 public:
 
 	UserModeTask();
@@ -19,7 +18,7 @@ public:
 
 	virtual void executeMessage(Message* message) = 0;
 
-	void run();
+	virtual void run();
 	void writeResponse(int callerId, int lenght, int params[]);
 };
 

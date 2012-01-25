@@ -6,5 +6,5 @@ enum ShellServiceCommand {
 };
 
 
-void nextChar(char* ch);
+void nextChar(int ch);
 #endif /*SHELL_H_*/

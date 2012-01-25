@@ -1,9 +1,9 @@
 #include "Button.h"
 extern unsigned int messagesStart;
 
-bool isPressed() {
-    int params[] = {0};
-    performServiceCall(BUTTON_SERVICE_ID, 0, params);
+void waitForButtonPress() {
+    int params[] = {BUTTON_SERVICE_REGISTER};
+    performServiceCall(BUTTON_SERVICE_ID, 1, params);
     MemoryManager* memoryManager = (MemoryManager*)&messagesStart;
     MessageQueue* messagesQueue = memoryManager->getMessageQueue();
 
@@ -13,11 +13,10 @@ bool isPressed() {
         //performSystemCall(SUSPEND);
         //enterSemaphore(SEMAPHORE_OWN_MESAGE_QUEUE, 0);
     }
-
+    params[0] = BUTTON_SERVICE_UNREGISTER;
+    performServiceCall(BUTTON_SERVICE_ID, 1, params);
 
     Message* message = messagesQueue->popMessage();
-    bool result = message->getParams()[0];
     memoryManager->remove(message, true);
     //exitSemaphore(SEMAPHORE_OWN_MESAGE_QUEUE, 0);
-    return result;
 }

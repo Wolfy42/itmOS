@@ -6,6 +6,11 @@
 #include "Messaging/MessageQueue/MessageQueue.h"
 #include "Messaging/Message/Message.h"
 
-bool isPressed();
+enum ButtonServiceCommand {
+    BUTTON_SERVICE_REGISTER,
+    BUTTON_SERVICE_UNREGISTER
+};
+
+void waitForButtonPress();
 
 #endif /*BUTTON_H_*/
