@@ -27,7 +27,7 @@ void ShellService::executeMessage(Message* message)  {
 			} else {
 			
 				input.append(&char_params[0]);
-				echo(char_params[0]);
+				echo(std::strcat("", &char_params[0]));
 			}
 			break;
 	}
