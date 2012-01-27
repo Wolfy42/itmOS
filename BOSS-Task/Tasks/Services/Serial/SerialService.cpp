@@ -70,12 +70,13 @@ void SerialService::init() {
 
 
 void SerialService::run() {
-	
-	char buffer[1];
-	buffer[0] = ' ';
-	read(1, buffer);
-	nextChar(buffer[0]);
-	//printText(&buffer[0]);
+	while (true) {
+    	char buffer[1];
+    	buffer[0] = ' ';
+    	read(1, buffer);
+    	nextChar(buffer[0]);
+	   //printText(&buffer[0]);
+    }
 	
 }
 
@@ -105,8 +106,7 @@ int SerialService::read(int count, char* buffer) {
 	    // block while waiting for data
 	    while (uart_is_empty_read_queue(uart))
 	      ;
-        char c = buffer[i];
-	    uart_read(uart, &c);
+	    uart_read(uart, &(buffer[i]));
 	
 	    // stop reading when receiving a return
 	    // TODO: just one char - change func?

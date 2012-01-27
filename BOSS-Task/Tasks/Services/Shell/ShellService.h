@@ -12,12 +12,14 @@ class ShellService : public Service
 {
 private:
 	
+    int _currentLine;
+    int _currentColumn;
 	virtual void executeMessage(Message* message);
 	
 	void init();
     void write(int count, char* buffer);
 	int read(int count, char* buffer);
-	
+	void writeLineStart();
 	// actual command parts
 	std::string input;
 	
@@ -27,7 +29,8 @@ public:
 	virtual ~ShellService();
 
 	void executeCommand(std::string command);
-	void echo(std::string echo);
+	void echo(char ch);
+    void newLine();
 };
 
 #endif /*SHELLSERVICE_H_*/

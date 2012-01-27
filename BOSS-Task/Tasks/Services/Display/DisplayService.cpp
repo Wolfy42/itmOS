@@ -62,9 +62,9 @@ void DisplayService::executeMessage(Message* message)  {
         int pos[] = {position[0], position[1]};
         unsigned int colour = _driver.getColour();
         
-        _driver.setColor(0x0);
-        _driver.moveTo(30, 48);
-        _driver.drawRect(153, 30);
+//        _driver.setColor(0x0);
+//        _driver.moveTo(30, 48);
+//        _driver.drawRect(153, 30);
         _driver.setColor(0xFFFFFF);
         _driver.moveTo(30, 60);
         char* infoString = "Task ";
@@ -112,9 +112,9 @@ void DisplayService::changeTo(int taskId) {
     int pos[] = {position[0], position[1]};
     unsigned int colour = _driver.getColour();
     
-    _driver.setColor(0x0);
-    _driver.moveTo(994, 48);
-    _driver.drawRect(5, 30);
+//    _driver.setColor(0x0);
+//    _driver.moveTo(994, 48);
+//    _driver.drawRect(5, 30);
     _driver.setColor(0xFFFFFF);
     _driver.moveTo(994, 60);
     char infoCharArray[] = {(char)(taskId + (unsigned int)'0'), '\0'};

@@ -4,4 +4,5 @@
 int main(void) {
 	ShellService shellService;
 	shellService.run();
+    return 0;
 }

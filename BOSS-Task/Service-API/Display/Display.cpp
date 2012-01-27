@@ -48,13 +48,18 @@ bool drawChar(unsigned int c, int scale) {
 
 bool drawString(const char* s, int scale) {
 	int stringLength = strlen(s);
-	int* params = new int[stringLength / 4 + 2];
+    
+    int paramsLength = stringLength / 4 + 2;
+    if (stringLength % 4 != 0) {
+        paramsLength++;
+    }
+	int* params = new int[paramsLength];
 	
 	params[0] = SERVICE_DRAW_STRING;
 	params[1] = scale;
-	memcpy(params + 2, s, stringLength);
+	std::memcpy(&(params[2]), s, stringLength);
 	
-	performServiceCall(DISPLAY_SERVICE_ID, stringLength / 4 + 2, params);
+	performServiceCall(DISPLAY_SERVICE_ID, paramsLength, params);
     return hasScreen();
 }
 
