@@ -15,7 +15,7 @@ extern int init_uart_rs232_ = FALSE;
 void SerialService::executeMessage(Message* message)  {
 
 	int* params = message->getParams();
-	char* char_params;
+	char* char_params = new char[message->getParamsLength()];
 	
 	for (int i = 1; i < message->getParamsLength(); i++) {
 	
