@@ -2,16 +2,13 @@
 #define SEMAPHORE_H_
 
 #include "TaskManager.h"
+#include <queue>
 
 class Semaphore {
     private:
-        Task* _waitingTasks[MAX_TASKS];
+        std::queue<Task*> _waitingTasks;
         int _counter;
-        int _start;
-        int _end;
         
-        void push(Task* task);
-        Task* pull();
     public:
     	Semaphore();
     	virtual ~Semaphore();

@@ -1,7 +1,7 @@
 #include "Service-API/LED/LED.h"
 #include "Service-API/Display/Display.h"
 
-int main_____() {
+int main________________() {
 
 	switchLEDOff(LED1);
 	int i=0;
@@ -12,7 +12,7 @@ int main_____() {
 			i++;
 		}
 		
-		//if (getLEDState(LED2))  {
+		if (getLEDState(LED2))  {
 			switchLEDOff(LED2);
 			switchLEDOn(LED1);
 			
@@ -26,7 +26,7 @@ int main_____() {
 			setColor(0xFF0000);
 			moveTo(640, 200);
             drawChar('2', 5);
-		//} else {
+		} else {
 			switchLEDOn(LED2);
 			switchLEDOff(LED1);
 			
@@ -42,6 +42,6 @@ int main_____() {
                 drawChar('2', 5);
             }
 			
-		//}
+		}
 	}
 }

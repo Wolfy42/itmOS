@@ -9,15 +9,14 @@ enum SerialCommand {
 	SERIAL_READ
 };
 
-class SerialService : public Service
-{
+class SerialService : public Service {
 private:
 	
 	virtual void executeMessage(Message* message);
 	
 	void init();
     void write(int count, char* buffer);
-	int read(int count, int* buffer);
+	int read(int count, char* buffer);
 	
 	
 	
@@ -25,7 +24,7 @@ public:
 
 	SerialService();
 	virtual ~SerialService();
-	void run();
+	virtual void run();
 
 };
 

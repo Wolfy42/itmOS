@@ -1,6 +1,6 @@
 #include "ButtonService.h"
 
-int main____________() {
+int main_____() {
     ButtonService buttonService;
     buttonService.run();
     return 0;

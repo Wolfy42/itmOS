@@ -15,7 +15,7 @@ extern int init_uart_rs232_ = FALSE;
 void SerialService::executeMessage(Message* message)  {
 
 	int* params = message->getParams();
-	char* char_params;
+	char* char_params = new char[message->getParamsLength()];
 	
 	for (int i = 1; i < message->getParamsLength(); i++) {
 	
@@ -71,7 +71,7 @@ void SerialService::init() {
 
 void SerialService::run() {
 	
-	int buffer[1];
+	char buffer[1];
 	buffer[0] = ' ';
 	read(1, buffer);
 	nextChar(buffer[0]);
@@ -96,7 +96,7 @@ void SerialService::write(int count, char* buffer) {
 }
 
 
-int SerialService::read(int count, int* buffer) {
+int SerialService::read(int count, char* buffer) {
 	
 	  mem_address_t* uart = (mem_address_t*)UART3;
 	  int i = 0;
@@ -105,7 +105,7 @@ int SerialService::read(int count, int* buffer) {
 	    // block while waiting for data
 	    while (uart_is_empty_read_queue(uart))
 	      ;
-        char c = (char)(buffer[i]);
+        char c = buffer[i];
 	    uart_read(uart, &c);
 	
 	    // stop reading when receiving a return
