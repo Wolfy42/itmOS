@@ -131,6 +131,15 @@ void SnakeService::run() {
 			for (int z = 0; z < 80000;) {
 				z++;
 			}
+			Message* message = _messagesQueue->popMessage();
+			executeMessage(message);
+			
+			// DELETE THIS -> UGLY HACK!
+			while (!_messagesQueue->isEmpty()) {
+				_messagesQueue->popMessage();
+			}
+	
+			_memoryManager->remove(message, true);
 		}
 		// Display Score
 		// Print Game Over and offer restart options
