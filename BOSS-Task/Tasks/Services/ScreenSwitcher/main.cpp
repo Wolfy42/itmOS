@@ -1,7 +1,7 @@
 #include "Service-API/Display/Display.h"
 #include "Service-API/Button/Button.h"
 
-int main_________() {
+int ____main() {
     while(true) {
         waitForButtonPress();
         switchTask();

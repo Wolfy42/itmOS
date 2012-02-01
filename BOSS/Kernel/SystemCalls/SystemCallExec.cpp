@@ -1,4 +1,4 @@
-
+#include "Kernel/Task/Semaphore.h"
 #include "SystemCallExec.h"
 
 SystemCallExec::SystemCallExec(Kernel* kernel, TaskManager* taskmanager) {
