@@ -20,7 +20,7 @@ bool Semaphore::enter(Task* task) {
 }
 void Semaphore::exit() {
     _counter--;
-    if (_counter > 0) {
+    if (!_waitingTasks.empty()) {
         Task* next = _waitingTasks.front();
         _waitingTasks.pop();
         next->status = Ready;

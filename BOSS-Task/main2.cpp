@@ -1,7 +1,7 @@
 #include "Service-API/LED/LED.h"
 #include "Service-API/Display/Display.h"
 
-int _main() {
+int main____main2_() {
 
 	switchLEDOff(LED1);
 	int i=0;

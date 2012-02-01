@@ -1,7 +1,6 @@
 #include "Tasks/Services/Display/DisplayService.h"
 
-
-int main________6_(void) {
+int main_Display(void) {
 	DisplayService displayService;
 	displayService.run();
 	return 0;
