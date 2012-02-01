@@ -14,7 +14,6 @@ bool MessageQueue::pushMessage(Message* message) {
 		// TODO: Throw Exception
 		return false;
 	}
-	//enterSemaphore(SEMAPHORE_OWN_MESAGE_QUEUE, 0);
 	// Add message to position _last
 	_queue[_last] = message;
 	
@@ -24,17 +23,16 @@ bool MessageQueue::pushMessage(Message* message) {
 	} else {
 		_last = 0;
 	}
-    //exitSemaphore(SEMAPHORE_OWN_MESAGE_QUEUE, 0);
 	return true;
 }
 
 Message* MessageQueue::popMessage(void) {
 	// Suspend, if Empty
-//    enterSemaphore(SEMAPHORE_OWN_MESAGE_QUEUE, 0);
+    enterSemaphore(SEMAPHORE_OWN_MESAGE_QUEUE, 0);
 	while (isEmpty()) {
-//        exitSemaphore(SEMAPHORE_OWN_MESAGE_QUEUE, 0);
-//		performSystemCall(SUSPEND);
-//        enterSemaphore(SEMAPHORE_OWN_MESAGE_QUEUE, 0);
+        exitSemaphore(SEMAPHORE_OWN_MESAGE_QUEUE, 0);
+		performSystemCall(SUSPEND);
+        enterSemaphore(SEMAPHORE_OWN_MESAGE_QUEUE, 0);
 	}
 	
 	// Get Message* at position _first
@@ -49,7 +47,7 @@ Message* MessageQueue::popMessage(void) {
 	} else {
 		_first = 0;
 	}
-    //exitSemaphore(SEMAPHORE_OWN_MESAGE_QUEUE, 0);
+    exitSemaphore(SEMAPHORE_OWN_MESAGE_QUEUE, 0);
 	return message;
 }
 

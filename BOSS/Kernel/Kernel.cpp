@@ -1,4 +1,5 @@
 #include "Kernel.h"
+#include "Kernel/Task/Semaphore.h"
 
 Kernel::Kernel() {
     _ramManager = new RAMManager();
