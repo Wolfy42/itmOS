@@ -50,6 +50,7 @@ bool SystemCallExec::execute(int swiNumber, int params[])  {
     	case SUSPEND:
 
     		_taskmanager->getActiveTask()->status = Blocked;
+            switchTask = true;
     		break;
         case SEMAPHORE:
             switchTask = semaphore(params[2], params[3], params[4]);

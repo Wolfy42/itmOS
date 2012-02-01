@@ -1,5 +1,6 @@
 #include "Kernel.h"
 #include "Kernel/Task/Semaphore.h"
+#include <string.h>
 
 Kernel::Kernel() {
     _ramManager = new RAMManager();
@@ -61,7 +62,7 @@ void Kernel::writeResponse(int* parameters)  {
 void Kernel::writeIntoMessageQueue(Task* task, int length, int params[])  {
 	int activeTaskId = _taskManager->getActiveTask()->id;
 
-    if ((activeTaskId == 6) && (params[0] == 398)) {
+    if ((std::strcmp(_taskManager->getActiveTask()->name, "ScreenSwitcher") == 0) && (params[0] == 398)) {
         activeTaskId = -1;
         int nextTaskId = -1;
         Task** tasks = _taskManager->getTaskList();
