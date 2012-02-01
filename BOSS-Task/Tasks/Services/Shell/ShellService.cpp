@@ -19,9 +19,7 @@ void ShellService::executeMessage(Message* message)  {
 	}
 
 	// read or write?
-	ShellServiceCommand command = (ShellServiceCommand)params[0];
-	
-
+	SerialServiceCommand command = (SerialServiceCommand)params[0];
 
 	switch (command) {
 		case NEXT_CHAR:

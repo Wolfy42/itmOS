@@ -1,16 +1,12 @@
 #include "SerialService.h"
 
 #include "HAL/UART/UART_HAL.h"
-#include "Service-API/Shell/Shell.h"
+#include "Service-API/Serial/Serial.h"
 
 // TODO: delete define
 #define FALSE 0
 #define TRUE 1
 extern int init_uart_rs232_ = FALSE;
-
-
-
-
 
 void SerialService::executeMessage(Message* message)  {
 
@@ -18,15 +14,12 @@ void SerialService::executeMessage(Message* message)  {
 	char* char_params = new char[message->getParamsLength()];
 	
 	for (int i = 1; i < message->getParamsLength(); i++) {
-	
 		char_params[i - 1] = params[i];	
 	}
 
 	// read or write?
-	SerialCommand command = (SerialCommand)params[0];
+	SerialServiceCommand command = (SerialServiceCommand)params[0];
 	
-
-
 	switch (command) {
 		case SERIAL_WRITE:
 			write(message->getParamsLength() - 1, char_params);
@@ -38,23 +31,21 @@ void SerialService::executeMessage(Message* message)  {
 //			response[0]
 //			writeResponse(response);
 			break;
+		case SET_ACTIVE_TASK:
+			_activeTask = (int)char_params[0];
+			break;
 	}
 }
 
-
-
-
 SerialService::SerialService()
 {
-	
+	_activeTask = -1;
 	init();
 }
 
 SerialService::~SerialService()
 {
 }
-
-
 
 void SerialService::init() {
 	
@@ -74,7 +65,7 @@ void SerialService::run() {
     	char buffer[1];
     	buffer[0] = ' ';
     	read(1, buffer);
-    	nextChar(buffer[0]);
+    	nextChar(_activeTask, buffer[0]);
 	   //printText(&buffer[0]);
     }
 	

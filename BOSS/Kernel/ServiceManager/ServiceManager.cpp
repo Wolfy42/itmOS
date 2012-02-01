@@ -44,6 +44,13 @@ void ServiceManager::startServices()  {
     delete cb_button;
     delete c_button;
     
+    SnakeBytes snakeBytes;
+    CodeBytes* cb_snake = snakeBytes.getCodeBytes();
+    SnakeConfig* c_snake = new SnakeConfig();
+    startService("Snake", SNAKE_SERVICE_ID, cb_snake, c_snake);
+    delete cb_snake;
+    delete c_snake;
+    
     Task* scSw = _taskManager->create("ScreenSwitcher", false);
     ScSwBytes sb;
     _loader->loadTaskCode(scSw, sb.getCodeBytes());
