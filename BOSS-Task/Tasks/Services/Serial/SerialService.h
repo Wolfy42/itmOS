@@ -3,14 +3,9 @@
 
 #include "Tasks/Services/Service.h"
 
-
-enum SerialCommand {
-	SERIAL_WRITE,
-	SERIAL_READ
-};
-
 class SerialService : public Service {
 private:
+	int _activeTask;
 	
 	virtual void executeMessage(Message* message);
 	

@@ -4,6 +4,7 @@
 #include "Tasks/Services/Service.h"
 #include "HAL/Display/HalDisplayDriver.h"
 #include "Service-API/Display/Display.h"
+#include "Service-API/Serial/Serial.h"
 
 class DisplayService : public Service {
 	private:	

@@ -125,5 +125,7 @@ void DisplayService::changeTo(int taskId) {
     
     _driver.moveTo(pos[0], pos[1]);
     _driver.restoreColour(colour);
-
+	
+	// Set active Task to Serial Service
+	setActiveTask(_currentTaskId);
 }
