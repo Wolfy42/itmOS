@@ -33,7 +33,7 @@ void Kernel::initScheduler() {
 	srand_(time_());
 	_handlerManager->getIrqHandler()->registerHandler(HalTimerDriver::irqNumberForTimer(GPTIMER1), interrupted);
 
-	HalTimerDriver::init(GPTIMER1, GPT_IRQMODE_OVERFLOW, 1);
+	HalTimerDriver::init(GPTIMER1, GPT_IRQMODE_OVERFLOW, 10);
 	HalTimerDriver::start(GPTIMER1);
 }
 

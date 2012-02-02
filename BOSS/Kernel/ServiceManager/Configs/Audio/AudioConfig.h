@@ -6,6 +6,7 @@
 
 #define CONTROL_GENERAL_BASE (address) 0x48002000
 #define PER_CM_BASE          (address) 0x48005000
+#define MCBSP1_BASE          (address) 0x48074000
 #define MCBSP2_BASE          (address) 0x49022000
 #define I2C1_BASE            (address) 0x48070000
 
