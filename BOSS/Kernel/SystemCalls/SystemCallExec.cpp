@@ -1,5 +1,7 @@
 #include "Kernel/Task/Semaphore.h"
 #include "SystemCallExec.h"
+#include "Loader/TasksHex/TestBytes.h"
+#include "Loader/TasksHex/TestLed1Bytes.h"
 
 SystemCallExec::SystemCallExec(Kernel* kernel, TaskManager* taskmanager) {
 	_kernel = kernel;
@@ -114,6 +116,17 @@ bool SystemCallExec::execute(int swiNumber, int params[])  {
         case KILL:
             break;
         case EXEC:
+            if (params[2] == 0) {
+                // Start Test-Task to toggle LED's
+                Task* task = _taskmanager->create("test", false);
+                TestBytes tb;
+                _kernel->getLoader()->loadTaskCode(task, tb.getCodeBytes());
+            } else if (params[2] == 1) {
+                // Start Test-Task to toggle LED1
+                Task* taskLed1 = _taskmanager->create("testLed1", false);
+                TestLed1Bytes tbLed1;
+                _kernel->getLoader()->loadTaskCode(taskLed1, tbLed1.getCodeBytes());
+            }
             break;
         case FORK:
             break;

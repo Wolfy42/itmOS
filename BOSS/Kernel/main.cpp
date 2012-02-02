@@ -27,15 +27,6 @@ int main() {
 	// Start Services
 	kernel->getServiceManager()->startServices();
 
-	// Start Test-Task to toggle LED's
-	Task* task = kernel->getTaskManager()->create("test", false);
-	TestBytes tb;
-	kernel->getLoader()->loadTaskCode(task, tb.getCodeBytes());
-
-	// Start Test-Task to toggle LED1
-	Task* taskLed1 = kernel->getTaskManager()->create("testLed1", false);
-	TestLed1Bytes tbLed1;
-	kernel->getLoader()->loadTaskCode(taskLed1, tbLed1.getCodeBytes());
 
 	// Init
 	_enable_interrupts();
