@@ -4,7 +4,7 @@
  *  Created on: Dec 22, 2011
  *      Author: stefan
  */
-#include "HAL/I2C/I2C.h"
+#include "HAL/Audio/I2C/I2C.h"
 
 // TODO (thomas.bargetz@gmail.com) refactor
 #define SCDA_LED 0x4a

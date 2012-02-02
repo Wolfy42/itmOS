@@ -49,9 +49,6 @@ Audio::Audio() {
 	_mcbsp2 = new McBSP2();
 	_mcbsp2->init_mcbsp2();
 
-	McBSP1 mcbsp1;
-	mcbsp1.init_mcbsp1();
-
 	// init TPS65850
 	_tps = new TPS65950();
 	_tps->init_tps65950();

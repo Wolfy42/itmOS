@@ -1,6 +1,5 @@
 #include "Kernel/Kernel.h"
 #include "API/systemCalls.h"
-#include "HAL/Audio/audio.h"
 #include "Loader/TasksHex/TestBytes.h"
 #include "Loader/TasksHex/TestLed1Bytes.h"
 
@@ -15,11 +14,6 @@ int printBOSS();
 
 int main() {
 	_disable_interrupts();
-
-	// Audio Test -> "berühr dass, und deine Zahnbürste fährt morgens ins Leere!"
-	Audio* audio = new Audio();
-	//audio->playSample();
-	delete audio;
 
 	//printBOSS();
 

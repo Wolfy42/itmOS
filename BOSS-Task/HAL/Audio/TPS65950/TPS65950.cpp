@@ -7,7 +7,7 @@
 
 #include "HAL/Audio/TPS65950/TPS65950.h"
 #include "HAL/Audio/TPS65950/TPS65950SCD.h"
-#include "HAL/I2C/I2C.h"
+#include "HAL/Audio/I2C/I2C.h"
 #include "Lib/bitOperations.h"
 
 TPS65950::TPS65950() {}

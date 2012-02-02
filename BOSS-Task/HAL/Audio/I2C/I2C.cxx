@@ -5,7 +5,7 @@
  *      Author: Stefan Gassner (Thomas Bargetz)
  */
 
-#include "HAL/I2C/I2C.h"
+#include "HAL/Audio/I2C/I2C.h"
 
 #define TIMEOUT 10000
 

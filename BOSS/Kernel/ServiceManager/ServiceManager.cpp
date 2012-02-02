@@ -48,6 +48,13 @@ void ServiceManager::startServices()  {
     ScSwBytes sb;
     _loader->loadTaskCode(scSw, sb.getCodeBytes());
 
+    AudioBytes audioBytes;
+    CodeBytes* cb_audio = audioBytes.getCodeBytes();
+    AudioConfig* c_audio= new AudioConfig();
+    startService("Audio", AUDIO_SERVICE_ID, cb_audio, c_audio);
+    delete cb_audio;
+    delete c_audio;
+
 }
 
 void ServiceManager::startService(char* serviceName, int serviceId, CodeBytes* codeBytes, ServiceConfig* config) {
