@@ -1,4 +1,6 @@
 #include "ShellService.h"
+#include "Service-API/LED/LED.h"
+#include "API/systemCalls.h"
 
 #define SHELL_X_START 50
 #define SHELL_X_END   1000
@@ -52,7 +54,29 @@ void ShellService::executeCommand(std::string command) {
 	} else if (std::strcmp("help", command.c_str()) == 0) {
 	   echo('h');
 		//echo("if you're using BOSS you should be a fkn geek and wouldn't need any help.");
-	}
+	} else if (std::strcmp("led toggle 1", command.c_str()) == 0) {
+        toggleLED(LED1);
+    } else if (std::strcmp("led toggle 2", command.c_str()) == 0) {
+        toggleLED(LED2);
+    } else if (std::strcmp("led on 1", command.c_str()) == 0) {
+        switchLEDOn(LED1);
+    } else if (std::strcmp("led on 2", command.c_str()) == 0) {
+        switchLEDOn(LED2);
+    } else if (std::strcmp("led off 1", command.c_str()) == 0) {
+        switchLEDOff(LED1);
+    } else if (std::strcmp("led off 2", command.c_str()) == 0) {
+        switchLEDOff(LED2);
+    } else if (std::strcmp("led read 1", command.c_str()) == 0) {
+        echo((char)(getLEDState(LED1) + '0'));
+    } else if (std::strcmp("led read 2", command.c_str()) == 0) {
+        echo((char)(getLEDState(LED2) + '0'));
+    } else if (std::strcmp("launch test", command.c_str()) == 0) {
+        int params[] = {0};
+        performSystemCall(EXEC, 1, params);
+    } else if (std::strcmp("launch test1", command.c_str()) == 0) {
+        int params[] = {1};
+        performSystemCall(EXEC, 1, params);
+    }
 }
 
 void ShellService::echo(char ch) {
