@@ -8,7 +8,7 @@
 class Semaphore;
 
 typedef int TID_t;
-enum Status { Ready, Running, Blocked, Wait };
+enum Status { Ready, Running, Blocked, Wait, WaitForSemaphore };
 
 /*
  *  This struct is a solid Task - everyone is solid @ Task Library

@@ -13,11 +13,14 @@
 
 #define SUSPEND	            0x8
 #define SEMAPHORE           0x9
+#define NOTIFY              0xA
+#define WAIT                0xB
 
 //--------------------------------Semaphore IDs-------------------------
-#define SEMAPHORE_OWN_MESAGE_QUEUE 0x0
-#define SEMAPHORE_SERVICE_MESSAGE_QUEUE 0x1
-#define SEMAPHORE_TASK_MESSAGE_QUEUE 0x2
+#define SELF 0x0
+#define SERVICE_ID 0x1
+#define TASK_ID 0x2
+
 //--------------------------------Service- IDs--------------------------
 #define TIMER_SERVICE_ID 0x60
 #define BUTTON_SERVICE_ID 0xB

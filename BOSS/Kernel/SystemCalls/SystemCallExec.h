@@ -12,8 +12,11 @@ class SystemCallExec
 	private:
 		Kernel* _kernel;
 		TaskManager* _taskmanager;
+        int _waitingTasks[20];
 		
         bool semaphore(bool enterOrLeave, int semaphoreType, int id);
+        void notify(int taskOrService, int semaphoreTaskId);
+        void wait(int taskId, int taskOrService, int semaphoreTaskId);
 	public:
 		SystemCallExec(Kernel* kernel, TaskManager* taskmanager);
 		virtual ~SystemCallExec();

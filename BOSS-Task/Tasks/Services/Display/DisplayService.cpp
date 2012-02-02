@@ -24,10 +24,15 @@ DisplayService::~DisplayService() {}
 
 void DisplayService::executeMessage(Message* message)  {
 	int* params = message->getParams();
-    int response[] = {false};
-    if (checkScreenRights(message->getTaskId())) {
-    	DisplayServiceCommand command = (DisplayServiceCommand)params[0];
-        response[0] = true;
+    DisplayServiceCommand command = (DisplayServiceCommand)params[0];
+    
+    bool hasScreen = checkScreenRights(message->getTaskId());
+    
+    if (((DisplayServiceCommand)params[0]) == SERVICE_HAS_TASK_SCREEN) {
+        int response[] = {hasScreen};
+        writeResponse(message->getTaskId(), 1, response);
+    }
+    if (hasScreen) {
     	switch (command) {
     		case SERVICE_SET_COLOR:
     			_driver.setColor(params[1]);
@@ -84,24 +89,10 @@ void DisplayService::executeMessage(Message* message)  {
         _driver.moveTo(pos[0], pos[1]);
         _driver.restoreColour(colour);
     }
-    if (message->getTaskId() >= 0) {
-        writeResponse(message->getTaskId(), 1, response);
-    }
 }
 
 bool DisplayService::checkScreenRights(int taskId) {
-    bool isCurrentTask = false;
-    if (taskId < 0) {
-        isCurrentTask = true;
-    } else {
-        if (_currentTaskId < 0) {
-            changeTo(taskId);
-            isCurrentTask = true;
-        } else if (_currentTaskId == taskId) {
-            isCurrentTask = true;
-        }
-    }
-    return isCurrentTask;
+    return ((taskId == -1) || (_currentTaskId == taskId));
 }
 
 void DisplayService::changeTo(int taskId) {

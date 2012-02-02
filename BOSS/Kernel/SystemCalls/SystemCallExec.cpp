@@ -4,6 +4,9 @@
 SystemCallExec::SystemCallExec(Kernel* kernel, TaskManager* taskmanager) {
 	_kernel = kernel;
 	_taskmanager = taskmanager;
+    for (int i = 0; i < 20; ++i) {
+        _waitingTasks[i] = -1;
+    }
 }
 
 SystemCallExec::~SystemCallExec()
@@ -14,13 +17,13 @@ bool SystemCallExec::semaphore(bool exit, int semaphoreType, int id) {
     Task* target = NULL;
     bool switchTask = false;
     switch (semaphoreType) {
-        case SEMAPHORE_OWN_MESAGE_QUEUE:
+        case SELF:
             target = _taskmanager->getActiveTask();
             break;
-        case SEMAPHORE_SERVICE_MESSAGE_QUEUE:
+        case SERVICE_ID:
             target = _kernel->getServiceManager()->getTaskForService(id);
             break;
-        case SEMAPHORE_TASK_MESSAGE_QUEUE:
+        case TASK_ID:
             target = _taskmanager->getTaskFor(id);
             break;
         default:
@@ -33,6 +36,45 @@ bool SystemCallExec::semaphore(bool exit, int semaphoreType, int id) {
     }
     return switchTask;
 }
+
+void SystemCallExec::notify(int taskOrService, int semaphoreTaskId) {
+    Task* semaphoreTask = NULL;
+    switch (taskOrService) {
+        case SELF:
+            semaphoreTask = _taskmanager->getActiveTask();
+            break;
+        case SERVICE_ID:
+            semaphoreTask = _kernel->getServiceManager()->getTaskForService(semaphoreTaskId);
+            break;
+        case TASK_ID:
+            semaphoreTask = _taskmanager->getTaskFor(semaphoreTaskId);
+            break;
+        default:
+            break;
+    }
+    if (semaphoreTask != NULL) {
+        semaphoreTask->semaphore->notifyAll();
+    }
+}
+
+void SystemCallExec::wait(int taskId, int taskOrService, int semaphoreTaskId) {
+    Task* taskToWaitFor = NULL;
+    switch (taskOrService) {
+        case SELF:
+            taskToWaitFor = _taskmanager->getActiveTask();
+            break;
+        case SERVICE_ID:
+            taskToWaitFor = _kernel->getServiceManager()->getTaskForService(semaphoreTaskId);
+            break;
+        case TASK_ID:
+            taskToWaitFor = _taskmanager->getTaskFor(semaphoreTaskId);
+            break;
+        default:
+            break;
+    }
+    taskToWaitFor->semaphore->wait(_taskmanager->getTaskFor(taskId));
+}
+
 /*
  * 	execute Sys Calls
  */
@@ -50,7 +92,15 @@ bool SystemCallExec::execute(int swiNumber, int params[])  {
     	case SUSPEND:
 
     		_taskmanager->getActiveTask()->status = Blocked;
+            switchTask = true;
     		break;
+        case NOTIFY:
+            notify(params[2], params[3]);
+            break;
+        case WAIT:
+            wait(_taskmanager->getActiveTask()->id, params[2], params[3]);
+            switchTask = true;
+            break;
         case SEMAPHORE:
             switchTask = semaphore(params[2], params[3], params[4]);
             

@@ -1,7 +1,7 @@
 #include "Service-API/LED/LED.h"
 #include "Service-API/Display/Display.h"
 
-int _main() {
+int main_Test() {
 
 	switchLEDOff(LED1);
 	int i=0;
@@ -16,23 +16,26 @@ int _main() {
 			switchLEDOff(LED2);
 			switchLEDOn(LED1);
 			
-			// Set LED1 On
-			if (setColor(0x0000FF)) {
+			
+			if (hasScreen()) {
+                // Set LED1 On
+                setColor(0x0000FF);
 			    moveTo(580, 200);
                 drawChar('1', 5);
-            }
             
-			// Set LED2 Off
-			setColor(0xFF0000);
-			moveTo(640, 200);
-            drawChar('2', 5);
+			     // Set LED2 Off
+    			setColor(0xFF0000);
+    			moveTo(640, 200);
+                drawChar('2', 5);
+            }
 		} else {
 			switchLEDOn(LED2);
 			switchLEDOff(LED1);
 			
-            if (setColor(0xFF0000)) {
+            if (hasScreen()) {
+                
     			// Set LED1 On
-    			
+    			setColor(0xFF0000);
     			moveTo(580, 200);
                 drawChar('1', 5);
     			

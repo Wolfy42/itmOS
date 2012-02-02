@@ -8,6 +8,7 @@
 #include "Messaging/Message/Message.h"
 
 enum DisplayServiceCommand {
+    SERVICE_HAS_TASK_SCREEN,
     SERVICE_SET_COLOR,
     SERVICE_MOVE_TO,
     SERVICE_DRAW_PIXEL,
@@ -17,12 +18,13 @@ enum DisplayServiceCommand {
     SERVICE_SWITCH_TASK = 398
 };
 
-bool setColor(unsigned int rgb);
-bool moveTo(int x, int y);
-bool drawPixel();
-bool drawRect(int w, int h);
-bool drawChar(unsigned int c, int scale);
-bool drawString(const char* s, int scale);
+bool hasScreen();
+void setColor(unsigned int rgb);
+void moveTo(int x, int y);
+void drawPixel();
+void drawRect(int w, int h);
+void drawChar(unsigned int c, int scale);
+void drawString(const char* s, int scale);
 void switchTask();
 
 #endif /*DISPLAY_H_*/

@@ -77,7 +77,7 @@ void ShellService::echo(char ch) {
         posY = SHELL_Y_START;
         posX = SHELL_X_START;
     }
-    
+    while (!hasScreen());
     setColor(0xFFFFFF);
 	moveTo(posX, posY);
     drawChar(ch, 2);

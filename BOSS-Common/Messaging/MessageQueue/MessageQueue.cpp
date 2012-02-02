@@ -28,11 +28,10 @@ bool MessageQueue::pushMessage(Message* message) {
 
 Message* MessageQueue::popMessage(void) {
 	// Suspend, if Empty
-    enterSemaphore(SEMAPHORE_OWN_MESAGE_QUEUE, 0);
+    enterSemaphore(SELF, 0);
 	while (isEmpty()) {
-        exitSemaphore(SEMAPHORE_OWN_MESAGE_QUEUE, 0);
-		performSystemCall(SUSPEND);
-        enterSemaphore(SEMAPHORE_OWN_MESAGE_QUEUE, 0);
+        int params[] = {SELF, 0};
+        performSystemCall(WAIT, 2, params);
 	}
 	
 	// Get Message* at position _first
@@ -47,7 +46,7 @@ Message* MessageQueue::popMessage(void) {
 	} else {
 		_first = 0;
 	}
-    exitSemaphore(SEMAPHORE_OWN_MESAGE_QUEUE, 0);
+    exitSemaphore(SELF, 0);
 	return message;
 }
 

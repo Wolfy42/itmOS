@@ -10,13 +10,19 @@ void performSystemCall(int systemCallId, int length, int params[])  {
 }
 
 void performServiceCall(int serviceId, int length, int params[])  {
-    enterSemaphore(SEMAPHORE_SERVICE_MESSAGE_QUEUE, serviceId);
+    enterSemaphore(SERVICE_ID, serviceId);
     swi(WRITE, serviceId, length, params);
-    exitSemaphore(SEMAPHORE_SERVICE_MESSAGE_QUEUE, serviceId);
+    exitSemaphore(SERVICE_ID, serviceId);
+    
+    int parameters[] = {SERVICE_ID, serviceId};
+    performSystemCall(NOTIFY, 2, parameters);
 }
 
 void performServiceResponse(int callerId, int length, int params[])  {
-    enterSemaphore(SEMAPHORE_TASK_MESSAGE_QUEUE, callerId);
+    enterSemaphore(TASK_ID, callerId);
 	swi(WRITE_RESPONSE, callerId, length, params);
-    exitSemaphore(SEMAPHORE_TASK_MESSAGE_QUEUE, callerId);
+    exitSemaphore(TASK_ID, callerId);
+    
+    int parameters[] = {TASK_ID, callerId};
+    performSystemCall(NOTIFY, 2, parameters);
 }

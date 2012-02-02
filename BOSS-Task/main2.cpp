@@ -14,7 +14,8 @@ int main() {
 		}
 		toggleLED(LED1);
 
-		if (setColor(0x0000FF)) {
+		if (hasScreen()) {
+            setColor(0x0000FF);
     		moveTo((500 + j*50), 400);
     		drawRect(20, 20);
     		j = (j + 1) % 5;

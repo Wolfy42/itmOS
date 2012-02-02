@@ -4,6 +4,9 @@
 extern volatile unsigned int messagesStart;
 
 bool hasScreen() {
+    int params[] = {SERVICE_HAS_TASK_SCREEN};
+    performServiceCall(DISPLAY_SERVICE_ID, 1, params);
+    
     MemoryManager* memoryManager = (MemoryManager*)&messagesStart;
     MessageQueue* messagesQueue = memoryManager->getMessageQueue();
 
@@ -13,40 +16,39 @@ bool hasScreen() {
     return result;
 }
 
-bool setColor(unsigned int rgb) {
+void setColor(unsigned int rgb) {
 	int params[] = {SERVICE_SET_COLOR, rgb};
 	performServiceCall(DISPLAY_SERVICE_ID, 2, params);
     
-    return hasScreen();
 }
 
-bool moveTo(int x, int y) {
+void moveTo(int x, int y) {
 	int params[] = {SERVICE_MOVE_TO, x, y};
 	performServiceCall(DISPLAY_SERVICE_ID, 3, params);
     
-    return hasScreen();
+    
 }
 
-bool drawPixel() {
+void drawPixel() {
 	int params[] = {SERVICE_DRAW_PIXEL};
 	performServiceCall(DISPLAY_SERVICE_ID, 1, params);
     
-    return hasScreen();
+    
 }
 
-bool drawRect(int w, int h) {
+void drawRect(int w, int h) {
 	int params[] = {SERVICE_DRAW_RECT, w, h};
 	performServiceCall(DISPLAY_SERVICE_ID, 3, params);
-    return hasScreen();
+    
 }
 
-bool drawChar(unsigned int c, int scale) {
+void drawChar(unsigned int c, int scale) {
 	int params[] = {SERVICE_DRAW_CHAR, c, scale};
 	performServiceCall(DISPLAY_SERVICE_ID, 3, params);
-    return hasScreen();
+    
 }
 
-bool drawString(const char* s, int scale) {
+void drawString(const char* s, int scale) {
 	int stringLength = strlen(s);
     
     int paramsLength = stringLength / 4 + 2;
@@ -60,7 +62,7 @@ bool drawString(const char* s, int scale) {
 	std::memcpy(&(params[2]), s, stringLength);
 	
 	performServiceCall(DISPLAY_SERVICE_ID, paramsLength, params);
-    return hasScreen();
+    
 }
 
 void switchTask() {
